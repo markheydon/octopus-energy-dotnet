@@ -1,0 +1,19 @@
+---
+description: C# and SDK coding conventions for this repository
+globs: "**/*.cs"
+alwaysApply: false
+---
+
+# C# Conventions
+
+Follow `CONVENTIONS.md` and `AGENTS.md` for architecture and naming.
+
+- Use async/await for all I/O; accept and propagate `CancellationToken`.
+- Do not use `.Result`, `.Wait()`, or sync-over-async.
+- Add XML documentation to all public API members.
+- Use `JsonPropertyName` on every serialised/deserialised property in API models.
+- Test classes: `[ClassName]Tests`. Test methods: `Method_State_Expected`.
+- Customer-only public surface. Do not add partner enrolment, quoting, or operations APIs.
+- Fail-fast client checks only for official, local API contract constraints documented by Octopus.
+- Do not add NuGet packages or change architecture without an ADR and explicit instruction.
+- Do not log API keys or JWTs.

@@ -1,0 +1,4 @@
+{
+  "name": "Octopus Energy .NET Client",
+  "install": "bash .cursor/install.sh"
+}

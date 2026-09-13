@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <!-- Compiler behaviour -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Deterministic>true</Deterministic>
+
+    <!-- Treat all warnings as errors across all projects -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Keep analyser recommendations current with the SDK -->
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+  </PropertyGroup>
+</Project>
