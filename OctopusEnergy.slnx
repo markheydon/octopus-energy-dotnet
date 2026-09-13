@@ -1,0 +1,13 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/OctopusEnergy.Client/OctopusEnergy.Client.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OctopusEnergy.Client.Tests/OctopusEnergy.Client.Tests.csproj" />
+  </Folder>
+</Solution>
