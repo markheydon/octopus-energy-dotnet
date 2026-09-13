@@ -1,0 +1,103 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    name: Build, Pack & Publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Validate tag matches package version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          TAG_VERSION="${TAG#v}"
+          CSPROJ_VERSION=$(grep -oP '(?<=<Version>)[^<]+' src/OctopusEnergy.Client/OctopusEnergy.Client.csproj)
+          echo "Tag version:    ${TAG_VERSION}"
+          echo "csproj version: ${CSPROJ_VERSION}"
+          if [[ "${TAG_VERSION}" != "${CSPROJ_VERSION}" ]]; then
+            echo "::error::Tag version '${TAG_VERSION}' does not match csproj version '${CSPROJ_VERSION}'. Update <Version> in OctopusEnergy.Client.csproj before tagging."
+            exit 1
+          fi
+
+      - name: Restore
+        run: dotnet restore OctopusEnergy.slnx
+
+      - name: Verify formatting
+        run: dotnet format OctopusEnergy.slnx --no-restore --verify-no-changes --verbosity minimal
+
+      - name: Clean, restore, build, and test
+        run: |
+          dotnet clean OctopusEnergy.slnx
+          dotnet restore OctopusEnergy.slnx
+          dotnet build OctopusEnergy.slnx --no-restore --configuration Release -warnaserror
+          dotnet test OctopusEnergy.slnx --no-build --configuration Release --report-trx --results-directory TestResults
+
+      - name: Pack
+        run: dotnet pack src/OctopusEnergy.Client/OctopusEnergy.Client.csproj --no-build --configuration Release --output ./nupkg
+
+      - name: NuGet login (OIDC)
+        uses: NuGet/login@v1
+        id: nuget
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Publish to NuGet
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ steps.nuget.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Determine if prerelease
+        id: prerelease_check
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "$TAG" =~ -[a-zA-Z] ]]; then
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const tag = context.ref.replace('refs/tags/', '');
+            const isPrerelease = ${{ steps.prerelease_check.outputs.is_prerelease }};
+
+            try {
+              await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag,
+              });
+
+              core.info(`Release for tag ${tag} already exists. Skipping createRelease.`);
+              return;
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+            }
+
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tag,
+              name: tag,
+              prerelease: isPrerelease,
+              generate_release_notes: true,
+            });
