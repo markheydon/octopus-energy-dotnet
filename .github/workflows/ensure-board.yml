@@ -1,0 +1,85 @@
+name: Ensure board labels and milestones
+
+on:
+  push:
+    branches: [cursor/github-board-bootstrap-a2ba, main]
+    paths:
+      - '.github/workflows/ensure-board.yml'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  ensure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure labels and milestones
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: markheydon/octopus-energy-dotnet
+        run: |
+          set -euo pipefail
+
+          ensure_label() {
+            local name="$1" color="$2" desc="$3"
+            if gh label list --repo "$REPO" --json name --jq '.[].name' | grep -Fxq "$name"; then
+              gh label edit "$name" --repo "$REPO" --color "$color" --description "$desc"
+            else
+              gh label create "$name" --repo "$REPO" --color "$color" --description "$desc"
+            fi
+          }
+
+          ensure_label "type/epic" "6f42c1" "A named product theme spanning multiple features or a major increment"
+          ensure_label "type/feature" "0075ca" "A Feature - groups related stories within an epic"
+          ensure_label "type/story" "1d76db" "A user-facing Story delivering a discrete piece of value"
+          ensure_label "type/enabler" "e4e669" "An Enabler - technical prerequisite that unblocks stories"
+          ensure_label "type/test" "bfd4f2" "A Test issue - test coverage deliverable"
+          ensure_label "type/bug" "d73a4a" "A bug or unexpected behaviour"
+          ensure_label "type/chore" "fef2c0" "Maintenance, dependency updates, or technical debt"
+          ensure_label "type/documentation" "0052cc" "Documentation additions or improvements"
+
+          ensure_label "status/todo" "ffffff" "Ready to be worked on; not yet started"
+          ensure_label "status/in-progress" "0e8a16" "Currently being worked on"
+          ensure_label "status/blocked" "e11d48" "Cannot proceed; waiting on something external"
+          ensure_label "status/ice-box" "8b949e" "Shelved for later; not in the active delivery queue"
+          ensure_label "status/in-review" "1d76db" "Pull request open; awaiting code review"
+          ensure_label "status/done" "cfd3d7" "Completed and closed"
+
+          ensure_label "priority/critical" "b60205" "Blocking - must be resolved immediately"
+          ensure_label "priority/high" "d93f0b" "Should be addressed in the current sprint or release"
+          ensure_label "priority/medium" "fbca04" "Should be addressed soon but is not blocking"
+          ensure_label "priority/low" "c2e0c6" "Nice to have; can be deferred"
+
+          ensure_label "size/xs" "dde8c9" "Trivial - less than 1 hour"
+          ensure_label "size/s" "c5def5" "Small - less than half a day"
+          ensure_label "size/m" "fef2c0" "Medium - half a day to one day"
+          ensure_label "size/l" "f9d0c4" "Large - two to three days"
+          ensure_label "size/xl" "d4c5f9" "Extra-large - more than three days; consider splitting"
+
+          ensure_milestone() {
+            local title="$1" desc="$2"
+            local existing
+            existing=$(gh api "repos/${REPO}/milestones?state=all" --jq --arg t "$title" '.[] | select(.title==$t) | .number' | head -n1)
+            if [ -n "$existing" ]; then
+              echo "$existing"
+            else
+              gh api -X POST "repos/${REPO}/milestones" -f title="$title" -f description="$desc" --jq .number
+            fi
+          }
+
+          V1_DESC='Customer REST SDK: products, tariffs, rates, GSP, account, consumption, pagination, typed errors, API-key auth. See SCOPE.md In Scope v1.0 and docs/planning/coding-notes.md. GraphQL is out of this milestone except as an implementation detail if strictly required (it should not be).'
+          V2_DESC='Curated GraphQL for customer API keys: token exchange, viewer, bills/payments, devices/Intelligent, Home Mini telemetry, Octoplus, meter readings, product switch. Runtime allow-list only. See SCOPE.md v2.'
+
+          M1=$(ensure_milestone "v1 — REST customer core" "$V1_DESC")
+          M2=$(ensure_milestone "v2 — GraphQL customer extras" "$V2_DESC")
+
+          echo "v1 milestone=$M1"
+          echo "v2 milestone=$M2"
+
+          gh api -X POST "repos/${REPO}/issues/3/comments" -f body="Board bootstrap complete.
+
+- v1 — REST customer core: milestone **${M1}**
+- v2 — GraphQL customer extras: milestone **${M2}**
+"
