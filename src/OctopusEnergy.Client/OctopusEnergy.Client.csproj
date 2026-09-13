@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <PackageId>OctopusEnergy.Client</PackageId>
+    <Version>0.1.0-alpha.1</Version>
+    <Authors>Mark Heydon</Authors>
+    <Description>A .NET client library for the Octopus Energy customer APIs (REST and GraphQL). Unofficial; not affiliated with Octopus Energy.</Description>
+    <PackageProjectUrl>https://github.com/markheydon/octopus-energy-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/markheydon/octopus-energy-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>octopus-energy;kraken;energy;api;client</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
