@@ -3,8 +3,6 @@ name: Ensure board labels and milestones
 on:
   push:
     branches: [cursor/github-board-bootstrap-a2ba, main]
-    paths:
-      - '.github/workflows/ensure-board.yml'
   workflow_dispatch:
 
 permissions:
@@ -24,7 +22,7 @@ jobs:
 
           ensure_label() {
             local name="$1" color="$2" desc="$3"
-            if gh label list --repo "$REPO" --json name --jq '.[].name' | grep -Fxq "$name"; then
+            if gh label list --repo "$REPO" --limit 200 --json name --jq '.[].name' | grep -Fxq "$name"; then
               gh label edit "$name" --repo "$REPO" --color "$color" --description "$desc"
             else
               gh label create "$name" --repo "$REPO" --color "$color" --description "$desc"
@@ -58,28 +56,50 @@ jobs:
           ensure_label "size/l" "f9d0c4" "Large - two to three days"
           ensure_label "size/xl" "d4c5f9" "Extra-large - more than three days; consider splitting"
 
-          ensure_milestone() {
-            local title="$1" desc="$2"
-            local existing
-            existing=$(gh api "repos/${REPO}/milestones?state=all" --jq --arg t "$title" '.[] | select(.title==$t) | .number' | head -n1)
-            if [ -n "$existing" ]; then
-              echo "$existing"
-            else
-              gh api -X POST "repos/${REPO}/milestones" -f title="$title" -f description="$desc" --jq .number
-            fi
-          }
+          python3 - <<'PY'
+          import json, os, subprocess, textwrap
+          repo = os.environ["REPO"]
 
-          V1_DESC='Customer REST SDK: products, tariffs, rates, GSP, account, consumption, pagination, typed errors, API-key auth. See SCOPE.md In Scope v1.0 and docs/planning/coding-notes.md. GraphQL is out of this milestone except as an implementation detail if strictly required (it should not be).'
-          V2_DESC='Curated GraphQL for customer API keys: token exchange, viewer, bills/payments, devices/Intelligent, Home Mini telemetry, Octoplus, meter readings, product switch. Runtime allow-list only. See SCOPE.md v2.'
+          def gh(*args, input=None):
+              r = subprocess.run(["gh", *args], input=input, text=True, capture_output=True)
+              if r.returncode != 0:
+                  raise SystemExit(r.stderr or r.stdout)
+              return r.stdout
 
-          M1=$(ensure_milestone "v1 — REST customer core" "$V1_DESC")
-          M2=$(ensure_milestone "v2 — GraphQL customer extras" "$V2_DESC")
+          milestones = json.loads(gh("api", f"repos/{repo}/milestones?state=all"))
+          by_title = {m["title"]: m for m in milestones}
 
-          echo "v1 milestone=$M1"
-          echo "v2 milestone=$M2"
+          wanted = [
+              (
+                  "v1 \u2014 REST customer core",
+                  textwrap.dedent("""\
+                  Customer REST SDK: products, tariffs, rates, GSP, account, consumption, pagination, typed errors, API-key auth. See SCOPE.md In Scope v1.0 and docs/planning/coding-notes.md. GraphQL is out of this milestone except as an implementation detail if strictly required (it should not be).
+                  """).strip(),
+              ),
+              (
+                  "v2 \u2014 GraphQL customer extras",
+                  textwrap.dedent("""\
+                  Curated GraphQL for customer API keys: token exchange, viewer, bills/payments, devices/Intelligent, Home Mini telemetry, Octoplus, meter readings, product switch. Runtime allow-list only. See SCOPE.md v2.
+                  """).strip(),
+              ),
+          ]
 
-          gh api -X POST "repos/${REPO}/issues/3/comments" -f body="Board bootstrap complete.
+          numbers = {}
+          for title, desc in wanted:
+              if title in by_title:
+                  numbers[title] = by_title[title]["number"]
+              else:
+                  payload = json.dumps({"title": title, "description": desc, "state": "open"})
+                  created = json.loads(gh("api", "--method", "POST", f"repos/{repo}/milestones", "--input", "-", input=payload))
+                  numbers[title] = created["number"]
 
-- v1 — REST customer core: milestone **${M1}**
-- v2 — GraphQL customer extras: milestone **${M2}**
-"
+          v1 = numbers[wanted[0][0]]
+          v2 = numbers[wanted[1][0]]
+          print(f"v1={v1} v2={v2}")
+          body = (
+              "Board bootstrap complete.\n\n"
+              f"- v1 \u2014 REST customer core: milestone **{v1}**\n"
+              f"- v2 \u2014 GraphQL customer extras: milestone **{v2}**\n"
+          )
+          gh("api", "--method", "POST", f"repos/{repo}/issues/3/comments", "--input", "-", input=json.dumps({"body": body}))
+          PY
