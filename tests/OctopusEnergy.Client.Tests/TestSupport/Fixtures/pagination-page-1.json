@@ -1,0 +1,9 @@
+{
+  "count": 3,
+  "next": "https://api.example.test/v1/items/?page=2",
+  "previous": null,
+  "results": [
+    { "code": "ITEM-1" },
+    { "code": "ITEM-2" }
+  ]
+}
