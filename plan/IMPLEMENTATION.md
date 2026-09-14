@@ -1,10 +1,17 @@
 # Implementation plan
 
-Work is tracked as GitHub Issues. Milestones:
+Work is tracked as GitHub Issues using **feature → story** (no epic unless a theme later spans multiple features).
 
-- **v1 — REST customer core** — SCOPE.md v1.0
-- **v2 — GraphQL customer extras** — SCOPE.md v2
+**Features** (what we are building):
 
-Foundation issues (allow-list spike, HTTP stack) sit on v1 even when they unblock v2.
+- [#6 REST customer core](https://github.com/markheydon/octopus-energy-dotnet/issues/6) — SCOPE.md v1.0
+- [#7 GraphQL customer extras](https://github.com/markheydon/octopus-energy-dotnet/issues/7) — SCOPE.md v2
+
+**Milestones** (when it is meant to ship — version timeboxes, not copies of the feature titles):
+
+- [v1.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/1) — first REST release
+- [v2.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/2) — GraphQL extras release
+
+Stories and enablers are sub-issues of the relevant feature and also sit on the matching milestone.
 
 See [docs/planning/coding-notes.md](../docs/planning/coding-notes.md).
