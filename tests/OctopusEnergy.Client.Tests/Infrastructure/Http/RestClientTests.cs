@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
+using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Tests.TestSupport;
 
 namespace OctopusEnergy.Client.Tests.Infrastructure.Http;
@@ -82,6 +83,109 @@ public sealed class RestClientTests
             () => client.Rest.GetAsync<PaginatedResponseStub>("broken/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.InternalServerError, exception.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenSuccessBodyIsInvalidJson_ThrowsOctopusEnergyException()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, "not json");
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        OctopusEnergyException exception = await Assert.ThrowsAsync<OctopusEnergyException>(
+            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+
+        Assert.Contains("could not be deserialised", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenErrorBodyHasNoDetail_ThrowsOctopusEnergyHttpException()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.BadRequest, FixtureFile.Read("api-error-empty-detail.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
+            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+
+        Assert.Equal(HttpStatusCode.BadRequest, exception.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAllPagesAsync_WhenSecondPageFails_ThrowsAfterFirstPageItemsWereYielded()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("pagination-page-1.json"));
+        handler.Enqueue(HttpStatusCode.InternalServerError, "upstream failure");
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        CancellationToken cancellationToken = TestContext.Current.CancellationToken;
+        List<TestItem> items = [];
+        await using IAsyncEnumerator<TestItem> enumerator = client.Rest
+            .GetAllPagesAsync<TestItem>("items/", cancellationToken)
+            .GetAsyncEnumerator(cancellationToken);
+
+        Assert.True(await enumerator.MoveNextAsync());
+        items.Add(enumerator.Current);
+        Assert.True(await enumerator.MoveNextAsync());
+        items.Add(enumerator.Current);
+
+        OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
+            async () => await enumerator.MoveNextAsync());
+
+        Assert.Equal(["ITEM-1", "ITEM-2"], items.Select(item => item.Code));
+        Assert.Equal(HttpStatusCode.InternalServerError, exception.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAllPagesAsync_WhenPageHopLimitExceeded_ThrowsOctopusEnergyException()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, """{"count":1,"next":"items/?page=2","results":[{"code":"A"}]}""");
+        handler.Enqueue(HttpStatusCode.OK, """{"count":1,"next":"items/?page=3","results":[{"code":"B"}]}""");
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        RestClient rest = new(httpClient, maxPageHops: 2);
+
+        OctopusEnergyException exception = await Assert.ThrowsAsync<OctopusEnergyException>(
+            async () => await CollectAsync(rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None)));
+
+        Assert.Contains("2 pages", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task GetAllPagesAsync_WhenResultsIsNull_ReturnsNoItems()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("pagination-null-results.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        List<TestItem> items = await CollectAsync(client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None));
+
+        Assert.Empty(items);
+    }
+
+    [Fact]
+    public async Task GetAllPagesAsync_WhenNextIsRelative_FollowsLink()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("pagination-relative-next-page-1.json"));
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("pagination-relative-next-page-2.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        List<TestItem> items = await CollectAsync(client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None));
+
+        Assert.Equal(["REL-1", "REL-2"], items.Select(item => item.Code));
     }
 
     private static HttpClient CreateHttpClient(QueuedHttpMessageHandler handler)

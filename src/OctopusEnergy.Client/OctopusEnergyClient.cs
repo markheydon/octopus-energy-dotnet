@@ -32,7 +32,8 @@ public sealed class OctopusEnergyClient : IDisposable
     /// </summary>
     /// <param name="httpClient">
     /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null,
-    /// <see cref="DefaultBaseUrl"/> is applied.
+    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When no
+    /// <c>Accept: application/json</c> header is present, one is added.
     /// </param>
     public OctopusEnergyClient(HttpClient httpClient)
         : this(httpClient, ownsHttpClient: false)
@@ -50,6 +51,8 @@ public sealed class OctopusEnergyClient : IDisposable
         {
             _httpClient.BaseAddress = new Uri(DefaultBaseUrl);
         }
+
+        EnsureJsonAcceptHeader(_httpClient);
 
         Rest = new RestClient(_httpClient);
     }
@@ -72,9 +75,20 @@ public sealed class OctopusEnergyClient : IDisposable
             BaseAddress = new Uri(DefaultBaseUrl),
         };
 
-        httpClient.DefaultRequestHeaders.Accept.Add(
-            new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        EnsureJsonAcceptHeader(httpClient);
 
         return httpClient;
+    }
+
+    private static void EnsureJsonAcceptHeader(HttpClient httpClient)
+    {
+        if (httpClient.DefaultRequestHeaders.Accept.Any(mediaType =>
+                string.Equals(mediaType.MediaType, "application/json", StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        httpClient.DefaultRequestHeaders.Accept.Add(
+            new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
     }
 }

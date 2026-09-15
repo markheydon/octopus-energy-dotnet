@@ -9,14 +9,22 @@ namespace OctopusEnergy.Client.Infrastructure.Http;
 
 internal sealed class RestClient
 {
-    internal const int MaxPageHops = 10_000;
+    internal const int DefaultMaxPageHops = 10_000;
 
     private readonly HttpClient _httpClient;
+    private readonly int _maxPageHops;
 
-    internal RestClient(HttpClient httpClient)
+    internal RestClient(HttpClient httpClient, int maxPageHops = DefaultMaxPageHops)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
+
+        if (maxPageHops < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxPageHops), maxPageHops, "Page hop limit must be at least 1.");
+        }
+
         _httpClient = httpClient;
+        _maxPageHops = maxPageHops;
     }
 
     internal async Task<T> GetAsync<T>(string relativePath, CancellationToken cancellationToken)
@@ -64,16 +72,16 @@ internal sealed class RestClient
             }
 
             pageHop++;
-            if (pageHop > MaxPageHops)
+            if (pageHop > _maxPageHops)
             {
                 throw new OctopusEnergyException(
-                    $"Pagination stopped after {MaxPageHops} pages. The next URL may be malformed.");
+                    $"Pagination stopped after {_maxPageHops} pages. The next URL may be malformed.");
             }
 
             PaginatedResponse<TItem> page = await GetAsync<PaginatedResponse<TItem>>(nextPath, cancellationToken)
                 .ConfigureAwait(false);
 
-            foreach (TItem item in page.Results)
+            foreach (TItem item in page.Results ?? [])
             {
                 yield return item;
             }
@@ -151,33 +159,36 @@ internal sealed class RestClient
         HttpResponseMessage response,
         CancellationToken cancellationToken)
     {
-        HttpStatusCode statusCode = response.StatusCode;
-        string body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-
-        if (!string.IsNullOrWhiteSpace(body))
+        using (response)
         {
-            try
-            {
-                ApiErrorResponse? error = JsonSerializer.Deserialize<ApiErrorResponse>(
-                    body,
-                    OctopusJsonSerializerOptions.Default);
+            HttpStatusCode statusCode = response.StatusCode;
+            string body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                if (!string.IsNullOrWhiteSpace(error?.Detail))
+            if (!string.IsNullOrWhiteSpace(body))
+            {
+                try
                 {
-                    throw new OctopusEnergyApiException(statusCode, error.Detail);
+                    ApiErrorResponse? error = JsonSerializer.Deserialize<ApiErrorResponse>(
+                        body,
+                        OctopusJsonSerializerOptions.Default);
+
+                    if (!string.IsNullOrWhiteSpace(error?.Detail))
+                    {
+                        throw new OctopusEnergyApiException(statusCode, error.Detail);
+                    }
+                }
+                catch (JsonException)
+                {
+                }
+                catch (OctopusEnergyApiException)
+                {
+                    throw;
                 }
             }
-            catch (JsonException)
-            {
-            }
-            catch (OctopusEnergyApiException)
-            {
-                throw;
-            }
-        }
 
-        throw new OctopusEnergyHttpException(
-            statusCode,
-            $"The Octopus API returned HTTP {(int)statusCode} ({statusCode}).");
+            throw new OctopusEnergyHttpException(
+                statusCode,
+                $"The Octopus API returned HTTP {(int)statusCode} ({statusCode}).");
+        }
     }
 }

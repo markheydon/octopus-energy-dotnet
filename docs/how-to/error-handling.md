@@ -11,4 +11,4 @@ Public exception types live in the `OctopusEnergy.Client` namespace:
 
 REST uses HTTP status codes. GraphQL (v2) usually returns HTTP 200 with `errors.extensions.errorCode` values such as `KT-CT-1112`; those will map to the same hierarchy in a later release.
 
-Pagination stops and throws on non-success HTTP responses; partial result sets are not returned after a failure.
+Pagination stops and throws on non-success HTTP responses. Items from pages that were already yielded remain available; the exception is raised when the failing page is requested. A truncated page is never returned after an error.
