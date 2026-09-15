@@ -1,0 +1,8 @@
+{
+  "count": 2,
+  "next": "items/?page=2",
+  "previous": null,
+  "results": [
+    { "code": "REL-1" }
+  ]
+}
