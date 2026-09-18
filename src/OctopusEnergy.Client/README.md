@@ -14,7 +14,7 @@ Full consumer documentation: [markheydon.me.uk/octopus-energy-dotnet](https://ma
 - Gas: **SMETS1** reports kWh; **SMETS2** reports **m³**.
 - Tariff rates: **p/kWh** and **p/day**. Quotes and bills often use **pence**.
 
-Details: [units, VAT, and time](https://markheydon.me.uk/octopus-energy-dotnet/explanation/units-vat-and-time.html).
+Details: [units, VAT, and time](https://markheydon.me.uk/octopus-energy-dotnet/explanation/units-vat-and-time/).
 
 ## VAT
 
@@ -35,4 +35,4 @@ Agile day-ahead rates typically publish by **16:00 Europe/London**; a short day 
 Use `OctopusEnergyTime.AssumeEuropeLondon(...)` when you need to construct a UK
 civil time that the API would treat as local.
 
-Details: [units, VAT, and time](https://markheydon.me.uk/octopus-energy-dotnet/explanation/units-vat-and-time.html).
+Details: [units, VAT, and time](https://markheydon.me.uk/octopus-energy-dotnet/explanation/units-vat-and-time/).
