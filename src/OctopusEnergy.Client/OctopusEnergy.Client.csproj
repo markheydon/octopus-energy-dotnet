@@ -5,7 +5,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <PackageId>OctopusEnergy.Client</PackageId>
-    <Version>0.1.0-alpha.1</Version>
+    <Version>1.0.0</Version>
     <Authors>Mark Heydon</Authors>
     <Description>A .NET client library for the Octopus Energy customer APIs (REST and GraphQL). Unofficial; not affiliated with Octopus Energy.</Description>
     <PackageProjectUrl>https://github.com/markheydon/octopus-energy-dotnet</PackageProjectUrl>
