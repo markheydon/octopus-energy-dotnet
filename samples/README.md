@@ -7,7 +7,7 @@ Opt-in console apps that call the live Octopus Energy UK API. They are for local
 Smoke-tests the products catalogue against `https://api.octopus.energy/v1/`:
 
 1. **Public path (always)** — `new OctopusEnergyClient()` lists five products and fetches detail for the first. No API key required; the catalogue is public.
-2. **Authenticated path (optional)** — when `OCTOPUS_ENERGY_API_KEY` is set, `new OctopusEnergyClient(apiKey)` lists one product to exercise HTTP Basic auth. Account and consumption are not in the SDK yet, so there is no key-required resource call to make today.
+2. **Authenticated path (optional)** — when `OCTOPUS_ENERGY_API_KEY` is set, `new OctopusEnergyClient(apiKey)` lists one product to exercise HTTP Basic auth. Account and consumption are not in the SDK yet, so there is no key-required resource call to make today. When account is implemented ([#13](https://github.com/markheydon/octopus-energy-dotnet/issues/13)), this sample should fetch account detail (with `OCTOPUS_ENERGY_ACCOUNT_NUMBER`) instead of the authenticated-products placeholder.
 
 ### Prerequisites
 
