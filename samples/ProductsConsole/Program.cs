@@ -334,8 +334,8 @@ static async Task RunTariffRatesSmokeAsync(
     {
         const string reason = "No single-register electricity tariff was returned on the product detail.";
         Console.WriteLine("Skipped: {0}", reason);
-        recorder.Skip("tariff rates — standing charge", reason);
-        recorder.Skip("tariff rates — standard unit rate", reason);
+        recorder.Skip("tariff rates - standing charge", reason);
+        recorder.Skip("tariff rates - standard unit rate", reason);
         return;
     }
 
@@ -361,7 +361,7 @@ static async Task RunTariffRatesSmokeAsync(
             FormatValidToSuffix(standingCharge.ValidTo));
     }
 
-    recorder.Pass("tariff rates — standing charge");
+    recorder.Pass("tariff rates - standing charge");
 
     TariffCharge? unitRate = await ReadFirstAsync(
         client.TariffRates.ListStandardUnitRatesAsync(tariffCode, request, cancellationToken));
@@ -380,7 +380,7 @@ static async Task RunTariffRatesSmokeAsync(
             FormatValidToSuffix(unitRate.ValidTo));
     }
 
-    recorder.Pass("tariff rates — standard unit rate");
+    recorder.Pass("tariff rates - standard unit rate");
 }
 
 static async Task RunIndustrySmokeAsync(
@@ -405,7 +405,7 @@ static async Task RunIndustrySmokeAsync(
         gspLookup.GridSupplyPoint,
         string.IsNullOrWhiteSpace(gspLookup.Mpan) ? string.Empty : $" (example MPAN {gspLookup.Mpan})");
 
-    recorder.Pass("industry lookups — GSP by postcode");
+    recorder.Pass("industry lookups - GSP by postcode");
 
     string? mpan = !string.IsNullOrWhiteSpace(mpanOverride)
         ? mpanOverride
@@ -423,7 +423,7 @@ static async Task RunIndustrySmokeAsync(
             MpanEnvironmentVariable,
             AccountNumberEnvironmentVariable,
             nameof(client.Industry.GetElectricityMeterPointAsync));
-        recorder.Skip("industry lookups — electricity meter point", reason);
+        recorder.Skip("industry lookups - electricity meter point", reason);
         return;
     }
 
@@ -439,7 +439,7 @@ static async Task RunIndustrySmokeAsync(
         meterPoint.GridSupplyPoint,
         meterPoint.ProfileClass);
 
-    recorder.Pass("industry lookups — electricity meter point");
+    recorder.Pass("industry lookups - electricity meter point");
 }
 
 static async Task RunElectricityConsumptionSmokeAsync(
@@ -857,7 +857,7 @@ sealed class SmokeRecorder
 
     private static void WriteSummaryLine(SmokeCheck check)
     {
-        string suffix = string.IsNullOrWhiteSpace(check.Detail) ? string.Empty : $" — {check.Detail}";
+        string suffix = string.IsNullOrWhiteSpace(check.Detail) ? string.Empty : $" - {check.Detail}";
 
         switch (check.Outcome)
         {

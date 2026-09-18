@@ -53,4 +53,4 @@ var tariff = new TariffCode(
     GridSupplyPoint.C);
 ```
 
-See [coding notes](../planning/coding-notes.md) (§8) for tariff encoding background. Product detail is available via [products](products.md). Typed rate-history services are tracked on issue [#11](https://github.com/markheydon/octopus-energy-dotnet/issues/11).
+See [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 8) for tariff encoding background. Product detail is available via [products](products.md). Use `client.TariffRates` for standing charges and unit-rate history.

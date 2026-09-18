@@ -1,14 +1,35 @@
 # Pagination
 
-REST list endpoints return `count`, `next`, `previous`, and `results`. Resource services use the internal REST client to follow `next` until it is null, so callers receive a single `IAsyncEnumerable<T>` without managing page URLs.
+REST list endpoints return `count`, `next`, `previous`, and `results`. Resource services follow `next` until it is null, so callers receive a single `IAsyncEnumerable<T>` without managing page URLs.
 
-Documented `page_size` defaults and maxima are exposed on `RestPageSizeLimits`:
+## Automatic pagination
 
-- Default: `100`
-- Unit rates and standing charges: maximum `1,500`
-- Consumption: maximum `25,000`
+```csharp
+await foreach (Product product in client.Products.ListAsync())
+{
+    // Each item; the SDK fetches further pages as needed.
+}
+```
+
+The same pattern applies to consumption intervals, tariff rate history, and other list resources.
+
+## Documented `page_size` limits
+
+Official defaults and maxima are exposed on `RestPageSizeLimits` - use these constants rather than hard-coding numbers:
+
+| Constant | Value | Use |
+|---|---|---|
+| `RestPageSizeLimits.Default` | `100` | Default when callers omit `page_size` |
+| `RestPageSizeLimits.RatesMaximum` | `1,500` | Unit rates and standing charges |
+| `RestPageSizeLimits.ConsumptionMaximum` | `25,000` | Electricity and gas consumption |
 
 Passing a larger `page_size` throws `OctopusEnergyRequestException` before any HTTP call.
+
+Implementer source: [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 6).
+
+## GraphQL (v2)
+
+v2 GraphQL list operations will use Relay cursors with `first` ≤ 100. v1 REST callers do not configure this.
 
 ## Supplying your own `HttpClient`
 
@@ -23,6 +44,7 @@ Prefer a dedicated `HttpClient` per client instance, or register via `IHttpClien
 
 See [authentication](authentication.md) for API-key handling and secret hygiene.
 
-GraphQL (v2) uses Relay cursors with `first` ≤ 100.
+## Related
 
-See [coding notes](../planning/coding-notes.md).
+- [Error handling](error-handling.md) - pagination stops on non-success HTTP responses
+- [Products catalogue](products.md)
