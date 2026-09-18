@@ -10,4 +10,7 @@
   <Folder Name="/tests/">
     <Project Path="tests/OctopusEnergy.Client.Tests/OctopusEnergy.Client.Tests.csproj" />
   </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/ProductsConsole/OctopusEnergy.ProductsConsole.csproj" />
+  </Folder>
 </Solution>

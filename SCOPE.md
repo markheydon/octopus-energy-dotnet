@@ -56,7 +56,7 @@ Do not implement without an explicit scope change.
 - `https://api.backend.octopus.energy`.
 - Whole-schema GraphQL codegen.
 - Official-partner-only Intelligent control if it fails for customer tokens at runtime.
-- Sample Blazor probe app (deferred until there is an SDK surface worth demonstrating).
+- Sample Blazor probe app (deferred until there is a broader SDK surface worth demonstrating). A console products probe lives in `samples/ProductsConsole/` for local live smoke checks.
 
 ---
 
