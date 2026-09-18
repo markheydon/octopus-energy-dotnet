@@ -24,6 +24,15 @@ public sealed class ProductService
     /// <param name="request">Optional filters documented by Octopus.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>All products across pages.</returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="request"/>.<see cref="ProductListRequest.Brand"/> is empty or whitespace.
+    /// </exception>
+    /// <exception cref="OctopusEnergyApiException">
+    /// Thrown when the API returns an error response during pagination.
+    /// </exception>
+    /// <exception cref="OctopusEnergyHttpException">
+    /// Thrown when the API returns a non-success HTTP status without a parseable error body.
+    /// </exception>
     /// <remarks>
     /// Public catalogue endpoints do not require authentication. Do not assume a single brand on the UK host.
     /// </remarks>
@@ -46,6 +55,12 @@ public sealed class ProductService
     /// <returns>Product detail.</returns>
     /// <exception cref="OctopusEnergyRequestException">
     /// Thrown when <paramref name="productCode"/> is null or whitespace.
+    /// </exception>
+    /// <exception cref="OctopusEnergyApiException">
+    /// Thrown when the API returns an error response (for example HTTP 404 for an unknown product code).
+    /// </exception>
+    /// <exception cref="OctopusEnergyHttpException">
+    /// Thrown when the API returns a non-success HTTP status without a parseable error body.
     /// </exception>
     public Task<ProductDetail> GetAsync(
         string productCode,
@@ -70,8 +85,13 @@ public sealed class ProductService
 
         List<RestQuery.QueryParameter> parameters = new();
 
-        if (!string.IsNullOrWhiteSpace(request.Brand))
+        if (request.Brand is not null)
         {
+            if (string.IsNullOrWhiteSpace(request.Brand))
+            {
+                throw new OctopusEnergyRequestException("Brand filter cannot be empty or whitespace.");
+            }
+
             parameters.Add(new RestQuery.QueryParameter("brand", request.Brand));
         }
 

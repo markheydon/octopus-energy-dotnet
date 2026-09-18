@@ -192,6 +192,111 @@ public sealed class ProductServiceTests
     }
 
     [Fact]
+    public async Task ListAsync_WhenBrandWhitespace_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        ProductListRequest request = new() { Brand = "   " };
+
+        await Assert.ThrowsAsync<OctopusEnergyRequestException>(
+            () => CollectAsync(client.Products.ListAsync(request, CancellationToken.None)));
+
+        Assert.Empty(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task ListAsync_WhenSecondPageFails_ThrowsOctopusEnergyApiException()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("products-list-page-1.json"));
+        handler.Enqueue(HttpStatusCode.NotFound, FixtureFile.Read("products-not-found.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        OctopusEnergyApiException exception = await Assert.ThrowsAsync<OctopusEnergyApiException>(
+            async () => await CollectAsync(client.Products.ListAsync(cancellationToken: CancellationToken.None)));
+
+        Assert.Equal(HttpStatusCode.NotFound, exception.StatusCode);
+        Assert.Equal("Not found.", exception.Detail);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenTariffsActiveAtHasFraction_AppendsFractionalQueryParameter()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("products-agile-detail.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        DateTimeOffset activeAt = new DateTimeOffset(2023, 11, 10, 0, 21, 44, 970, TimeSpan.Zero).AddTicks(7110);
+        await client.Products.GetAsync("AGILE-FLEX-22-11-25", activeAt, CancellationToken.None);
+
+        string? query = handler.SentRequests[0].RequestUri?.Query;
+        Assert.Contains("tariffs_active_at=2023-11-10T00%3A21%3A44.970711Z", query, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenProductCodeNull_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        await Assert.ThrowsAsync<OctopusEnergyRequestException>(
+            () => client.Products.GetAsync(null!, cancellationToken: CancellationToken.None));
+
+        Assert.Empty(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenTariffMapNull_DeserialisesEmptyDictionary()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(
+            HttpStatusCode.OK,
+            """{"code":"AGILE-FLEX-22-11-25","single_register_electricity_tariffs":null}""");
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        ProductDetail detail = await client.Products.GetAsync("AGILE-FLEX-22-11-25", cancellationToken: CancellationToken.None);
+
+        Assert.NotNull(detail.SingleRegisterElectricityTariffs);
+        Assert.Empty(detail.SingleRegisterElectricityTariffs);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenUnknownGspKeyPresent_DeserialisesKnownRegions()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(
+            HttpStatusCode.OK,
+            """
+            {
+              "code": "AGILE-FLEX-22-11-25",
+              "single_register_electricity_tariffs": {
+                "_Q": { "direct_debit_monthly": { "code": "UNKNOWN" } },
+                "_C": { "direct_debit_monthly": { "code": "E-1R-AGILE-FLEX-22-11-25-C" } }
+              }
+            }
+            """);
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        ProductDetail detail = await client.Products.GetAsync("AGILE-FLEX-22-11-25", cancellationToken: CancellationToken.None);
+
+        Assert.Single(detail.SingleRegisterElectricityTariffs);
+        Assert.True(detail.SingleRegisterElectricityTariffs.ContainsKey(GridSupplyPoint.C));
+    }
+
+    [Fact]
     public async Task GetAsync_WhenProductCodeEmpty_ThrowsBeforeHttp()
     {
         QueuedHttpMessageHandler handler = new();

@@ -37,7 +37,30 @@ internal static class RestQuery
     internal static string FormatDateTimeOffset(DateTimeOffset value)
     {
         DateTimeOffset normalised = value.ToUniversalTime();
-        return normalised.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'", CultureInfo.InvariantCulture);
+
+        if (normalised.Ticks % TimeSpan.TicksPerSecond == 0)
+        {
+            return normalised.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'", CultureInfo.InvariantCulture);
+        }
+
+        string formatted = normalised.ToString(
+            "yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'",
+            CultureInfo.InvariantCulture);
+
+        int zIndex = formatted.LastIndexOf('Z');
+        int end = zIndex;
+
+        while (end > 0 && formatted[end - 1] == '0')
+        {
+            end--;
+        }
+
+        if (end > 0 && formatted[end - 1] == '.')
+        {
+            end--;
+        }
+
+        return string.Concat(formatted.AsSpan(0, end), "Z");
     }
 
     internal readonly record struct QueryParameter(string Name, string? Value);

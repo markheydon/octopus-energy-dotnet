@@ -7,17 +7,22 @@ namespace OctopusEnergy.Client.Infrastructure.Serialization;
 /// Deserialises JSON objects keyed by GSP group ids (<c>_A</c> … <c>_P</c>) as
 /// <see cref="IReadOnlyDictionary{GridSupplyPoint, TValue}"/>.
 /// </summary>
-internal sealed class GridSupplyPointDictionaryConverter<TValue> : JsonConverter<IReadOnlyDictionary<GridSupplyPoint, TValue>?>
+/// <remarks>
+/// JSON <c>null</c> and absent properties both yield an empty dictionary. Unrecognised GSP keys
+/// are skipped so product detail can still be read when the API adds regions before the SDK enum
+/// is updated.
+/// </remarks>
+internal sealed class GridSupplyPointDictionaryConverter<TValue> : JsonConverter<IReadOnlyDictionary<GridSupplyPoint, TValue>>
 {
     /// <inheritdoc />
-    public override IReadOnlyDictionary<GridSupplyPoint, TValue>? Read(
+    public override IReadOnlyDictionary<GridSupplyPoint, TValue> Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
         JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
         {
-            return null;
+            return new Dictionary<GridSupplyPoint, TValue>();
         }
 
         if (reader.TokenType != JsonTokenType.StartObject)
@@ -40,12 +45,13 @@ internal sealed class GridSupplyPointDictionaryConverter<TValue> : JsonConverter
             }
 
             string? propertyName = reader.GetString();
+            reader.Read();
+
             if (!GridSupplyPointParser.TryParse(propertyName, out GridSupplyPoint supplyPoint))
             {
-                throw new JsonException($"The value '{propertyName}' is not a valid grid supply point group id.");
+                JsonSerializer.Deserialize<TValue>(ref reader, options);
+                continue;
             }
-
-            reader.Read();
             TValue? value = JsonSerializer.Deserialize<TValue>(ref reader, options);
             if (value is not null)
             {
@@ -59,15 +65,9 @@ internal sealed class GridSupplyPointDictionaryConverter<TValue> : JsonConverter
     /// <inheritdoc />
     public override void Write(
         Utf8JsonWriter writer,
-        IReadOnlyDictionary<GridSupplyPoint, TValue>? value,
+        IReadOnlyDictionary<GridSupplyPoint, TValue> value,
         JsonSerializerOptions options)
     {
-        if (value is null)
-        {
-            writer.WriteNullValue();
-            return;
-        }
-
         writer.WriteStartObject();
         foreach (KeyValuePair<GridSupplyPoint, TValue> entry in value)
         {

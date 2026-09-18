@@ -37,7 +37,7 @@ await foreach (Product product in client.Products.ListAsync(request, cancellatio
 }
 ```
 
-Supported filters: `Brand`, `IsVariable`, `IsGreen`, `IsTracker`, `IsPrepay`, `IsBusiness`, `AvailableAt`.
+Supported filters: `Brand`, `IsVariable`, `IsGreen`, `IsTracker`, `IsPrepay`, `IsBusiness`, `AvailableAt`. Setting `Brand` to empty or whitespace throws `OctopusEnergyRequestException` before any HTTP call.
 
 ## Get product detail
 

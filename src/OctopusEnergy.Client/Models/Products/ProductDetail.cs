@@ -8,6 +8,18 @@ namespace OctopusEnergy.Client.Models.Products;
 /// </summary>
 public sealed class ProductDetail : Product
 {
+    private IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> _singleRegisterElectricityTariffs =
+        new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+
+    private IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> _dualRegisterElectricityTariffs =
+        new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+
+    private IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> _singleRegisterGasTariffs =
+        new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+
+    private IReadOnlyDictionary<GridSupplyPoint, ProductSampleQuotesByPaymentMethod> _sampleQuotes =
+        new Dictionary<GridSupplyPoint, ProductSampleQuotesByPaymentMethod>();
+
     /// <summary>
     /// Timestamp for which tariff snapshots are active.
     /// </summary>
@@ -19,32 +31,44 @@ public sealed class ProductDetail : Product
     /// </summary>
     [JsonPropertyName("single_register_electricity_tariffs")]
     [JsonConverter(typeof(GridSupplyPointDictionaryConverter<ProductPaymentMethodTariffs>))]
-    public IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> SingleRegisterElectricityTariffs { get; init; } =
-        new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+    public IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> SingleRegisterElectricityTariffs
+    {
+        get => _singleRegisterElectricityTariffs;
+        init => _singleRegisterElectricityTariffs = value ?? new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+    }
 
     /// <summary>
     /// Dual-register electricity tariffs by GSP and payment method.
     /// </summary>
     [JsonPropertyName("dual_register_electricity_tariffs")]
     [JsonConverter(typeof(GridSupplyPointDictionaryConverter<ProductPaymentMethodTariffs>))]
-    public IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> DualRegisterElectricityTariffs { get; init; } =
-        new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+    public IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> DualRegisterElectricityTariffs
+    {
+        get => _dualRegisterElectricityTariffs;
+        init => _dualRegisterElectricityTariffs = value ?? new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+    }
 
     /// <summary>
     /// Single-register gas tariffs by GSP and payment method.
     /// </summary>
     [JsonPropertyName("single_register_gas_tariffs")]
     [JsonConverter(typeof(GridSupplyPointDictionaryConverter<ProductPaymentMethodTariffs>))]
-    public IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> SingleRegisterGasTariffs { get; init; } =
-        new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+    public IReadOnlyDictionary<GridSupplyPoint, ProductPaymentMethodTariffs> SingleRegisterGasTariffs
+    {
+        get => _singleRegisterGasTariffs;
+        init => _singleRegisterGasTariffs = value ?? new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>();
+    }
 
     /// <summary>
     /// Sample annual cost quotes by GSP and payment method.
     /// </summary>
     [JsonPropertyName("sample_quotes")]
     [JsonConverter(typeof(GridSupplyPointDictionaryConverter<ProductSampleQuotesByPaymentMethod>))]
-    public IReadOnlyDictionary<GridSupplyPoint, ProductSampleQuotesByPaymentMethod> SampleQuotes { get; init; } =
-        new Dictionary<GridSupplyPoint, ProductSampleQuotesByPaymentMethod>();
+    public IReadOnlyDictionary<GridSupplyPoint, ProductSampleQuotesByPaymentMethod> SampleQuotes
+    {
+        get => _sampleQuotes;
+        init => _sampleQuotes = value ?? new Dictionary<GridSupplyPoint, ProductSampleQuotesByPaymentMethod>();
+    }
 
     /// <summary>
     /// Sample consumption figures used for quotes.
