@@ -2,6 +2,7 @@ using OctopusEnergy.Client.Infrastructure.Authentication;
 using OctopusEnergy.Client.Infrastructure.Configuration;
 using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Services.Accounts;
+using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.Products;
 
@@ -128,6 +129,7 @@ public sealed class OctopusEnergyClient : IDisposable
 
         Rest = new RestClient(_httpClient);
         Accounts = new AccountService(Rest);
+        Consumption = new ConsumptionService(Rest);
         Industry = new IndustryService(Rest);
         Products = new ProductService(Rest);
         TariffRates = new TariffRatesService(Rest);
@@ -137,6 +139,11 @@ public sealed class OctopusEnergyClient : IDisposable
     /// Customer account detail.
     /// </summary>
     public AccountService Accounts { get; }
+
+    /// <summary>
+    /// Electricity and gas consumption intervals.
+    /// </summary>
+    public ConsumptionService Consumption { get; }
 
     /// <summary>
     /// Public industry lookups (postcode GSP and MPAN metadata).

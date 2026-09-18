@@ -1,0 +1,13 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "consumption": 1.234,
+      "consumption_units": "m3",
+      "interval_start": "2024-01-15T00:00:00Z",
+      "interval_end": "2024-01-15T00:30:00Z"
+    }
+  ]
+}
