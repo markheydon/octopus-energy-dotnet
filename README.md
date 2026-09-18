@@ -57,7 +57,7 @@ dotnet build OctopusEnergy.slnx --no-restore --configuration Release -warnaserro
 dotnet test OctopusEnergy.slnx --no-build --configuration Release
 ```
 
-Contributor setup: [docs/contributing-setup.md](docs/contributing-setup.md).
+Contributor setup: [docs/contributing-setup.md](docs/contributing-setup.md). For a local live API smoke check, see [samples/](samples/).
 
 ## Contributing
 

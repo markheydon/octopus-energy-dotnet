@@ -38,6 +38,14 @@ dotnet format OctopusEnergy.slnx --verify-no-changes
 
 ## Live API keys
 
-Do not put API keys in the repo. CI uses recorded fixtures only (once tests exist). Optional live tests must be local and opt-in.
+Do not put API keys in the repo. CI uses recorded fixtures only. Optional live checks must be local and opt-in.
+
+To smoke-test the SDK against the live UK API, run the [products console sample](../samples/README.md):
+
+```bash
+dotnet run --project samples/ProductsConsole
+```
+
+Set `OCTOPUS_ENERGY_API_KEY` as well to exercise the authenticated client constructor (HTTP Basic auth). Account and consumption services are not in the SDK yet.
 
 Read [CONTRIBUTING.md](../CONTRIBUTING.md), [CONVENTIONS.md](../CONVENTIONS.md), and [AGENTS.md](../AGENTS.md).

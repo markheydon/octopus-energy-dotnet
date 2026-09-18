@@ -36,7 +36,9 @@ All documentation, comments, and user-facing text **must use UK English**.
 
 ## Sample apps
 
-There is **no** Blazor sample yet. Do not add one until v1 has a real HTTP surface. When a sample exists, it must reflect implemented SDK behaviour only.
+A [products console sample](samples/README.md) smoke-tests the live UK API: public products without a key, and optionally HTTP Basic auth when `OCTOPUS_ENERGY_API_KEY` is set. It is opt-in and not run in CI. Additional samples may follow as the SDK surface grows; each must reflect implemented SDK behaviour only.
+
+There is **no** Blazor sample yet. Do not add one until v1 has a broader HTTP surface worth demonstrating.
 
 ## Skills
 

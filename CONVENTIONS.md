@@ -40,6 +40,9 @@ tests/
     ├── Infrastructure/
     ├── Services/
     └── TestSupport/                     # Recorded fixtures (no live keys in CI)
+
+samples/
+└── ProductsConsole/                     # Opt-in live API smoke (not run in CI)
 ```
 
 Place every **public** type in the `OctopusEnergy.Client` namespace at the project root (one type per file). Subfolders group internal code and resource-specific models or services; folder names do not have to mirror namespaces. Optional physical subfolders such as `Exceptions/` are fine if the namespace stays `OctopusEnergy.Client`.

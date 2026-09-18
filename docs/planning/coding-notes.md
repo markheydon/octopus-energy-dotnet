@@ -196,7 +196,7 @@ REST account is enough for v1 if the caller supplies `account_number`. Discoveri
 
 ## 11. Testing
 
-No public sandbox. CI must use **recorded fixtures**. Optional live tests behind explicit env vars, never default-on, never commit keys.
+No public sandbox. CI must use **recorded fixtures**. Optional live checks behind explicit env vars, never default-on, never commit keys. The [products console sample](../../samples/README.md) is the current local live smoke; it is not run in CI.
 
 Home Assistant’s client ([BottlecapDave/HomeAssistant-OctopusEnergy](https://github.com/BottlecapDave/HomeAssistant-OctopusEnergy)) is the best map of what customer tokens actually do. ImpSoft.OctopusEnergy and aiooctopusenergy cover REST only.
 
