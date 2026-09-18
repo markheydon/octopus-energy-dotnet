@@ -1,3 +1,4 @@
+using System.Net.Http;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Models.Products;
 
@@ -16,27 +17,34 @@ CancellationToken cancellationToken = cancellation.Token;
 
 try
 {
-    Console.WriteLine("=== Public catalogue (no API key) ===");
-    Console.WriteLine();
-    Console.WriteLine(
-        "Products are public. This section uses {0}().",
-        nameof(OctopusEnergyClient));
-    Console.WriteLine();
+    bool hasApiKey = !string.IsNullOrWhiteSpace(apiKey);
 
-    using (OctopusEnergyClient publicClient = new())
+    if (hasApiKey)
     {
-        string productCode = await RunProductsSmokeAsync(
-            publicClient,
-            MaxProductsToList,
-            cancellationToken);
+        int authenticatedExitCode = await TryRunSectionAsync(
+            "authenticated client",
+            () => RunAuthenticatedSmokeAsync(apiKey!, cancellationToken));
 
-        ProductDetail detail = await publicClient.Products.GetAsync(productCode, cancellationToken: cancellationToken);
-        WriteProductDetail(detail);
+        if (authenticatedExitCode != 0)
+        {
+            return authenticatedExitCode;
+        }
+
+        Console.WriteLine();
+    }
+
+    int publicExitCode = await TryRunSectionAsync(
+        "public catalogue",
+        () => RunPublicSmokeAsync(cancellationToken));
+
+    if (publicExitCode != 0)
+    {
+        return publicExitCode;
     }
 
     Console.WriteLine();
 
-    if (string.IsNullOrWhiteSpace(apiKey))
+    if (!hasApiKey)
     {
         Console.WriteLine("=== Authenticated client (skipped) ===");
         Console.WriteLine();
@@ -44,6 +52,58 @@ try
         return 0;
     }
 
+    Console.WriteLine("Smoke check succeeded (authenticated client and public catalogue).");
+    return 0;
+}
+catch (OperationCanceledException)
+{
+    return 130;
+}
+
+static async Task<int> TryRunSectionAsync(string section, Func<Task> action)
+{
+    try
+    {
+        await action();
+        return 0;
+    }
+    catch (OperationCanceledException)
+    {
+        throw;
+    }
+    catch (HttpRequestException ex)
+    {
+        WriteSmokeFailure(section, ex.Message);
+        return 1;
+    }
+    catch (OctopusEnergyException ex)
+    {
+        WriteSmokeFailure(section, ex.Message);
+        return 1;
+    }
+}
+
+static async Task RunPublicSmokeAsync(CancellationToken cancellationToken)
+{
+    Console.WriteLine("=== Public catalogue (no API key) ===");
+    Console.WriteLine();
+    Console.WriteLine(
+        "Products are public. This section uses {0}().",
+        nameof(OctopusEnergyClient));
+    Console.WriteLine();
+
+    using OctopusEnergyClient publicClient = new();
+    string productCode = await RunProductsSmokeAsync(
+        publicClient,
+        MaxProductsToList,
+        cancellationToken);
+
+    ProductDetail detail = await publicClient.Products.GetAsync(productCode, cancellationToken: cancellationToken);
+    WriteProductDetail(detail);
+}
+
+static async Task RunAuthenticatedSmokeAsync(string apiKey, CancellationToken cancellationToken)
+{
     Console.WriteLine("=== Authenticated client (API key) ===");
     Console.WriteLine();
     Console.WriteLine(
@@ -51,22 +111,13 @@ try
         nameof(OctopusEnergyClient));
     Console.WriteLine();
 
-    using (OctopusEnergyClient authenticatedClient = new(apiKey))
-    {
-        string productCode = await RunProductsSmokeAsync(
-            authenticatedClient,
-            1,
-            cancellationToken);
+    using OctopusEnergyClient authenticatedClient = new(apiKey);
+    string productCode = await RunProductsSmokeAsync(
+        authenticatedClient,
+        1,
+        cancellationToken);
 
-        Console.WriteLine("Authenticated list succeeded (first product: {0}).", productCode);
-    }
-
-    return 0;
-}
-catch (OctopusEnergyException ex)
-{
-    Console.Error.WriteLine(ex.Message);
-    return 1;
+    Console.WriteLine("Authenticated list succeeded (first product: {0}).", productCode);
 }
 
 static async Task<string> RunProductsSmokeAsync(
@@ -143,4 +194,9 @@ static void WriteProductDetail(ProductDetail detail)
     {
         Console.WriteLine("Example tariff (London, direct debit monthly): {0}", londonDirectDebit.Code);
     }
+}
+
+static void WriteSmokeFailure(string section, string message)
+{
+    Console.Error.WriteLine("Smoke check failed ({0}): {1}", section, message);
 }
