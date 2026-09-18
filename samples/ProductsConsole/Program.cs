@@ -38,6 +38,7 @@ try
     bool hasApiKey = !string.IsNullOrWhiteSpace(apiKey);
     bool hasAccountNumber = !string.IsNullOrWhiteSpace(accountNumber);
     Account? account = null;
+    string? accountMpan = null;
     ProductDetail? productDetail = null;
 
     if (hasApiKey)
@@ -59,6 +60,11 @@ try
         if (authenticatedExitCode != 0)
         {
             return authenticatedExitCode;
+        }
+
+        if (account is not null)
+        {
+            TryResolveImportElectricityMpan(account, out accountMpan);
         }
 
         Console.WriteLine();
@@ -91,7 +97,7 @@ try
 
     int industryExitCode = await TryRunSectionAsync(
         "industry lookups",
-        () => RunIndustrySmokeAsync(postcode, mpanOverride, cancellationToken));
+        () => RunIndustrySmokeAsync(postcode, mpanOverride, accountMpan, cancellationToken));
 
     if (industryExitCode != 0)
     {
@@ -336,6 +342,7 @@ static async Task RunTariffRatesSmokeAsync(ProductDetail detail, CancellationTok
 static async Task RunIndustrySmokeAsync(
     string postcode,
     string? mpanOverride,
+    string? accountMpan,
     CancellationToken cancellationToken)
 {
     Console.WriteLine("=== Industry lookups (no API key) ===");
@@ -355,14 +362,17 @@ static async Task RunIndustrySmokeAsync(
 
     string? mpan = !string.IsNullOrWhiteSpace(mpanOverride)
         ? mpanOverride
-        : string.IsNullOrWhiteSpace(gspLookup.Mpan) ? null : gspLookup.Mpan;
+        : !string.IsNullOrWhiteSpace(accountMpan)
+            ? accountMpan
+            : string.IsNullOrWhiteSpace(gspLookup.Mpan) ? null : gspLookup.Mpan;
 
     if (mpan is null)
     {
         Console.WriteLine();
         Console.WriteLine(
-            "Electricity meter point lookup (skipped): set {0} to exercise {1}.",
+            "Electricity meter point lookup (skipped): set {0} or fetch account detail with {1} to exercise {2}.",
             MpanEnvironmentVariable,
+            AccountNumberEnvironmentVariable,
             nameof(client.Industry.GetElectricityMeterPointAsync));
         return;
     }
@@ -484,6 +494,27 @@ static async Task<string> RunProductsListAsync(
     }
 
     return products[0].Code;
+}
+
+static bool TryResolveImportElectricityMpan(Account account, out string? mpan)
+{
+    mpan = null;
+
+    foreach (AccountProperty property in account.Properties)
+    {
+        foreach (ElectricityMeterPoint meterPoint in property.ElectricityMeterPoints)
+        {
+            if (meterPoint.IsExport == true || string.IsNullOrWhiteSpace(meterPoint.Mpan))
+            {
+                continue;
+            }
+
+            mpan = meterPoint.Mpan;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 static bool TryResolveElectricityConsumptionTarget(

@@ -11,7 +11,7 @@ Smoke-tests every implemented public SDK surface against `https://api.octopus.en
 | Authenticated client | `Accounts`, `Consumption`, `Products` | API key | Account detail when an account number is set; otherwise lists one product to prove HTTP Basic auth. Electricity and gas consumption fetch the latest interval (or report empty for non-smart meters). |
 | Public catalogue | `Products` | None | Lists five products and fetches detail for the first. |
 | Tariff rates | `TariffRates` | None | Reads one standing charge and one standard unit rate for an example tariff from the product detail. |
-| Industry lookups | `Industry` | None | Resolves GSP for a postcode. Fetches MPAN metadata when `OCTOPUS_ENERGY_MPAN` is set (the GSP response no longer includes an example MPAN). |
+| Industry lookups | `Industry` | None | Resolves GSP for a postcode. Fetches MPAN metadata using the import electricity MPAN from account detail when authenticated, or `OCTOPUS_ENERGY_MPAN` as an optional override. |
 
 When `OCTOPUS_ENERGY_API_KEY` is set, authenticated sections run first so an invalid key fails fast. Public sections always run.
 
@@ -28,7 +28,7 @@ When `OCTOPUS_ENERGY_API_KEY` is set, authenticated sections run first so an inv
 | `OCTOPUS_ENERGY_API_KEY` | No | — | Enables authenticated sections (account, consumption). |
 | `OCTOPUS_ENERGY_ACCOUNT_NUMBER` | No | — | Account detail and meter identifiers for consumption. |
 | `OCTOPUS_ENERGY_POSTCODE` | No | `W1 1AA` | Postcode for industry GSP lookup. |
-| `OCTOPUS_ENERGY_MPAN` | No | — | MPAN for industry meter-point lookup; pair with `OCTOPUS_ENERGY_ELECTRICITY_METER_SERIAL` for consumption without an account number. |
+| `OCTOPUS_ENERGY_MPAN` | No | From account | Optional override for industry meter-point lookup; pair with `OCTOPUS_ENERGY_ELECTRICITY_METER_SERIAL` for consumption without an account number. |
 | `OCTOPUS_ENERGY_ELECTRICITY_METER_SERIAL` | No | From account | Electricity meter serial for consumption. |
 | `OCTOPUS_ENERGY_MPRN` | No | From account | Gas MPRN for consumption without an account number. |
 | `OCTOPUS_ENERGY_GAS_METER_SERIAL` | No | From account | Gas meter serial for consumption. |
