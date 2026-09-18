@@ -1,3 +1,5 @@
+using OctopusEnergy.Client.Infrastructure.Authentication;
+using OctopusEnergy.Client.Infrastructure.Configuration;
 using OctopusEnergy.Client.Infrastructure.Http;
 
 namespace OctopusEnergy.Client;
@@ -22,8 +24,39 @@ public sealed class OctopusEnergyClient : IDisposable
     /// <summary>
     /// Creates a client with the default UK API base URL.
     /// </summary>
+    /// <remarks>
+    /// Public catalogue endpoints work without authentication. Account and consumption
+    /// calls require an API key; use the <see cref="OctopusEnergyClient(string)"/> overload.
+    /// </remarks>
     public OctopusEnergyClient()
         : this(CreateDefaultHttpClient(), ownsHttpClient: true)
+    {
+    }
+
+    /// <summary>
+    /// Creates an authenticated client with the default UK API base URL.
+    /// </summary>
+    /// <param name="apiKey">
+    /// Dashboard API key. Sent as HTTP Basic authentication with an empty password.
+    /// Treat as a secret; the SDK never logs it.
+    /// </param>
+    public OctopusEnergyClient(string apiKey)
+        : this(ValidateApiKey(apiKey), new Uri(DefaultBaseUrl))
+    {
+    }
+
+    /// <summary>
+    /// Creates an authenticated client with a custom API base URL.
+    /// </summary>
+    /// <param name="apiKey">
+    /// Dashboard API key. Sent as HTTP Basic authentication with an empty password.
+    /// Treat as a secret; the SDK never logs it.
+    /// </param>
+    /// <param name="baseAddress">
+    /// REST API base URL. Must be an absolute URI. A trailing slash is applied when missing.
+    /// </param>
+    public OctopusEnergyClient(string apiKey, Uri baseAddress)
+        : this(ValidateApiKey(apiKey), CreateHttpClient(baseAddress), ownsHttpClient: true)
     {
     }
 
@@ -32,27 +65,63 @@ public sealed class OctopusEnergyClient : IDisposable
     /// </summary>
     /// <param name="httpClient">
     /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null,
-    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When no
+    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When a base address
+    /// is already set, a trailing slash is applied when missing. When no
     /// <c>Accept: application/json</c> header is present, one is added.
     /// </param>
+    /// <remarks>
+    /// Public catalogue endpoints work without authentication. No <c>Authorization</c> header
+    /// is added unless an API key constructor is used.
+    /// </remarks>
     public OctopusEnergyClient(HttpClient httpClient)
         : this(httpClient, ownsHttpClient: false)
     {
     }
 
-    private OctopusEnergyClient(HttpClient httpClient, bool ownsHttpClient)
+    /// <summary>
+    /// Creates an authenticated client that uses the supplied <see cref="HttpClient"/>.
+    /// </summary>
+    /// <param name="apiKey">
+    /// Dashboard API key. Sent as HTTP Basic authentication with an empty password.
+    /// Treat as a secret; the SDK never logs it.
+    /// </param>
+    /// <param name="httpClient">
+    /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null,
+    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When a base address
+    /// is already set, a trailing slash is applied when missing. When no
+    /// <c>Accept: application/json</c> header is present, one is added. Any existing
+    /// <c>Authorization</c> header is replaced with HTTP Basic for the API key.
+    /// </param>
+    public OctopusEnergyClient(string apiKey, HttpClient httpClient)
+        : this(ValidateApiKey(apiKey), httpClient, ownsHttpClient: false)
+    {
+    }
+
+    private OctopusEnergyClient(string apiKey, HttpClient httpClient, bool ownsHttpClient)
+        : this(httpClient, ownsHttpClient, apiKey)
+    {
+    }
+
+    private static string ValidateApiKey(string apiKey)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(apiKey);
+        return apiKey;
+    }
+
+    private OctopusEnergyClient(HttpClient httpClient, bool ownsHttpClient, string? apiKey = null)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
 
         _httpClient = httpClient;
         _ownsHttpClient = ownsHttpClient;
 
-        if (_httpClient.BaseAddress is null)
-        {
-            _httpClient.BaseAddress = new Uri(DefaultBaseUrl);
-        }
-
+        HttpClientConfiguration.ApplyBaseAddress(_httpClient, baseAddress: null, DefaultBaseUrl);
         EnsureJsonAcceptHeader(_httpClient);
+
+        if (apiKey is not null)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = BasicApiKeyHeader.Create(apiKey);
+        }
 
         Rest = new RestClient(_httpClient);
     }
@@ -70,11 +139,15 @@ public sealed class OctopusEnergyClient : IDisposable
 
     private static HttpClient CreateDefaultHttpClient()
     {
-        HttpClient httpClient = new()
-        {
-            BaseAddress = new Uri(DefaultBaseUrl),
-        };
+        return CreateHttpClient(new Uri(DefaultBaseUrl));
+    }
 
+    private static HttpClient CreateHttpClient(Uri baseAddress)
+    {
+        ArgumentNullException.ThrowIfNull(baseAddress);
+
+        HttpClient httpClient = new();
+        HttpClientConfiguration.ApplyBaseAddress(httpClient, baseAddress, DefaultBaseUrl);
         EnsureJsonAcceptHeader(httpClient);
 
         return httpClient;

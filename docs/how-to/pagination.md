@@ -15,9 +15,13 @@ Passing a larger `page_size` throws `OctopusEnergyRequestException` before any H
 When you pass an `HttpClient` to `OctopusEnergyClient`:
 
 - If `BaseAddress` is null, the client sets it to the default UK API URL on the instance you supply.
+- If `BaseAddress` is already set, a trailing slash is appended when missing so relative REST paths resolve correctly.
 - If no `Accept: application/json` header is present, the client adds one.
+- When you use an API-key constructor, HTTP Basic authentication is applied and any existing `Authorization` header is replaced.
 
 Prefer a dedicated `HttpClient` per client instance, or register via `IHttpClientFactory`, rather than sharing one instance across unrelated callers.
+
+See [authentication](authentication.md) for API-key handling and secret hygiene.
 
 GraphQL (v2) uses Relay cursors with `first` ≤ 100.
 
