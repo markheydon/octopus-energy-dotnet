@@ -64,7 +64,7 @@ The workflow builds, tests, packs `OctopusEnergy.Client`, publishes to NuGet.org
 - **Stable:** SemVer; breaking changes only in major versions.
 
 ```xml
-<PackageReference Include="OctopusEnergy.Client" Version="1.0.0" />
+<PackageReference Include="OctopusEnergy.Client" Version="1.0.1" />
 ```
 
 ---
@@ -73,5 +73,6 @@ The workflow builds, tests, packs `OctopusEnergy.Client`, publishes to NuGet.org
 
 | Date | Change | Reason |
 |---|---|---|
+| 18 September 2026 | Release `1.0.1` | Add NuGet package README for nuget.org |
 | 18 September 2026 | Promote to Stable `1.0.0` | REST customer core shipped |
 | 13 September 2026 | Initial draft | Project kickoff |
