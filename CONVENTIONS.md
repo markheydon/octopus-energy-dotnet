@@ -29,9 +29,11 @@ src/
     │   ├── GraphQL/                     # v2: token, documents, GraphQL errors
     │   └── Serialization/                 # JSON converters (for example GridSupplyPointJsonConverter)
     ├── Models/                          # Resource-grouped models
+    │   ├── Accounts/                    # Account, property, meter models
     │   ├── Common/                      # Shared wire types (pagination, errors)
     │   └── Products/                    # Product catalogue models
     └── Services/                        # Resource-oriented services
+        ├── Accounts/                    # AccountService
         └── Products/                    # ProductService
 
 tests/
@@ -105,6 +107,7 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 
 | Date | Change | Reason |
 |---|---|---|
+| 18 September 2026 | Add Account service and models to tree | Issue #13 |
 | 18 September 2026 | Add Products service and models to tree | Issue #10 |
 | 18 September 2026 | Note GridSupplyPointJsonConverter under Serialization | Review follow-up #33 |
 | 18 September 2026 | Add tariff/GSP helper types to tree | Issue #15 |

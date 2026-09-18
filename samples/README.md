@@ -4,15 +4,16 @@ Opt-in console apps that call the live Octopus Energy UK API. They are for local
 
 ## Products console
 
-Smoke-tests the products catalogue against `https://api.octopus.energy/v1/`:
+Smoke-tests the products catalogue and optionally account detail against `https://api.octopus.energy/v1/`:
 
-1. **Authenticated path (optional, runs first when a key is set)** — when `OCTOPUS_ENERGY_API_KEY` is set, `new OctopusEnergyClient(apiKey)` lists one product to exercise HTTP Basic auth. This runs before the public section so an invalid key fails fast. Account and consumption are not in the SDK yet, so there is no key-required resource call to make today. When account is implemented ([#13](https://github.com/markheydon/octopus-energy-dotnet/issues/13)), this sample should fetch account detail (with `OCTOPUS_ENERGY_ACCOUNT_NUMBER`) instead of the authenticated-products placeholder.
+1. **Authenticated path (optional, runs first when a key is set)** — when `OCTOPUS_ENERGY_API_KEY` and `OCTOPUS_ENERGY_ACCOUNT_NUMBER` are set, `new OctopusEnergyClient(apiKey)` fetches account detail and prints a small summary (account number, property count, meter-point counts). When only the API key is set, the sample lists one product with the authenticated client to smoke-test HTTP Basic auth and explains how to set the account number. This runs before the public section so an invalid key fails fast.
 2. **Public path (always)** — `new OctopusEnergyClient()` lists five products and fetches detail for the first. No API key required; the catalogue is public.
 
 ### Prerequisites
 
 - .NET 10.0 SDK
 - Optional: Octopus dashboard API key ([create one](https://octopus.energy/dashboard/new/accounts/personal-details/api-access))
+- Optional: account number (`A-XXXXXXXX`) for the authenticated account smoke
 
 ### Run
 
@@ -22,10 +23,11 @@ Without a key (public catalogue only):
 dotnet run --project samples/ProductsConsole
 ```
 
-With a key (authenticated client smoke first, then public catalogue):
+With a key and account number (account detail smoke first, then public catalogue):
 
 ```bash
 export OCTOPUS_ENERGY_API_KEY="your-key-here"
+export OCTOPUS_ENERGY_ACCOUNT_NUMBER="A-12345678"
 dotnet run --project samples/ProductsConsole
 ```
 
@@ -33,6 +35,7 @@ PowerShell:
 
 ```powershell
 $env:OCTOPUS_ENERGY_API_KEY = "your-key-here"
+$env:OCTOPUS_ENERGY_ACCOUNT_NUMBER = "A-12345678"
 dotnet run --project samples/ProductsConsole
 ```
 
@@ -40,4 +43,4 @@ The sample never logs your key.
 
 ### More samples
 
-Additional samples may be added later (for example account or consumption) as the SDK surface grows. Each sample should reflect implemented SDK behaviour only.
+Additional samples may be added later (for example consumption) as the SDK surface grows. Each sample should reflect implemented SDK behaviour only.

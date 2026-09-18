@@ -46,6 +46,6 @@ To smoke-test the SDK against the live UK API, run the [products console sample]
 dotnet run --project samples/ProductsConsole
 ```
 
-Set `OCTOPUS_ENERGY_API_KEY` as well to exercise the authenticated client constructor (HTTP Basic auth). Account and consumption services are not in the SDK yet.
+Set `OCTOPUS_ENERGY_API_KEY` and `OCTOPUS_ENERGY_ACCOUNT_NUMBER` to exercise authenticated account detail. Consumption is not in the SDK yet.
 
 Read [CONTRIBUTING.md](../CONTRIBUTING.md), [CONVENTIONS.md](../CONVENTIONS.md), and [AGENTS.md](../AGENTS.md).
