@@ -1,6 +1,6 @@
 # Getting started
 
-`OctopusEnergy.Client` is a prerelease SDK. HTTP transport, pagination, typed errors, API-key authentication, and the products catalogue are available. Account and consumption resource methods are still being added.
+`OctopusEnergy.Client` is a prerelease SDK. HTTP transport, pagination, typed errors, API-key authentication, the products catalogue, and account detail are available. Consumption resource methods are still being added.
 
 ## 1. Create an API key
 
@@ -55,11 +55,25 @@ await foreach (Product product in client.Products.ListAsync(cancellationToken: c
 }
 ```
 
-See [products](../how-to/products.md) for filters, product detail, and GSP tariff maps. Account and consumption services are tracked on feature [#6](https://github.com/markheydon/octopus-energy-dotnet/issues/6).
+See [products](../how-to/products.md) for filters, product detail, and GSP tariff maps.
+
+## 6. Fetch account detail
+
+Account calls require an API key and your account number (`A-XXXXXXXX`):
+
+```csharp
+using OctopusEnergy.Client.Models.Accounts;
+
+Account account = await client.Accounts.GetAsync("A-12345678", cancellationToken);
+Console.WriteLine($"{account.Number}: {account.Properties.Count} properties");
+```
+
+See [account detail](../how-to/accounts.md). Consumption services are tracked on feature [#6](https://github.com/markheydon/octopus-energy-dotnet/issues/6).
 
 ## Next steps
 
 - [Products catalogue](../how-to/products.md)
+- [Account detail](../how-to/accounts.md)
 - [Authentication](../how-to/authentication.md)
 - [Tariff codes and GSP](../how-to/tariff-codes.md)
 - [Pagination](../how-to/pagination.md)

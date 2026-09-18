@@ -1,6 +1,7 @@
 using OctopusEnergy.Client.Infrastructure.Authentication;
 using OctopusEnergy.Client.Infrastructure.Configuration;
 using OctopusEnergy.Client.Infrastructure.Http;
+using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Products;
 
 namespace OctopusEnergy.Client;
@@ -125,8 +126,14 @@ public sealed class OctopusEnergyClient : IDisposable
         }
 
         Rest = new RestClient(_httpClient);
+        Accounts = new AccountService(Rest);
         Products = new ProductService(Rest);
     }
+
+    /// <summary>
+    /// Customer account detail.
+    /// </summary>
+    public AccountService Accounts { get; }
 
     /// <summary>
     /// Product catalogue and product detail.

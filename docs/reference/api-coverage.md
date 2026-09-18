@@ -22,7 +22,7 @@
 | Unit rates / standing charges | REST tariff charge URLs | Not started |
 | Grid supply points | REST `/v1/industry/grid-supply-points/` | Not started |
 | Electricity meter-point | REST `/v1/electricity-meter-points/{mpan}/` | Not started |
-| Account | REST `/v1/accounts/{number}/` | Not started |
+| Account | REST `/v1/accounts/{number}/` | Implemented |
 | Consumption | REST electricity/gas consumption | Not started |
 
 ## v2 (planned)

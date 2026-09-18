@@ -6,7 +6,7 @@ Unofficial .NET client for the [Octopus Energy](https://octopus.energy/) **custo
 [![NuGet](https://img.shields.io/nuget/v/OctopusEnergy.Client.svg)](https://www.nuget.org/packages/OctopusEnergy.Client/)
 [![NuGet (prerelease)](https://img.shields.io/nuget/vpre/OctopusEnergy.Client.svg?label=nuget%20prerelease)](https://www.nuget.org/packages/OctopusEnergy.Client/)
 
-> **Prerelease software.** HTTP transport, pagination, errors, API-key authentication, and the products catalogue are implemented. Further resource methods are being added. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
+> **Prerelease software.** HTTP transport, pagination, errors, API-key authentication, the products catalogue, and account detail are implemented. Further resource methods are being added. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
 
 **Documentation:** [docs/](docs/) - consumer guides plus [planning notes](docs/planning/coding-notes.md) for implementers.
 
@@ -16,7 +16,7 @@ Typed, discoverable SDK so callers do not reconstruct REST URLs or GraphQL docum
 
 ## Status
 
-Prerelease. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, the products catalogue, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`). Further resource services are being added.
+Prerelease. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, the products catalogue, account detail, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`). Further resource services are being added.
 
 Planned:
 

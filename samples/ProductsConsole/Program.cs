@@ -1,8 +1,10 @@
 using System.Net.Http;
 using OctopusEnergy.Client;
+using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Products;
 
 const string ApiKeyEnvironmentVariable = "OCTOPUS_ENERGY_API_KEY";
+const string AccountNumberEnvironmentVariable = "OCTOPUS_ENERGY_ACCOUNT_NUMBER";
 const int MaxProductsToList = 5;
 
 using CancellationTokenSource cancellation = new();
@@ -13,17 +15,19 @@ Console.CancelKeyPress += (_, eventArgs) =>
 };
 
 string? apiKey = Environment.GetEnvironmentVariable(ApiKeyEnvironmentVariable);
+string? accountNumber = Environment.GetEnvironmentVariable(AccountNumberEnvironmentVariable);
 CancellationToken cancellationToken = cancellation.Token;
 
 try
 {
     bool hasApiKey = !string.IsNullOrWhiteSpace(apiKey);
+    bool hasAccountNumber = !string.IsNullOrWhiteSpace(accountNumber);
 
     if (hasApiKey)
     {
         int authenticatedExitCode = await TryRunSectionAsync(
             "authenticated client",
-            () => RunAuthenticatedSmokeAsync(apiKey!, cancellationToken));
+            () => RunAuthenticatedSmokeAsync(apiKey!, accountNumber, cancellationToken));
 
         if (authenticatedExitCode != 0)
         {
@@ -48,11 +52,19 @@ try
     {
         Console.WriteLine("=== Authenticated client (skipped) ===");
         Console.WriteLine();
-        WriteOptionalApiKeyHelp(ApiKeyEnvironmentVariable);
+        WriteOptionalApiKeyHelp(ApiKeyEnvironmentVariable, AccountNumberEnvironmentVariable);
         return 0;
     }
 
-    Console.WriteLine("Smoke check succeeded (authenticated client and public catalogue).");
+    if (hasApiKey && hasAccountNumber)
+    {
+        Console.WriteLine("Smoke check succeeded (account detail and public catalogue).");
+    }
+    else
+    {
+        Console.WriteLine("Smoke check succeeded (public catalogue).");
+    }
+
     return 0;
 }
 catch (OperationCanceledException)
@@ -102,22 +114,33 @@ static async Task RunPublicSmokeAsync(CancellationToken cancellationToken)
     WriteProductDetail(detail);
 }
 
-static async Task RunAuthenticatedSmokeAsync(string apiKey, CancellationToken cancellationToken)
+static async Task RunAuthenticatedSmokeAsync(
+    string apiKey,
+    string? accountNumber,
+    CancellationToken cancellationToken)
 {
     Console.WriteLine("=== Authenticated client (API key) ===");
     Console.WriteLine();
+
+    using OctopusEnergyClient authenticatedClient = new(apiKey);
+
+    if (string.IsNullOrWhiteSpace(accountNumber))
+    {
+        Console.WriteLine(
+            "Set {0} to fetch account detail. Skipping account call.",
+            AccountNumberEnvironmentVariable);
+        Console.WriteLine();
+        WriteOptionalAccountNumberHelp(AccountNumberEnvironmentVariable);
+        return;
+    }
+
     Console.WriteLine(
-        "Account and consumption services are not in the SDK yet. This section uses {0}(apiKey) against the same public catalogue to smoke-test HTTP Basic auth.",
+        "Fetching account detail with {0}(apiKey).",
         nameof(OctopusEnergyClient));
     Console.WriteLine();
 
-    using OctopusEnergyClient authenticatedClient = new(apiKey);
-    string productCode = await RunProductsSmokeAsync(
-        authenticatedClient,
-        1,
-        cancellationToken);
-
-    Console.WriteLine("Authenticated list succeeded (first product: {0}).", productCode);
+    Account account = await authenticatedClient.Accounts.GetAsync(accountNumber, cancellationToken);
+    WriteAccountSummary(account);
 }
 
 static async Task<string> RunProductsSmokeAsync(
@@ -152,22 +175,53 @@ static async Task<string> RunProductsSmokeAsync(
     return products[0].Code;
 }
 
-static void WriteOptionalApiKeyHelp(string environmentVariable)
+static void WriteOptionalApiKeyHelp(string apiKeyVariable, string accountNumberVariable)
 {
     Console.WriteLine(
-        "Set {0} to also exercise the authenticated client constructor (HTTP Basic auth).",
-        environmentVariable);
+        "Set {0} to exercise the authenticated client constructor (HTTP Basic auth).",
+        apiKeyVariable);
+    Console.WriteLine(
+        "Set {0} as well to fetch account detail.",
+        accountNumberVariable);
     Console.WriteLine();
     Console.WriteLine("Create a key:");
     Console.WriteLine("  https://octopus.energy/dashboard/new/accounts/personal-details/api-access");
     Console.WriteLine();
     Console.WriteLine("Bash:");
-    Console.WriteLine("  export {0}=\"your-key-here\"", environmentVariable);
+    Console.WriteLine("  export {0}=\"your-key-here\"", apiKeyVariable);
+    Console.WriteLine("  export {0}=\"A-12345678\"", accountNumberVariable);
     Console.WriteLine("  dotnet run --project samples/ProductsConsole");
     Console.WriteLine();
     Console.WriteLine("PowerShell:");
-    Console.WriteLine("  $env:{0} = \"your-key-here\"", environmentVariable);
+    Console.WriteLine("  $env:{0} = \"your-key-here\"", apiKeyVariable);
+    Console.WriteLine("  $env:{0} = \"A-12345678\"", accountNumberVariable);
     Console.WriteLine("  dotnet run --project samples/ProductsConsole");
+}
+
+static void WriteOptionalAccountNumberHelp(string accountNumberVariable)
+{
+    Console.WriteLine(
+        "Your account number is on your bill or in the Octopus dashboard (format A-XXXXXXXX).");
+    Console.WriteLine();
+    Console.WriteLine("Bash:");
+    Console.WriteLine("  export {0}=\"A-12345678\"", accountNumberVariable);
+    Console.WriteLine();
+    Console.WriteLine("PowerShell:");
+    Console.WriteLine("  $env:{0} = \"A-12345678\"", accountNumberVariable);
+}
+
+static void WriteAccountSummary(Account account)
+{
+    int propertyCount = account.Properties.Count;
+    int electricityPointCount = account.Properties.Sum(
+        property => property.ElectricityMeterPoints.Count);
+    int gasPointCount = account.Properties.Sum(
+        property => property.GasMeterPoints.Count);
+
+    Console.WriteLine("Account number: {0}", account.Number);
+    Console.WriteLine("Properties: {0}", propertyCount);
+    Console.WriteLine("Electricity meter points: {0}", electricityPointCount);
+    Console.WriteLine("Gas meter points: {0}", gasPointCount);
 }
 
 static void WriteProductDetail(ProductDetail detail)
