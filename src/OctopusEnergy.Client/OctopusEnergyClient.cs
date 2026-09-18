@@ -1,6 +1,7 @@
 using OctopusEnergy.Client.Infrastructure.Authentication;
 using OctopusEnergy.Client.Infrastructure.Configuration;
 using OctopusEnergy.Client.Infrastructure.Http;
+using OctopusEnergy.Client.Services.Products;
 
 namespace OctopusEnergy.Client;
 
@@ -8,8 +9,8 @@ namespace OctopusEnergy.Client;
 /// Customer-facing client for the public Octopus Energy (Kraken) APIs.
 /// </summary>
 /// <remarks>
-/// Resource methods will be added in later v1 stories. This client provides
-/// the shared REST transport, pagination, and error handling used by those services.
+/// Resource services use the shared REST transport, pagination, and error handling
+/// implemented by this client.
 /// </remarks>
 public sealed class OctopusEnergyClient : IDisposable
 {
@@ -124,7 +125,13 @@ public sealed class OctopusEnergyClient : IDisposable
         }
 
         Rest = new RestClient(_httpClient);
+        Products = new ProductService(Rest);
     }
+
+    /// <summary>
+    /// Product catalogue and product detail.
+    /// </summary>
+    public ProductService Products { get; }
 
     internal RestClient Rest { get; }
 

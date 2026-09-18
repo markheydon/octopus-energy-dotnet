@@ -1,0 +1,101 @@
+{
+  "code": "AGILE-FLEX-22-11-25",
+  "full_name": "Agile Octopus November 2022 v1",
+  "display_name": "Agile Octopus",
+  "description": "With Agile Octopus, you get access to half-hourly energy prices.",
+  "is_variable": true,
+  "is_green": true,
+  "is_tracker": false,
+  "is_prepay": false,
+  "is_business": false,
+  "is_restricted": false,
+  "term": null,
+  "available_from": "2022-11-25T00:00:00Z",
+  "available_to": null,
+  "brand": "OCTOPUS_ENERGY",
+  "links": [
+    {
+      "href": "https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/",
+      "method": "GET",
+      "rel": "self"
+    }
+  ],
+  "tariffs_active_at": "2023-11-10T00:21:44.970711Z",
+  "single_register_electricity_tariffs": {
+    "_A": {
+      "direct_debit_monthly": {
+        "code": "E-1R-AGILE-FLEX-22-11-25-A",
+        "standing_charge_exc_vat": 35.52,
+        "standing_charge_inc_vat": 37.296,
+        "online_discount_exc_vat": 0,
+        "online_discount_inc_vat": 0,
+        "dual_fuel_discount_exc_vat": 0,
+        "dual_fuel_discount_inc_vat": 0,
+        "exit_fees_exc_vat": 0,
+        "exit_fees_inc_vat": 0,
+        "exit_fees_type": "NONE",
+        "links": [
+          {
+            "href": "https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-A/standing-charges/",
+            "method": "GET",
+            "rel": "standing_charges"
+          },
+          {
+            "href": "https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-A/standard-unit-rates/",
+            "method": "GET",
+            "rel": "standard_unit_rates"
+          }
+        ],
+        "standard_unit_rate_exc_vat": 17.77,
+        "standard_unit_rate_inc_vat": 18.6585
+      },
+      "direct_debit_quarterly": {}
+    },
+    "_C": {
+      "direct_debit_monthly": {
+        "code": "E-1R-AGILE-FLEX-22-11-25-C",
+        "standing_charge_exc_vat": 35.52,
+        "standing_charge_inc_vat": 37.296,
+        "online_discount_exc_vat": 0,
+        "online_discount_inc_vat": 0,
+        "dual_fuel_discount_exc_vat": 0,
+        "dual_fuel_discount_inc_vat": 0,
+        "exit_fees_exc_vat": 0,
+        "exit_fees_inc_vat": 0,
+        "exit_fees_type": "NONE",
+        "links": [
+          {
+            "href": "https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standing-charges/",
+            "method": "GET",
+            "rel": "standing_charges"
+          }
+        ],
+        "standard_unit_rate_exc_vat": 18.1,
+        "standard_unit_rate_inc_vat": 19.005
+      }
+    }
+  },
+  "dual_register_electricity_tariffs": {},
+  "single_register_gas_tariffs": {},
+  "sample_quotes": {
+    "_A": {
+      "direct_debit_monthly": {
+        "electricity_single_rate": {
+          "annual_cost_exc_vat": 85000,
+          "annual_cost_inc_vat": 90000
+        },
+        "electricity_dual_rate": {},
+        "dual_fuel_single_rate": {},
+        "dual_fuel_dual_rate": {}
+      }
+    }
+  },
+  "sample_consumption": {
+    "electricity_single_rate": {
+      "electricity_standard": 3100
+    },
+    "electricity_dual_rate": {},
+    "dual_fuel_single_rate": {},
+    "dual_fuel_dual_rate": {}
+  }
+}
