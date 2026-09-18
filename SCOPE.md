@@ -1,7 +1,7 @@
 # Scope
 
 **Project:** OctopusEnergy.Client
-**Last updated:** 13 September 2026
+**Last updated:** 18 September 2026
 
 ---
 
@@ -28,7 +28,7 @@
 
 ## In Scope - v2 (GraphQL customer extras)
 
-Not required for v1.0. Tracked as a separate GitHub milestone.
+Not required for v1.0. Tracked on GitHub milestone **v1.1**; ships as NuGet `1.x` minors per [VERSIONING.md](VERSIONING.md) (not package `2.0.0`).
 
 - `obtainKrakenToken` with **API key only**, token cache and refresh, `Authorization` header as verified against the live IDE.
 - Curated GraphQL operations that succeed with a customer token (verified allow-list, not the full schema):
@@ -64,4 +64,5 @@ Do not implement without an explicit scope change.
 
 | Date | Change | Reason |
 |---|---|---|
+| 18 September 2026 | Clarify v2 scope phase ships on milestone v1.1 as NuGet `1.x` | Align scope labels with VERSIONING.md |
 | 13 September 2026 | Initial draft | Project kickoff |

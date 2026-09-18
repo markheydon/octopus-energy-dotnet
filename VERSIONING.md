@@ -31,7 +31,7 @@ Tag format: `1.x.y` (for example `1.0.0`).
 
 **Shipped:** `1.0.0` (18 September 2026) — first stable release of the REST customer core.
 
-v2 GraphQL work may ship as later `1.x` minors after `1.0.0`, or as `0.2.0-alpha` if it lands before REST MVP is stable. Do not block `1.0.0` on v2.
+v2 GraphQL work may ship as later `1.x` minors after `1.0.0`, or as `0.2.0-alpha` if it lands before REST MVP is stable. Do not block `1.0.0` on v2. SCOPE.md **v2** is a feature-phase label; it does not imply NuGet package version `2.0.0`.
 
 ---
 
@@ -73,6 +73,7 @@ The workflow builds, tests, packs `OctopusEnergy.Client`, publishes to NuGet.org
 
 | Date | Change | Reason |
 |---|---|---|
+| 18 September 2026 | Clarify SCOPE.md v2 vs NuGet `1.x` | Milestone renamed v2.0 → v1.1 |
 | 18 September 2026 | Release `1.0.2` | Point NuGet PackageProjectUrl at consumer docs site |
 | 18 September 2026 | Release `1.0.1` | Add NuGet package README for nuget.org |
 | 18 September 2026 | Promote to Stable `1.0.0` | REST customer core shipped |
