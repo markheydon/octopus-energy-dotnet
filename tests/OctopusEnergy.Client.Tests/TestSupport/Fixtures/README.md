@@ -16,6 +16,17 @@ CI and default `dotnet test` runs replay JSON from this folder through
 Pagination fixtures should include realistic `next` URLs. Error fixtures should
 match the API error JSON shape (`detail` field).
 
+## BST and Agile fixtures
+
+Clock-change fixtures (`consumption-bst-*.json`, `agile-rates-utc-*.json`) support
+tests that join UTC Agile prices to consumption intervals with mixed `Z` and
+`+01:00` offsets. See `ConsumptionPricePeriodMatchingTests` for expected
+behaviour around the skipped spring-forward half-hour and the duplicated
+autumn-back local hour.
+
+`agile-rates-short-day-46-slots.json` models a short Agile day (46 half-hours
+before the 16:00 Europe/London day-ahead publish window).
+
 ## Live checks
 
 Live API smoke tests live under `tests/OctopusEnergy.Client.Tests/Live/` and are
