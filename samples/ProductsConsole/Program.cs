@@ -33,33 +33,36 @@ string? mprnOverride = Environment.GetEnvironmentVariable(MprnEnvironmentVariabl
 string? gasMeterSerialOverride = Environment.GetEnvironmentVariable(GasMeterSerialEnvironmentVariable);
 CancellationToken cancellationToken = cancellation.Token;
 
+SmokeRecorder recorder = new();
+
 try
 {
     bool hasApiKey = !string.IsNullOrWhiteSpace(apiKey);
-    bool hasAccountNumber = !string.IsNullOrWhiteSpace(accountNumber);
     Account? account = null;
     string? accountMpan = null;
     ProductDetail? productDetail = null;
 
     if (hasApiKey)
     {
-        int authenticatedExitCode = await TryRunSectionAsync(
-            "authenticated client",
-            async () =>
-            {
-                account = await RunAuthenticatedSmokeAsync(
-                    apiKey!,
-                    accountNumber,
-                    mpanOverride,
-                    electricityMeterSerialOverride,
-                    mprnOverride,
-                    gasMeterSerialOverride,
-                    cancellationToken);
-            });
-
-        if (authenticatedExitCode != 0)
+        if (await TryRunSectionAsync(
+                recorder,
+                "authenticated client",
+                async () =>
+                {
+                    account = await RunAuthenticatedSmokeAsync(
+                        recorder,
+                        apiKey!,
+                        accountNumber,
+                        mpanOverride,
+                        electricityMeterSerialOverride,
+                        mprnOverride,
+                        gasMeterSerialOverride,
+                        cancellationToken);
+                }))
         {
-            return authenticatedExitCode;
+            recorder.WriteSummary();
+            Console.WriteLine("Smoke check failed.");
+            return 1;
         }
 
         if (account is not null)
@@ -69,49 +72,64 @@ try
 
         Console.WriteLine();
     }
-
-    int productsExitCode = await TryRunSectionAsync(
-        "public catalogue",
-        async () =>
-        {
-            productDetail = await RunProductsSmokeAsync(cancellationToken);
-        });
-
-    if (productsExitCode != 0)
+    else
     {
-        return productsExitCode;
+        recorder.Skip("authenticated client", $"{ApiKeyEnvironmentVariable} not set");
+        recorder.Skip("electricity consumption", "requires authenticated client");
+        recorder.Skip("gas consumption", "requires authenticated client");
+    }
+
+    if (await TryRunSectionAsync(
+            recorder,
+            "public catalogue",
+            async () =>
+            {
+                productDetail = await RunProductsSmokeAsync(recorder, cancellationToken);
+            }))
+    {
+        recorder.WriteSummary();
+        Console.WriteLine("Smoke check failed.");
+        return 1;
     }
 
     Console.WriteLine();
 
-    int tariffRatesExitCode = await TryRunSectionAsync(
-        "tariff rates",
-        () => RunTariffRatesSmokeAsync(productDetail!, cancellationToken));
-
-    if (tariffRatesExitCode != 0)
+    if (await TryRunSectionAsync(
+            recorder,
+            "tariff rates",
+            () => RunTariffRatesSmokeAsync(recorder, productDetail!, cancellationToken)))
     {
-        return tariffRatesExitCode;
+        recorder.WriteSummary();
+        Console.WriteLine("Smoke check failed.");
+        return 1;
     }
 
     Console.WriteLine();
 
-    int industryExitCode = await TryRunSectionAsync(
-        "industry lookups",
-        () => RunIndustrySmokeAsync(postcode, mpanOverride, accountMpan, cancellationToken));
-
-    if (industryExitCode != 0)
+    if (await TryRunSectionAsync(
+            recorder,
+            "industry lookups",
+            () => RunIndustrySmokeAsync(recorder, postcode, mpanOverride, accountMpan, cancellationToken)))
     {
-        return industryExitCode;
+        recorder.WriteSummary();
+        Console.WriteLine("Smoke check failed.");
+        return 1;
     }
 
     Console.WriteLine();
+    recorder.WriteSummary();
 
     if (!hasApiKey)
     {
         Console.WriteLine("=== Authenticated endpoints (skipped) ===");
         Console.WriteLine();
         WriteOptionalApiKeyHelp();
-        return 0;
+    }
+
+    if (recorder.HasFailures)
+    {
+        Console.WriteLine("Smoke check failed.");
+        return 1;
     }
 
     Console.WriteLine("Smoke check succeeded.");
@@ -122,12 +140,12 @@ catch (OperationCanceledException)
     return 130;
 }
 
-static async Task<int> TryRunSectionAsync(string section, Func<Task> action)
+static async Task<bool> TryRunSectionAsync(SmokeRecorder recorder, string section, Func<Task> action)
 {
     try
     {
         await action();
-        return 0;
+        return false;
     }
     catch (OperationCanceledException)
     {
@@ -136,16 +154,19 @@ static async Task<int> TryRunSectionAsync(string section, Func<Task> action)
     catch (HttpRequestException ex)
     {
         WriteSmokeFailure(section, ex.Message);
-        return 1;
+        recorder.Fail(section, ex.Message);
+        return true;
     }
     catch (OctopusEnergyException ex)
     {
         WriteSmokeFailure(section, ex.Message);
-        return 1;
+        recorder.Fail(section, ex.Message);
+        return true;
     }
 }
 
 static async Task<Account?> RunAuthenticatedSmokeAsync(
+    SmokeRecorder recorder,
     string apiKey,
     string? accountNumber,
     string? mpanOverride,
@@ -187,12 +208,14 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
                 mpan!,
                 electricitySerial!,
                 cancellationToken);
+            recorder.Pass("electricity consumption");
         }
         else
         {
-            WriteConsumptionSkipped(
-                "electricity",
-                $"Set {AccountNumberEnvironmentVariable} or both {MpanEnvironmentVariable} and {ElectricityMeterSerialEnvironmentVariable}.");
+            string reason =
+                $"Set {AccountNumberEnvironmentVariable} or both {MpanEnvironmentVariable} and {ElectricityMeterSerialEnvironmentVariable}.";
+            WriteConsumptionSkipped("electricity", reason);
+            recorder.Skip("electricity consumption", reason);
         }
 
         if (TryResolveGasConsumptionTarget(
@@ -207,14 +230,17 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
                 mprn!,
                 gasSerial!,
                 cancellationToken);
+            recorder.Pass("gas consumption");
         }
         else
         {
-            WriteConsumptionSkipped(
-                "gas",
-                $"Set {AccountNumberEnvironmentVariable} or both {MprnEnvironmentVariable} and {GasMeterSerialEnvironmentVariable}.");
+            string reason =
+                $"Set {AccountNumberEnvironmentVariable} or both {MprnEnvironmentVariable} and {GasMeterSerialEnvironmentVariable}.";
+            WriteConsumptionSkipped("gas", reason);
+            recorder.Skip("gas consumption", reason);
         }
 
+        recorder.Pass("authenticated client");
         return null;
     }
 
@@ -238,12 +264,13 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             accountMpan!,
             accountElectricitySerial!,
             cancellationToken);
+        recorder.Pass("electricity consumption");
     }
     else
     {
-        WriteConsumptionSkipped(
-            "electricity",
-            "No import electricity meter with a serial number was returned on the account.");
+        const string reason = "No import electricity meter with a serial number was returned on the account.";
+        WriteConsumptionSkipped("electricity", reason);
+        recorder.Skip("electricity consumption", reason);
     }
 
     if (TryResolveGasConsumptionTarget(
@@ -258,16 +285,22 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             accountMprn!,
             accountGasSerial!,
             cancellationToken);
+        recorder.Pass("gas consumption");
     }
     else
     {
-        WriteConsumptionSkipped("gas", "No gas meter with a serial number was returned on the account.");
+        const string reason = "No gas meter with a serial number was returned on the account.";
+        WriteConsumptionSkipped("gas", reason);
+        recorder.Skip("gas consumption", reason);
     }
 
+    recorder.Pass("authenticated client");
     return account;
 }
 
-static async Task<ProductDetail> RunProductsSmokeAsync(CancellationToken cancellationToken)
+static async Task<ProductDetail> RunProductsSmokeAsync(
+    SmokeRecorder recorder,
+    CancellationToken cancellationToken)
 {
     Console.WriteLine("=== Public catalogue (no API key) ===");
     Console.WriteLine();
@@ -284,10 +317,14 @@ static async Task<ProductDetail> RunProductsSmokeAsync(CancellationToken cancell
 
     ProductDetail detail = await publicClient.Products.GetAsync(productCode, cancellationToken: cancellationToken);
     WriteProductDetail(detail);
+    recorder.Pass("public catalogue");
     return detail;
 }
 
-static async Task RunTariffRatesSmokeAsync(ProductDetail detail, CancellationToken cancellationToken)
+static async Task RunTariffRatesSmokeAsync(
+    SmokeRecorder recorder,
+    ProductDetail detail,
+    CancellationToken cancellationToken)
 {
     Console.WriteLine("=== Tariff rates (no API key) ===");
     Console.WriteLine();
@@ -295,7 +332,10 @@ static async Task RunTariffRatesSmokeAsync(ProductDetail detail, CancellationTok
     string? tariffCodeValue = TryGetExampleTariffCode(detail);
     if (tariffCodeValue is null)
     {
-        Console.WriteLine("Skipped: no single-register electricity tariff was returned on the product detail.");
+        const string reason = "No single-register electricity tariff was returned on the product detail.";
+        Console.WriteLine("Skipped: {0}", reason);
+        recorder.Skip("tariff rates — standing charge", reason);
+        recorder.Skip("tariff rates — standard unit rate", reason);
         return;
     }
 
@@ -321,6 +361,8 @@ static async Task RunTariffRatesSmokeAsync(ProductDetail detail, CancellationTok
             FormatValidToSuffix(standingCharge.ValidTo));
     }
 
+    recorder.Pass("tariff rates — standing charge");
+
     TariffCharge? unitRate = await ReadFirstAsync(
         client.TariffRates.ListStandardUnitRatesAsync(tariffCode, request, cancellationToken));
 
@@ -337,9 +379,12 @@ static async Task RunTariffRatesSmokeAsync(ProductDetail detail, CancellationTok
             unitRate.ValidFrom,
             FormatValidToSuffix(unitRate.ValidTo));
     }
+
+    recorder.Pass("tariff rates — standard unit rate");
 }
 
 static async Task RunIndustrySmokeAsync(
+    SmokeRecorder recorder,
     string postcode,
     string? mpanOverride,
     string? accountMpan,
@@ -360,6 +405,8 @@ static async Task RunIndustrySmokeAsync(
         gspLookup.GridSupplyPoint,
         string.IsNullOrWhiteSpace(gspLookup.Mpan) ? string.Empty : $" (example MPAN {gspLookup.Mpan})");
 
+    recorder.Pass("industry lookups — GSP by postcode");
+
     string? mpan = !string.IsNullOrWhiteSpace(mpanOverride)
         ? mpanOverride
         : !string.IsNullOrWhiteSpace(accountMpan)
@@ -368,12 +415,15 @@ static async Task RunIndustrySmokeAsync(
 
     if (mpan is null)
     {
+        string reason =
+            $"Set {MpanEnvironmentVariable} or fetch account detail with {AccountNumberEnvironmentVariable}.";
         Console.WriteLine();
         Console.WriteLine(
             "Electricity meter point lookup (skipped): set {0} or fetch account detail with {1} to exercise {2}.",
             MpanEnvironmentVariable,
             AccountNumberEnvironmentVariable,
             nameof(client.Industry.GetElectricityMeterPointAsync));
+        recorder.Skip("industry lookups — electricity meter point", reason);
         return;
     }
 
@@ -388,6 +438,8 @@ static async Task RunIndustrySmokeAsync(
         "  GSP {0}, profile class {1}",
         meterPoint.GridSupplyPoint,
         meterPoint.ProfileClass);
+
+    recorder.Pass("industry lookups — electricity meter point");
 }
 
 static async Task RunElectricityConsumptionSmokeAsync(
@@ -759,4 +811,102 @@ static string LastFourDigits(string value)
 static string FormatValidToSuffix(DateTimeOffset? validTo)
 {
     return validTo is null ? " (open-ended)" : $" to {validTo.Value:u}";
+}
+
+enum SmokeOutcome
+{
+    Pass,
+    Skip,
+    Fail,
+}
+
+readonly record struct SmokeCheck(string Name, SmokeOutcome Outcome, string? Detail);
+
+sealed class SmokeRecorder
+{
+    private readonly List<SmokeCheck> _checks = new();
+
+    public bool HasFailures => _checks.Exists(check => check.Outcome == SmokeOutcome.Fail);
+
+    public void Pass(string name) => _checks.Add(new SmokeCheck(name, SmokeOutcome.Pass, null));
+
+    public void Skip(string name, string? detail = null) =>
+        _checks.Add(new SmokeCheck(name, SmokeOutcome.Skip, detail));
+
+    public void Fail(string name, string? detail = null) =>
+        _checks.Add(new SmokeCheck(name, SmokeOutcome.Fail, detail));
+
+    public void WriteSummary()
+    {
+        Console.WriteLine("=== Smoke summary ===");
+        Console.WriteLine();
+
+        foreach (SmokeCheck check in _checks)
+        {
+            WriteSummaryLine(check);
+        }
+
+        int passed = _checks.Count(check => check.Outcome == SmokeOutcome.Pass);
+        int skipped = _checks.Count(check => check.Outcome == SmokeOutcome.Skip);
+        int failed = _checks.Count(check => check.Outcome == SmokeOutcome.Fail);
+
+        Console.WriteLine();
+        Console.WriteLine("Passed: {0}, Skipped: {1}, Failed: {2}", passed, skipped, failed);
+        Console.WriteLine();
+    }
+
+    private static void WriteSummaryLine(SmokeCheck check)
+    {
+        string suffix = string.IsNullOrWhiteSpace(check.Detail) ? string.Empty : $" — {check.Detail}";
+
+        switch (check.Outcome)
+        {
+            case SmokeOutcome.Pass:
+                WriteSummarySymbol("✓", ConsoleColor.Green);
+                Console.WriteLine(" {0}", check.Name);
+                break;
+            case SmokeOutcome.Skip:
+                WriteSummarySymbol("-", ConsoleColor.Yellow);
+                Console.WriteLine(" {0}{1}", check.Name, suffix);
+                break;
+            case SmokeOutcome.Fail:
+                WriteSummarySymbol("✗", ConsoleColor.Red);
+                Console.WriteLine(" {0}{1}", check.Name, suffix);
+                break;
+        }
+    }
+
+    private static void WriteSummarySymbol(string symbol, ConsoleColor colour)
+    {
+        Console.Write("  ");
+
+        if (ConsoleColorSupport.IsEnabled)
+        {
+            Console.ForegroundColor = colour;
+            Console.Write(symbol);
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.Write(symbol);
+        }
+    }
+}
+
+static class ConsoleColorSupport
+{
+    private static readonly Lazy<bool> Enabled = new(Detect);
+
+    public static bool IsEnabled => Enabled.Value;
+
+    private static bool Detect()
+    {
+        if (Console.IsOutputRedirected)
+        {
+            return false;
+        }
+
+        string? noColor = Environment.GetEnvironmentVariable("NO_COLOR");
+        return string.IsNullOrEmpty(noColor);
+    }
 }
