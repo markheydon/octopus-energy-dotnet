@@ -12,18 +12,69 @@ Console.CancelKeyPress += (_, eventArgs) =>
 };
 
 string? apiKey = Environment.GetEnvironmentVariable(ApiKeyEnvironmentVariable);
-if (string.IsNullOrWhiteSpace(apiKey))
-{
-    WriteMissingApiKeyHelp(ApiKeyEnvironmentVariable);
-    return 1;
-}
+CancellationToken cancellationToken = cancellation.Token;
 
 try
 {
-    using OctopusEnergyClient client = new(apiKey);
-    CancellationToken cancellationToken = cancellation.Token;
+    Console.WriteLine("=== Public catalogue (no API key) ===");
+    Console.WriteLine();
+    Console.WriteLine(
+        "Products are public. This section uses {0}().",
+        nameof(OctopusEnergyClient));
+    Console.WriteLine();
 
-    Console.WriteLine("Listing products (first {0}):", MaxProductsToList);
+    using (OctopusEnergyClient publicClient = new())
+    {
+        string productCode = await RunProductsSmokeAsync(
+            publicClient,
+            MaxProductsToList,
+            cancellationToken);
+
+        ProductDetail detail = await publicClient.Products.GetAsync(productCode, cancellationToken: cancellationToken);
+        WriteProductDetail(detail);
+    }
+
+    Console.WriteLine();
+
+    if (string.IsNullOrWhiteSpace(apiKey))
+    {
+        Console.WriteLine("=== Authenticated client (skipped) ===");
+        Console.WriteLine();
+        WriteOptionalApiKeyHelp(ApiKeyEnvironmentVariable);
+        return 0;
+    }
+
+    Console.WriteLine("=== Authenticated client (API key) ===");
+    Console.WriteLine();
+    Console.WriteLine(
+        "Account and consumption services are not in the SDK yet. This section uses {0}(apiKey) against the same public catalogue to smoke-test HTTP Basic auth.",
+        nameof(OctopusEnergyClient));
+    Console.WriteLine();
+
+    using (OctopusEnergyClient authenticatedClient = new(apiKey))
+    {
+        string productCode = await RunProductsSmokeAsync(
+            authenticatedClient,
+            1,
+            cancellationToken);
+
+        Console.WriteLine("Authenticated list succeeded (first product: {0}).", productCode);
+    }
+
+    return 0;
+}
+catch (OctopusEnergyException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+    return 1;
+}
+
+static async Task<string> RunProductsSmokeAsync(
+    OctopusEnergyClient client,
+    int maxProducts,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine("Listing products (first {0}):", maxProducts);
     Console.WriteLine();
 
     List<Product> products = new();
@@ -36,7 +87,7 @@ try
             product.DisplayName,
             product.Brand);
 
-        if (products.Count >= MaxProductsToList)
+        if (products.Count >= maxProducts)
         {
             break;
         }
@@ -44,44 +95,35 @@ try
 
     if (products.Count == 0)
     {
-        Console.Error.WriteLine("No products returned from the catalogue.");
-        return 1;
+        throw new OctopusEnergyException("No products returned from the catalogue.");
     }
 
-    string productCode = products[0].Code;
-    Console.WriteLine();
-    Console.WriteLine("Product detail for {0}:", productCode);
-    Console.WriteLine();
-
-    ProductDetail detail = await client.Products.GetAsync(productCode, cancellationToken: cancellationToken);
-    WriteProductDetail(detail);
-
-    return 0;
-}
-catch (OctopusEnergyException ex)
-{
-    Console.Error.WriteLine(ex.Message);
-    return 1;
+    return products[0].Code;
 }
 
-static void WriteMissingApiKeyHelp(string environmentVariable)
+static void WriteOptionalApiKeyHelp(string environmentVariable)
 {
-    Console.Error.WriteLine("Set an Octopus dashboard API key in the {0} environment variable.", environmentVariable);
-    Console.Error.WriteLine();
-    Console.Error.WriteLine("Create a key:");
-    Console.Error.WriteLine("  https://octopus.energy/dashboard/new/accounts/personal-details/api-access");
-    Console.Error.WriteLine();
-    Console.Error.WriteLine("Bash:");
-    Console.Error.WriteLine("  export {0}=\"your-key-here\"", environmentVariable);
-    Console.Error.WriteLine("  dotnet run --project samples/ProductsConsole");
-    Console.Error.WriteLine();
-    Console.Error.WriteLine("PowerShell:");
-    Console.Error.WriteLine("  $env:{0} = \"your-key-here\"", environmentVariable);
-    Console.Error.WriteLine("  dotnet run --project samples/ProductsConsole");
+    Console.WriteLine(
+        "Set {0} to also exercise the authenticated client constructor (HTTP Basic auth).",
+        environmentVariable);
+    Console.WriteLine();
+    Console.WriteLine("Create a key:");
+    Console.WriteLine("  https://octopus.energy/dashboard/new/accounts/personal-details/api-access");
+    Console.WriteLine();
+    Console.WriteLine("Bash:");
+    Console.WriteLine("  export {0}=\"your-key-here\"", environmentVariable);
+    Console.WriteLine("  dotnet run --project samples/ProductsConsole");
+    Console.WriteLine();
+    Console.WriteLine("PowerShell:");
+    Console.WriteLine("  $env:{0} = \"your-key-here\"", environmentVariable);
+    Console.WriteLine("  dotnet run --project samples/ProductsConsole");
 }
 
 static void WriteProductDetail(ProductDetail detail)
 {
+    Console.WriteLine();
+    Console.WriteLine("Product detail for {0}:", detail.Code);
+    Console.WriteLine();
     Console.WriteLine("Code: {0}", detail.Code);
     Console.WriteLine("Display name: {0}", detail.DisplayName);
     Console.WriteLine(

@@ -43,8 +43,9 @@ Do not put API keys in the repo. CI uses recorded fixtures only. Optional live c
 To smoke-test the SDK against the live UK API, run the [products console sample](../samples/README.md):
 
 ```bash
-export OCTOPUS_ENERGY_API_KEY="your-key-here"
 dotnet run --project samples/ProductsConsole
 ```
+
+Set `OCTOPUS_ENERGY_API_KEY` as well to exercise the authenticated client constructor (HTTP Basic auth). Account and consumption services are not in the SDK yet.
 
 Read [CONTRIBUTING.md](../CONTRIBUTING.md), [CONVENTIONS.md](../CONVENTIONS.md), and [AGENTS.md](../AGENTS.md).
