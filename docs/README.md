@@ -1,37 +1,29 @@
 # OctopusEnergy.Client documentation
 
-Documentation in this folder is for **developers using the NuGet package** - except `planning/`, which is for SDK implementers.
+Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help you install the package, authenticate with a dashboard API key, and call products, tariffs, rates, account, and consumption endpoints.
 
-Internal policy: repository root ([`GOALS.md`](https://github.com/markheydon/octopus-energy-dotnet/blob/main/GOALS.md), [`SCOPE.md`](https://github.com/markheydon/octopus-energy-dotnet/blob/main/SCOPE.md), [`CONVENTIONS.md`](https://github.com/markheydon/octopus-energy-dotnet/blob/main/CONVENTIONS.md)) and [`plan/`](https://github.com/markheydon/octopus-energy-dotnet/tree/main/plan). ADRs: [`adr/`](https://github.com/markheydon/octopus-energy-dotnet/tree/main/adr).
+**New here?** Start with [Getting started](tutorial/getting-started.md).
 
-## How we write consumer docs
+## Guides
 
-Content follows the [Diátaxis](https://diataxis.fr/) framework:
+| Topic | What it covers |
+|---|---|
+| [Getting started](tutorial/getting-started.md) | Install the package, construct the client, first API calls |
+| [Authentication](how-to/authentication.md) | API keys and HTTP Basic |
+| [Pagination](how-to/pagination.md) | Listing resources without managing `next` links |
+| [Products catalogue](how-to/products.md) | List products and load product detail |
+| [Account detail](how-to/accounts.md) | Fetch properties, meters, and agreements |
+| [Tariff codes and GSP](how-to/tariff-codes.md) | Parse tariff codes and build charge paths |
+| [Error handling](how-to/error-handling.md) | API failures and exception types |
 
-- **Tutorials** (`tutorial/`) - learning-oriented; one successful path for newcomers.
-- **How-to guides** (`how-to/`) - problem-oriented recipes (pagination, auth, a resource).
-- **Reference** (`reference/`) - what the SDK implements today.
-- **Explanation** (`explanation/`) - understanding-oriented (units, VAT, BST, Agile 16:00, customer vs partner).
+## Reference and concepts
 
-README files (repository root and NuGet package) are short entry points with links into `docs/`. Implementer research and maxima stay in [coding notes](planning/coding-notes.md); consumer pages restate what callers need without duplicating the full planning dump. Partner APIs stay out of scope. GraphQL consumer docs ride with v2; v1 is REST.
-
-## Documentation map
-
-| Document | Type | Audience |
-|---|---|---|
-| [Getting started](tutorial/getting-started.md) | Tutorial | New SDK consumers |
-| [Authentication](how-to/authentication.md) | How-to | API keys and HTTP Basic |
-| [Pagination](how-to/pagination.md) | How-to | Listing resources |
-| [Products catalogue](how-to/products.md) | How-to | List products and load product detail |
-| [Account detail](how-to/accounts.md) | How-to | Fetch properties, meters, and agreements |
-| [Tariff codes and GSP](how-to/tariff-codes.md) | How-to | Parse tariff codes and build charge paths |
-| [Error handling](how-to/error-handling.md) | How-to | API failures |
-| [API coverage](reference/api-coverage.md) | Reference | What the SDK implements today |
-| [Units, VAT, and time](explanation/units-vat-and-time.md) | Explanation | kWh, pence, VAT, BST, Agile 16:00 |
-| [Customer vs partner](explanation/customer-vs-partner.md) | Explanation | Why the public surface is small |
-| [REST and GraphQL](explanation/rest-and-graphql.md) | Explanation | Dual transport |
-| [Coding notes](planning/coding-notes.md) | Planning | Implementers |
-| [Contributor setup](contributing-setup.md) | How-to | Contributors |
+| Topic | What it covers |
+|---|---|
+| [API coverage](reference/api-coverage.md) | What the SDK implements today |
+| [Units, VAT, and time](explanation/units-vat-and-time.md) | kWh, pence, VAT fields, BST, Agile 16:00 |
+| [Customer vs partner](explanation/customer-vs-partner.md) | Why the public surface is small |
+| [REST and GraphQL](explanation/rest-and-graphql.md) | Dual transport (v1 is REST) |
 
 ## Related links
 
