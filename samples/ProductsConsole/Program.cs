@@ -308,10 +308,11 @@ static async Task RunTariffRatesSmokeAsync(ProductDetail detail, CancellationTok
     else
     {
         Console.WriteLine(
-            "Standing charge ({0}): {1} p/day inc VAT from {2:u}",
+            "Standing charge ({0}): {1} p/day inc VAT from {2:u}{3}",
             tariffCodeValue,
             standingCharge.ValueIncVat,
-            standingCharge.ValidFrom);
+            standingCharge.ValidFrom,
+            FormatValidToSuffix(standingCharge.ValidTo));
     }
 
     TariffCharge? unitRate = await ReadFirstAsync(
@@ -324,10 +325,11 @@ static async Task RunTariffRatesSmokeAsync(ProductDetail detail, CancellationTok
     else
     {
         Console.WriteLine(
-            "Standard unit rate ({0}): {1} p/kWh inc VAT from {2:u}",
+            "Standard unit rate ({0}): {1} p/kWh inc VAT from {2:u}{3}",
             tariffCodeValue,
             unitRate.ValueIncVat,
-            unitRate.ValidFrom);
+            unitRate.ValidFrom,
+            FormatValidToSuffix(unitRate.ValidTo));
     }
 }
 
@@ -347,11 +349,24 @@ static async Task RunIndustrySmokeAsync(
         ?? throw new OctopusEnergyException($"No grid supply points returned for postcode {postcode}.");
 
     Console.WriteLine(
-        "  GSP {0} (example MPAN {1})",
+        "  GSP {0}{1}",
         gspLookup.GridSupplyPoint,
-        gspLookup.Mpan);
+        string.IsNullOrWhiteSpace(gspLookup.Mpan) ? string.Empty : $" (example MPAN {gspLookup.Mpan})");
 
-    string mpan = !string.IsNullOrWhiteSpace(mpanOverride) ? mpanOverride : gspLookup.Mpan;
+    string? mpan = !string.IsNullOrWhiteSpace(mpanOverride)
+        ? mpanOverride
+        : string.IsNullOrWhiteSpace(gspLookup.Mpan) ? null : gspLookup.Mpan;
+
+    if (mpan is null)
+    {
+        Console.WriteLine();
+        Console.WriteLine(
+            "Electricity meter point lookup (skipped): set {0} to exercise {1}.",
+            MpanEnvironmentVariable,
+            nameof(client.Industry.GetElectricityMeterPointAsync));
+        return;
+    }
+
     Console.WriteLine();
     Console.WriteLine("Electricity meter point for MPAN ending …{0}:", LastFourDigits(mpan));
 
@@ -708,4 +723,9 @@ static string Capitalize(string value)
 static string LastFourDigits(string value)
 {
     return value.Length <= 4 ? value : value[^4..];
+}
+
+static string FormatValidToSuffix(DateTimeOffset? validTo)
+{
+    return validTo is null ? " (open-ended)" : $" to {validTo.Value:u}";
 }

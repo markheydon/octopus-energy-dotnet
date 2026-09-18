@@ -26,10 +26,10 @@ public sealed class TariffCharge
     public DateTimeOffset ValidFrom { get; init; }
 
     /// <summary>
-    /// When this charge period ended.
+    /// When this charge period ended, or <see langword="null"/> when still open-ended.
     /// </summary>
     [JsonPropertyName("valid_to")]
-    public DateTimeOffset ValidTo { get; init; }
+    public DateTimeOffset? ValidTo { get; init; }
 
     /// <summary>
     /// Payment method when returned by the API, otherwise <see langword="null"/>.

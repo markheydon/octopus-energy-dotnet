@@ -141,6 +141,23 @@ public sealed class TariffRatesServiceTests
     }
 
     [Fact]
+    public async Task ListStandingChargesAsync_WhenValidToNull_ReturnsOpenEndedCharge()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("tariff-standing-charges-open-ended.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        List<TariffCharge> charges = await CollectAsync(
+            client.TariffRates.ListStandingChargesAsync(TariffCode.Parse(AgileTariff), cancellationToken: CancellationToken.None));
+
+        Assert.Single(charges);
+        Assert.Null(charges[0].ValidTo);
+        Assert.Equal(39.535125m, charges[0].ValueIncVat);
+    }
+
+    [Fact]
     public async Task ListChargesAsync_WhenGoTariff_ReturnsLongValidWindow()
     {
         QueuedHttpMessageHandler handler = new();
