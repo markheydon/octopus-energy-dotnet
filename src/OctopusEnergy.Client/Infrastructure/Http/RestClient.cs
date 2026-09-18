@@ -27,8 +27,6 @@ internal sealed class RestClient
         _maxPageHops = maxPageHops;
     }
 
-    internal HttpClient HttpClient => _httpClient;
-
     internal async Task<T> GetAsync<T>(string relativePath, CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);

@@ -33,11 +33,11 @@ using var client = new OctopusEnergyClient(
     new Uri("https://api.example.test/v1/"));
 ```
 
-A trailing slash is applied when missing so relative REST paths resolve correctly.
+A trailing slash is applied when missing so relative REST paths resolve correctly. The same normalisation applies when you supply your own `HttpClient` with a `BaseAddress`.
 
 ## Supplying your own `HttpClient`
 
-When you pass an `HttpClient`, the SDK applies HTTP Basic for the API key and replaces any existing `Authorization` header. See also [pagination](pagination.md#supplying-your-own-httpclient).
+When you pass an `HttpClient`, the SDK applies HTTP Basic for the API key and replaces any existing `Authorization` header. If `BaseAddress` is already set without a trailing slash, one is appended. See also [pagination](pagination.md#supplying-your-own-httpclient).
 
 ```csharp
 using var httpClient = new HttpClient { BaseAddress = new Uri("https://api.example.test/v1/") };

@@ -21,4 +21,33 @@ public sealed class HttpClientConfigurationTests
 
         Assert.Equal("baseAddress", exception.ParamName);
     }
+
+    [Fact]
+    public void ApplyBaseAddress_WhenExistingBaseAddressMissingTrailingSlash_AppendsSlash()
+    {
+        using HttpClient httpClient = new()
+        {
+            BaseAddress = new Uri("https://api.example.test/v1"),
+        };
+
+        HttpClientConfiguration.ApplyBaseAddress(
+            httpClient,
+            baseAddress: null,
+            defaultBaseUrl: "https://api.octopus.energy/v1/");
+
+        Assert.Equal(new Uri("https://api.example.test/v1/"), httpClient.BaseAddress);
+    }
+
+    [Fact]
+    public void ApplyBaseAddress_WhenDefaultApplied_NormalizesDefaultUrl()
+    {
+        using HttpClient httpClient = new();
+
+        HttpClientConfiguration.ApplyBaseAddress(
+            httpClient,
+            baseAddress: null,
+            defaultBaseUrl: "https://api.octopus.energy/v1/");
+
+        Assert.Equal(new Uri("https://api.octopus.energy/v1/"), httpClient.BaseAddress);
+    }
 }

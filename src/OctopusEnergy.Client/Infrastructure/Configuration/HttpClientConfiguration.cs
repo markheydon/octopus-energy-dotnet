@@ -33,7 +33,10 @@ internal static class HttpClientConfiguration
 
         if (httpClient.BaseAddress is null)
         {
-            httpClient.BaseAddress = new Uri(defaultBaseUrl);
+            httpClient.BaseAddress = NormalizeBaseAddress(new Uri(defaultBaseUrl));
+            return;
         }
+
+        httpClient.BaseAddress = NormalizeBaseAddress(httpClient.BaseAddress);
     }
 }

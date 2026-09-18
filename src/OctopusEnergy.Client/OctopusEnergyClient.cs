@@ -65,7 +65,8 @@ public sealed class OctopusEnergyClient : IDisposable
     /// </summary>
     /// <param name="httpClient">
     /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null,
-    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When no
+    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When a base address
+    /// is already set, a trailing slash is applied when missing. When no
     /// <c>Accept: application/json</c> header is present, one is added.
     /// </param>
     /// <remarks>
@@ -86,7 +87,8 @@ public sealed class OctopusEnergyClient : IDisposable
     /// </param>
     /// <param name="httpClient">
     /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null,
-    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When no
+    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When a base address
+    /// is already set, a trailing slash is applied when missing. When no
     /// <c>Accept: application/json</c> header is present, one is added. Any existing
     /// <c>Authorization</c> header is replaced with HTTP Basic for the API key.
     /// </param>
@@ -142,6 +144,8 @@ public sealed class OctopusEnergyClient : IDisposable
 
     private static HttpClient CreateHttpClient(Uri baseAddress)
     {
+        ArgumentNullException.ThrowIfNull(baseAddress);
+
         HttpClient httpClient = new();
         HttpClientConfiguration.ApplyBaseAddress(httpClient, baseAddress, DefaultBaseUrl);
         EnsureJsonAcceptHeader(httpClient);

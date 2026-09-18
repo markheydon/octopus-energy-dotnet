@@ -1,9 +1,7 @@
 using System.Net;
-using System.Text;
 using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.Authentication;
-using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Tests.TestSupport;
 
 namespace OctopusEnergy.Client.Tests;
@@ -56,26 +54,27 @@ public sealed class OctopusEnergyClientTests
     }
 
     [Fact]
-    public void Constructor_WithApiKey_SetsBasicAuthorizationHeader()
+    public void Constructor_WithHttpClientWithoutTrailingSlash_NormalizesBaseAddress()
     {
-        const string apiKey = "test-api-key-value";
+        using HttpClient httpClient = new()
+        {
+            BaseAddress = new Uri("https://api.example.test/v1"),
+        };
 
-        using OctopusEnergyClient client = new(apiKey);
+        using OctopusEnergyClient client = new(httpClient);
 
-        Assert.Equal("Basic", client.Rest.HttpClient.DefaultRequestHeaders.Authorization?.Scheme);
-        Assert.Equal(
-            Convert.ToBase64String(Encoding.UTF8.GetBytes($"{apiKey}:")),
-            client.Rest.HttpClient.DefaultRequestHeaders.Authorization?.Parameter);
+        Assert.Equal(new Uri("https://api.example.test/v1/"), httpClient.BaseAddress);
     }
 
     [Fact]
-    public void Constructor_WithApiKeyAndBaseAddress_SetsBaseAddressWithTrailingSlash()
+    public void Constructor_WithApiKeyAndHttpClientWithoutBaseAddress_SetsDefaultBaseAddress()
     {
         const string apiKey = "test-api-key-value";
 
-        using OctopusEnergyClient client = new(apiKey, new Uri("https://api.example.test/v1"));
+        using HttpClient httpClient = new();
+        using OctopusEnergyClient client = new(apiKey, httpClient);
 
-        Assert.Equal(new Uri("https://api.example.test/v1/"), client.Rest.HttpClient.BaseAddress);
+        Assert.Equal(new Uri(OctopusEnergyClient.DefaultBaseUrl), httpClient.BaseAddress);
     }
 
     [Fact]
@@ -94,7 +93,7 @@ public sealed class OctopusEnergyClientTests
 
         Assert.Equal("Basic", httpClient.DefaultRequestHeaders.Authorization?.Scheme);
         Assert.Equal(
-            Convert.ToBase64String(Encoding.UTF8.GetBytes($"{apiKey}:")),
+            BasicApiKeyHeader.Create(apiKey).Parameter,
             httpClient.DefaultRequestHeaders.Authorization?.Parameter);
     }
 
@@ -115,6 +114,28 @@ public sealed class OctopusEnergyClientTests
     }
 
     [Fact]
+    public void Constructor_WithNullBaseAddress_ThrowsArgumentNullException()
+    {
+        const string apiKey = "test-api-key-value";
+
+        ArgumentNullException exception = Assert.Throws<ArgumentNullException>(
+            () => new OctopusEnergyClient(apiKey, (Uri)null!));
+
+        Assert.Equal("baseAddress", exception.ParamName);
+    }
+
+    [Fact]
+    public void Constructor_WithRelativeBaseAddress_ThrowsArgumentException()
+    {
+        const string apiKey = "test-api-key-value";
+
+        ArgumentException exception = Assert.Throws<ArgumentException>(
+            () => new OctopusEnergyClient(apiKey, new Uri("/v1/", UriKind.Relative)));
+
+        Assert.Equal("baseAddress", exception.ParamName);
+    }
+
+    [Fact]
     public async Task GetAsync_WhenDefaultClient_DoesNotSendAuthorizationHeader()
     {
         QueuedHttpMessageHandler handler = new();
@@ -130,6 +151,24 @@ public sealed class OctopusEnergyClientTests
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.Null(request.Headers.Authorization);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenHttpClientBaseAddressMissingTrailingSlash_ResolvesRelativePathCorrectly()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"results":[]}""");
+
+        using HttpClient httpClient = new(handler)
+        {
+            BaseAddress = new Uri("https://api.example.test/v1"),
+        };
+        using OctopusEnergyClient client = new(httpClient);
+
+        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+
+        HttpRequestMessage request = Assert.Single(handler.SentRequests);
+        Assert.Equal(new Uri("https://api.example.test/v1/items/"), request.RequestUri);
     }
 
     [Fact]
