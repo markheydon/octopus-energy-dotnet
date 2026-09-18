@@ -11,6 +11,7 @@ Internal policy: repository root (`GOALS.md`, `SCOPE.md`, `CONVENTIONS.md`) and 
 | [Getting started](tutorial/getting-started.md) | Tutorial | New SDK consumers |
 | [Authentication](how-to/authentication.md) | How-to | API keys and HTTP Basic |
 | [Pagination](how-to/pagination.md) | How-to | Listing resources |
+| [Products catalogue](how-to/products.md) | How-to | List products and load product detail |
 | [Tariff codes and GSP](how-to/tariff-codes.md) | How-to | Parse tariff codes and build charge paths |
 | [Error handling](how-to/error-handling.md) | How-to | API failures |
 | [API coverage](reference/api-coverage.md) | Reference | What the SDK implements today |

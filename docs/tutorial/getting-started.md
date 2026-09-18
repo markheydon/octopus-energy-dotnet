@@ -1,6 +1,6 @@
 # Getting started
 
-`OctopusEnergy.Client` is a prerelease SDK. HTTP transport, pagination, typed errors, and API-key authentication are available. Resource methods for products, account, and consumption are still being added.
+`OctopusEnergy.Client` is a prerelease SDK. HTTP transport, pagination, typed errors, API-key authentication, and the products catalogue are available. Account and consumption resource methods are still being added.
 
 ## 1. Create an API key
 
@@ -42,12 +42,24 @@ string ratesPath = tariff.GetRelativeChargePath(TariffChargeKind.StandardUnitRat
 
 See [tariff codes and GSP](../how-to/tariff-codes.md).
 
-## 5. Call resource methods
+## 5. List products
 
-Resource services are not implemented yet. Track progress on feature [#6](https://github.com/markheydon/octopus-energy-dotnet/issues/6) (REST customer core) on milestone [v1.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/1).
+Public catalogue endpoints work without an API key:
+
+```csharp
+using OctopusEnergy.Client.Models.Products;
+
+await foreach (Product product in client.Products.ListAsync(cancellationToken: cancellationToken))
+{
+    Console.WriteLine(product.DisplayName);
+}
+```
+
+See [products](../how-to/products.md) for filters, product detail, and GSP tariff maps. Account and consumption services are tracked on feature [#6](https://github.com/markheydon/octopus-energy-dotnet/issues/6).
 
 ## Next steps
 
+- [Products catalogue](../how-to/products.md)
 - [Authentication](../how-to/authentication.md)
 - [Tariff codes and GSP](../how-to/tariff-codes.md)
 - [Pagination](../how-to/pagination.md)

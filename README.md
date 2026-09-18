@@ -6,7 +6,7 @@ Unofficial .NET client for the [Octopus Energy](https://octopus.energy/) **custo
 [![NuGet](https://img.shields.io/nuget/v/OctopusEnergy.Client.svg)](https://www.nuget.org/packages/OctopusEnergy.Client/)
 [![NuGet (prerelease)](https://img.shields.io/nuget/vpre/OctopusEnergy.Client.svg?label=nuget%20prerelease)](https://www.nuget.org/packages/OctopusEnergy.Client/)
 
-> **Prerelease software.** HTTP transport, pagination, errors, and API-key authentication are implemented. Resource methods are still being added. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
+> **Prerelease software.** HTTP transport, pagination, errors, API-key authentication, and the products catalogue are implemented. Further resource methods are being added. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
 
 **Documentation:** [docs/](docs/) - consumer guides plus [planning notes](docs/planning/coding-notes.md) for implementers.
 
@@ -16,7 +16,7 @@ Typed, discoverable SDK so callers do not reconstruct REST URLs or GraphQL docum
 
 ## Status
 
-Prerelease. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`). Resource services are not implemented yet.
+Prerelease. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, the products catalogue, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`). Further resource services are being added.
 
 Planned:
 
@@ -34,13 +34,15 @@ dotnet add package OctopusEnergy.Client
 ```csharp
 using OctopusEnergy.Client;
 
-// API key from https://octopus.energy/dashboard/new/accounts/personal-details/api-access
-// Treat as a secret — never commit it to source control.
-const string apiKey = "sk_test_not_a_real_key";
-using var client = new OctopusEnergyClient(apiKey);
+using var client = new OctopusEnergyClient();
+
+await foreach (var product in client.Products.ListAsync())
+{
+    Console.WriteLine(product.DisplayName);
+}
 ```
 
-Public catalogue calls work without a key: `using var client = new OctopusEnergyClient();`
+For account and consumption calls, pass your API key from the [Octopus dashboard](https://octopus.energy/dashboard/new/accounts/personal-details/api-access). Treat it as a secret.
 
 See [getting started](docs/tutorial/getting-started.md) and [authentication](docs/how-to/authentication.md).
 

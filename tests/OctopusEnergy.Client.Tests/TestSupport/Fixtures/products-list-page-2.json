@@ -1,0 +1,25 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": "products/?page=1",
+  "results": [
+    {
+      "code": "VAR-22-11-01",
+      "direction": "IMPORT",
+      "full_name": "Flexible Octopus November 2022 v1",
+      "display_name": "Flexible Octopus",
+      "description": "Standard variable tariff.",
+      "is_variable": true,
+      "is_green": false,
+      "is_tracker": false,
+      "is_prepay": false,
+      "is_business": false,
+      "is_restricted": false,
+      "term": null,
+      "available_from": "2022-11-01T00:00:00Z",
+      "available_to": null,
+      "links": [],
+      "brand": "OCTOPUS_ENERGY"
+    }
+  ]
+}

@@ -53,4 +53,4 @@ var tariff = new TariffCode(
     GridSupplyPoint.C);
 ```
 
-See [coding notes](../planning/coding-notes.md) (§8) for tariff encoding background. Resource services that call these paths are tracked on issues [#10](https://github.com/markheydon/octopus-energy-dotnet/issues/10) and [#11](https://github.com/markheydon/octopus-energy-dotnet/issues/11).
+See [coding notes](../planning/coding-notes.md) (§8) for tariff encoding background. Product detail is available via [products](products.md). Typed rate-history services are tracked on issue [#11](https://github.com/markheydon/octopus-energy-dotnet/issues/11).

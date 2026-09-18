@@ -17,8 +17,8 @@
 
 | Area | Upstream | SDK |
 |---|---|---|
-| Products | REST `/v1/products/` | Not started |
-| Product / tariffs | REST `/v1/products/{code}/` | Not started |
+| Products | REST `/v1/products/` | Implemented |
+| Product / tariffs | REST `/v1/products/{code}/` | Implemented |
 | Unit rates / standing charges | REST tariff charge URLs | Not started |
 | Grid supply points | REST `/v1/industry/grid-supply-points/` | Not started |
 | Electricity meter-point | REST `/v1/electricity-meter-points/{mpan}/` | Not started |

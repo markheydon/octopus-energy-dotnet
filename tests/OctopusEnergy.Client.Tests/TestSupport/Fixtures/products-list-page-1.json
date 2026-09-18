@@ -1,0 +1,49 @@
+{
+  "count": 3,
+  "next": "products/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "code": "AGILE-FLEX-22-11-25",
+      "direction": "IMPORT",
+      "full_name": "Agile Octopus November 2022 v1",
+      "display_name": "Agile Octopus",
+      "description": "Half-hourly energy prices tied to wholesale prices.",
+      "is_variable": true,
+      "is_green": true,
+      "is_tracker": false,
+      "is_prepay": false,
+      "is_business": false,
+      "is_restricted": false,
+      "term": null,
+      "available_from": "2022-11-25T00:00:00Z",
+      "available_to": null,
+      "links": [
+        {
+          "href": "https://api.octopus.energy/v1/products/AGILE-FLEX-22-11-25/",
+          "method": "GET",
+          "rel": "self"
+        }
+      ],
+      "brand": "OCTOPUS_ENERGY"
+    },
+    {
+      "code": "OTHER-BRAND-PRODUCT",
+      "direction": "IMPORT",
+      "full_name": "Other Brand Product",
+      "display_name": "Other Brand",
+      "description": "A product from another brand on the UK host.",
+      "is_variable": true,
+      "is_green": false,
+      "is_tracker": false,
+      "is_prepay": false,
+      "is_business": false,
+      "is_restricted": false,
+      "term": null,
+      "available_from": "2020-01-01T00:00:00Z",
+      "available_to": null,
+      "links": [],
+      "brand": "OTHER_BRAND"
+    }
+  ]
+}
