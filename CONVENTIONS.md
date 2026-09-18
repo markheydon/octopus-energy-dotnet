@@ -27,7 +27,7 @@ src/
     │   ├── Configuration/
     │   ├── Http/                        # REST transport and pagination internals
     │   ├── GraphQL/                     # v2: token, documents, GraphQL errors
-    │   └── Serialization/
+    │   └── Serialization/                 # JSON converters (for example GridSupplyPointJsonConverter)
     ├── Models/                          # Resource-grouped models
     └── Services/                        # Resource-oriented services
 
@@ -99,6 +99,7 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 
 | Date | Change | Reason |
 |---|---|---|
+| 18 September 2026 | Note GridSupplyPointJsonConverter under Serialization | Review follow-up #33 |
 | 18 September 2026 | Add tariff/GSP helper types to tree | Issue #15 |
 | 18 September 2026 | Clarify project-root public types | Align tree with PR #31 layout |
 | 13 September 2026 | Initial draft | Project kickoff |

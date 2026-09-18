@@ -1,5 +1,5 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using OctopusEnergy.Client.Infrastructure.Serialization;
 
 namespace OctopusEnergy.Client;
 

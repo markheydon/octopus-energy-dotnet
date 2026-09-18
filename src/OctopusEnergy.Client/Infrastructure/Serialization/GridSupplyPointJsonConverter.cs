@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace OctopusEnergy.Client;
+namespace OctopusEnergy.Client.Infrastructure.Serialization;
 
 /// <summary>
 /// Serialises <see cref="GridSupplyPoint"/> as an underscore-prefixed group id (for example <c>_C</c>).

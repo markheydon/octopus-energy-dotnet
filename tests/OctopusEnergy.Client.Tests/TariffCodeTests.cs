@@ -91,7 +91,33 @@ public sealed class TariffCodeTests
         OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
             () => tariffCode.GetRelativeChargePath(TariffChargeKind.DayUnitRates));
 
-        Assert.Contains("electricity", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("gas", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void GetRelativeChargePath_WhenSingleRegisterElectricityDayUnitRates_ThrowsOctopusEnergyRequestException()
+    {
+        TariffCode tariffCode = TariffCode.Parse(AgileElectricity);
+
+        OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
+            () => tariffCode.GetRelativeChargePath(TariffChargeKind.DayUnitRates));
+
+        Assert.Contains("dual-register", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void TryParse_WhenValidCode_ReturnsTrue()
+    {
+        Assert.True(TariffCode.TryParse(AgileElectricity, out TariffCode tariffCode));
+        Assert.Equal(AgileElectricity, tariffCode.ToString());
+    }
+
+    [Theory]
+    [InlineData("E-1R-PRODUCT-")]
+    [InlineData("E-1R-PRODUCT-C-")]
+    public void TryParse_WhenTrailingHyphen_ReturnsFalse(string value)
+    {
+        Assert.False(TariffCode.TryParse(value, out TariffCode _));
     }
 
     [Theory]

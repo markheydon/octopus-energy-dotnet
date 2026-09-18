@@ -94,12 +94,13 @@ public readonly record struct TariffCode
             return false;
         }
 
-        if (!GridSupplyPointParser.TryParseLetter(segments[^1][0], out GridSupplyPoint gridSupplyPoint))
+        string gspSegment = segments[^1];
+        if (gspSegment.Length != 1)
         {
             return false;
         }
 
-        if (segments[^1].Length != 1)
+        if (!GridSupplyPointParser.TryParseLetter(gspSegment[0], out GridSupplyPoint gridSupplyPoint))
         {
             return false;
         }
@@ -133,15 +134,23 @@ public readonly record struct TariffCode
     /// <c>products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/</c>).
     /// </returns>
     /// <exception cref="OctopusEnergyRequestException">
-    /// Day or night unit-rate paths are not available for gas tariffs.
+    /// Day or night unit-rate paths are not available for gas tariffs or single-register electricity tariffs.
     /// </exception>
     public string GetRelativeChargePath(TariffChargeKind chargeKind)
     {
-        if (Fuel == EnergyFuel.Gas &&
-            chargeKind is TariffChargeKind.DayUnitRates or TariffChargeKind.NightUnitRates)
+        if (chargeKind is TariffChargeKind.DayUnitRates or TariffChargeKind.NightUnitRates)
         {
-            throw new OctopusEnergyRequestException(
-                "Day and night unit-rate paths apply to dual-register electricity tariffs only.");
+            if (Fuel == EnergyFuel.Gas)
+            {
+                throw new OctopusEnergyRequestException(
+                    "Day and night unit-rate paths are not available for gas tariffs.");
+            }
+
+            if (RegisterKind != TariffRegisterKind.DualRegister)
+            {
+                throw new OctopusEnergyRequestException(
+                    "Day and night unit-rate paths apply to dual-register electricity tariffs only.");
+            }
         }
 
         string tariffSegment = Fuel == EnergyFuel.Electricity ? "electricity-tariffs" : "gas-tariffs";
