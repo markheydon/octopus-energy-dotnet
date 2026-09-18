@@ -2,7 +2,7 @@
 
 `OctopusEnergy.Client` is an **unofficial**, prerelease SDK for the Octopus Energy **customer** APIs. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
 
-A dashboard API key exposes your account structure and smart-meter consumption. Treat it as a secret and do not share it with third-party services you do not trust. Partner enrolment, quoting, and operations APIs are out of scope — see [customer vs partner](../explanation/customer-vs-partner.md).
+A dashboard API key exposes your account structure and smart-meter consumption. Treat it as a secret and do not share it with third-party services you do not trust. Partner enrolment, quoting, and operations APIs are out of scope - see [customer vs partner](../explanation/customer-vs-partner.md).
 
 ## 1. Create an API key
 
@@ -35,7 +35,7 @@ See [authentication](../how-to/authentication.md) for custom base URLs and suppl
 
 ## 4. List products
 
-The products catalogue is public — no API key required when you use the parameterless constructor:
+The products catalogue is public - no API key required when you use the parameterless constructor:
 
 ```csharp
 using OctopusEnergy.Client.Models.Products;
@@ -63,7 +63,7 @@ See [account detail](../how-to/accounts.md). Electricity and gas consumption are
 
 ## Next steps
 
-- [Units, VAT, and time](../explanation/units-vat-and-time.md) — kWh, pence, VAT fields, BST, and Agile 16:00
+- [Units, VAT, and time](../explanation/units-vat-and-time.md) - kWh, pence, VAT fields, BST, and Agile 16:00
 - [Products catalogue](../how-to/products.md)
 - [Account detail](../how-to/accounts.md)
 - [Authentication](../how-to/authentication.md)

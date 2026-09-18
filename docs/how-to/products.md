@@ -77,7 +77,7 @@ Product detail includes hypermedia `links` on each tariff (for example `standing
 
 ## Related
 
-- [Authentication](authentication.md) — API keys for account and consumption calls
-- [Pagination](pagination.md) — how list enumeration works
-- [Tariff codes and GSP](tariff-codes.md) — parse tariff codes from product detail
+- [Authentication](authentication.md) - API keys for account and consumption calls
+- [Pagination](pagination.md) - how list enumeration works
+- [Tariff codes and GSP](tariff-codes.md) - parse tariff codes from product detail
 - [API coverage](../reference/api-coverage.md)

@@ -25,8 +25,8 @@ Model and display the unit your interval payload uses. Do not assume gas is alwa
 
 Many money fields appear twice:
 
-- Properties ending in `ExcVat` (wire `value_exc_vat`) — excluding VAT
-- Properties ending in `IncVat` (wire `value_inc_vat`) — including VAT
+- Properties ending in `ExcVat` (wire `value_exc_vat`) - excluding VAT
+- Properties ending in `IncVat` (wire `value_inc_vat`) - including VAT
 
 Domestic supply VAT is typically **5%**. The SDK documents that rate; it does not validate your tax treatment or business rules (G2: fail fast only on official local contract constraints).
 
@@ -51,7 +51,7 @@ DateTimeOffset from = OctopusEnergyTime.AssumeEuropeLondon(
 
 ## Agile and 16:00 Europe/London
 
-**Agile** day-ahead unit rates typically publish by **16:00 Europe/London**. Before then, a **short day** (for example **46** half-hour slots instead of **48**) is normal — do not treat it as missing data.
+**Agile** day-ahead unit rates typically publish by **16:00 Europe/London**. Before then, a **short day** (for example **46** half-hour slots instead of **48**) is normal - do not treat it as missing data.
 
 An Agile **pricing day** follows the **CET market index**, roughly **23:00–23:00 UK** civil time, not a simple UTC or calendar-day boundary.
 
@@ -64,5 +64,5 @@ This SDK returns documented rates; it does not predict wholesale prices or recom
 - [Getting started](../tutorial/getting-started.md)
 - [Pagination](../how-to/pagination.md)
 - [Error handling](../how-to/error-handling.md)
-- [REST and GraphQL](rest-and-graphql.md) — v1 is REST; GraphQL extras are v2
-- [Coding notes](../planning/coding-notes.md) (§7–9) — implementer source for numbers and quirks
+- [REST and GraphQL](rest-and-graphql.md) - v1 is REST; GraphQL extras are v2
+- [Coding notes](../planning/coding-notes.md) (§7–9) - implementer source for numbers and quirks

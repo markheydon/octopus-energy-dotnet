@@ -44,4 +44,4 @@ Pagination stops and throws on non-success HTTP responses. Items from pages that
 ## Related
 
 - [Pagination](pagination.md)
-- [Authentication](authentication.md) — protect API keys; logging middleware may capture `Authorization`
+- [Authentication](authentication.md) - protect API keys; logging middleware may capture `Authorization`

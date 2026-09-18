@@ -8,7 +8,7 @@ You already have an account number (for example from a bill or your own records)
 
 ## Prerequisites
 
-- Dashboard API key — see [authentication](authentication.md)
+- Dashboard API key - see [authentication](authentication.md)
 - Account number in the form `A-12345678`
 
 ## Fetch account detail

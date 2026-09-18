@@ -1,6 +1,6 @@
 # OctopusEnergy.Client documentation
 
-Documentation in this folder is for **developers using the NuGet package** — except `planning/`, which is for SDK implementers.
+Documentation in this folder is for **developers using the NuGet package** - except `planning/`, which is for SDK implementers.
 
 Internal policy: repository root (`GOALS.md`, `SCOPE.md`, `CONVENTIONS.md`) and [`plan/`](../plan/). ADRs: [`adr/`](../adr/).
 
@@ -8,10 +8,10 @@ Internal policy: repository root (`GOALS.md`, `SCOPE.md`, `CONVENTIONS.md`) and 
 
 Content follows the [Diátaxis](https://diataxis.fr/) framework:
 
-- **Tutorials** (`tutorial/`) — learning-oriented; one successful path for newcomers.
-- **How-to guides** (`how-to/`) — problem-oriented recipes (pagination, auth, a resource).
-- **Reference** (`reference/`) — what the SDK implements today.
-- **Explanation** (`explanation/`) — understanding-oriented (units, VAT, BST, Agile 16:00, customer vs partner).
+- **Tutorials** (`tutorial/`) - learning-oriented; one successful path for newcomers.
+- **How-to guides** (`how-to/`) - problem-oriented recipes (pagination, auth, a resource).
+- **Reference** (`reference/`) - what the SDK implements today.
+- **Explanation** (`explanation/`) - understanding-oriented (units, VAT, BST, Agile 16:00, customer vs partner).
 
 README files (repository root and NuGet package) are short entry points with links into `docs/`. Implementer research and maxima stay in [coding notes](planning/coding-notes.md); consumer pages restate what callers need without duplicating the full planning dump. Partner APIs stay out of scope. GraphQL consumer docs ride with v2; v1 is REST.
 

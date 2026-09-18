@@ -27,8 +27,8 @@ At the end, a **smoke summary** lists each check with ✓ (pass), `-` (skip), or
 
 | Variable | Required | Default | Purpose |
 |---|---|---|---|
-| `OCTOPUS_ENERGY_API_KEY` | No | — | Enables authenticated sections (account, consumption). |
-| `OCTOPUS_ENERGY_ACCOUNT_NUMBER` | No | — | Account detail and meter identifiers for consumption. |
+| `OCTOPUS_ENERGY_API_KEY` | No | - | Enables authenticated sections (account, consumption). |
+| `OCTOPUS_ENERGY_ACCOUNT_NUMBER` | No | - | Account detail and meter identifiers for consumption. |
 | `OCTOPUS_ENERGY_POSTCODE` | No | `W1 1AA` | Postcode for industry GSP lookup. |
 | `OCTOPUS_ENERGY_MPAN` | No | From account | Optional override for industry meter-point lookup; pair with `OCTOPUS_ENERGY_ELECTRICITY_METER_SERIAL` for consumption without an account number. |
 | `OCTOPUS_ENERGY_ELECTRICITY_METER_SERIAL` | No | From account | Electricity meter serial for consumption. |

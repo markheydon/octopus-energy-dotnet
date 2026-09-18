@@ -15,7 +15,7 @@ The same pattern applies to consumption intervals, tariff rate history, and othe
 
 ## Documented `page_size` limits
 
-Official defaults and maxima are exposed on `RestPageSizeLimits` — use these constants rather than hard-coding numbers:
+Official defaults and maxima are exposed on `RestPageSizeLimits` - use these constants rather than hard-coding numbers:
 
 | Constant | Value | Use |
 |---|---|---|
@@ -46,5 +46,5 @@ See [authentication](authentication.md) for API-key handling and secret hygiene.
 
 ## Related
 
-- [Error handling](error-handling.md) — pagination stops on non-success HTTP responses
+- [Error handling](error-handling.md) - pagination stops on non-success HTTP responses
 - [Products catalogue](products.md)
