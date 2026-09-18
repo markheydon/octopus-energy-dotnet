@@ -6,7 +6,7 @@ Unofficial .NET client for the [Octopus Energy](https://octopus.energy/) **custo
 [![NuGet](https://img.shields.io/nuget/v/OctopusEnergy.Client.svg)](https://www.nuget.org/packages/OctopusEnergy.Client/)
 [![NuGet (prerelease)](https://img.shields.io/nuget/vpre/OctopusEnergy.Client.svg?label=nuget%20prerelease)](https://www.nuget.org/packages/OctopusEnergy.Client/)
 
-> **Prerelease software.** The package is currently a compile-only skeleton. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
+> **Prerelease software.** HTTP transport, pagination, errors, and API-key authentication are implemented. Resource methods are still being added. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
 
 **Documentation:** [docs/](docs/) - consumer guides plus [planning notes](docs/planning/coding-notes.md) for implementers.
 
@@ -16,7 +16,7 @@ Typed, discoverable SDK so callers do not reconstruct REST URLs or GraphQL docum
 
 ## Status
 
-Scaffolding and research only. `OctopusEnergyClient` compiles and has no HTTP behaviour yet.
+Prerelease. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, and dashboard API-key authentication. Resource services are not implemented yet.
 
 Planned:
 
@@ -31,14 +31,18 @@ dotnet add package OctopusEnergy.Client
 
 ## Quick start
 
-Not available until v1 lands. Planned shape:
-
 ```csharp
 using OctopusEnergy.Client;
 
 // API key from https://octopus.energy/dashboard/new/accounts/personal-details/api-access
+// Treat as a secret — never commit it to source control.
+const string apiKey = "sk_test_not_a_real_key";
 using var client = new OctopusEnergyClient(apiKey);
 ```
+
+Public catalogue calls work without a key: `using var client = new OctopusEnergyClient();`
+
+See [getting started](docs/tutorial/getting-started.md) and [authentication](docs/how-to/authentication.md).
 
 ## Building from source
 

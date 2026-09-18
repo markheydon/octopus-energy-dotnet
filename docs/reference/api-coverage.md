@@ -1,8 +1,16 @@
 # API coverage
 
-Nothing is implemented yet except a placeholder `OctopusEnergyClient` type.
+## Infrastructure (implemented)
 
-## v1 (planned)
+| Capability | Status |
+|---|---|
+| REST HTTP transport | Implemented |
+| REST pagination (`next` following) | Implemented |
+| Typed exception hierarchy | Implemented |
+| API-key HTTP Basic authentication | Implemented |
+| Configurable base URL (default UK host) | Implemented |
+
+## v1 resources (planned)
 
 | Area | Upstream | SDK |
 |---|---|---|

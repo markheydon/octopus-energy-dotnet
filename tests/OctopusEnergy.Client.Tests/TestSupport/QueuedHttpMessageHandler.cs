@@ -5,6 +5,9 @@ namespace OctopusEnergy.Client.Tests.TestSupport;
 internal sealed class QueuedHttpMessageHandler : HttpMessageHandler
 {
     private readonly Queue<Func<HttpRequestMessage, HttpResponseMessage>> _responses = new();
+    private readonly List<HttpRequestMessage> _sentRequests = [];
+
+    internal IReadOnlyList<HttpRequestMessage> SentRequests => _sentRequests;
 
     internal void Enqueue(HttpStatusCode statusCode, string content, string mediaType = "application/json")
     {
@@ -27,6 +30,8 @@ internal sealed class QueuedHttpMessageHandler : HttpMessageHandler
         {
             throw new InvalidOperationException($"No queued response for {request.Method} {request.RequestUri}.");
         }
+
+        _sentRequests.Add(request);
 
         Func<HttpRequestMessage, HttpResponseMessage> responseFactory = _responses.Dequeue();
         return Task.FromResult(responseFactory(request));
