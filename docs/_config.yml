@@ -2,7 +2,7 @@ title: OctopusEnergy.Client
 description: Unofficial .NET SDK for the Octopus Energy customer APIs
 theme: jekyll-theme-minimal
 
-url: https://markheydon.github.io
+url: https://markheydon.me.uk
 baseurl: /octopus-energy-dotnet
 
 markdown: kramdown
@@ -21,3 +21,5 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
+  - planning
+  - contributing-setup.md

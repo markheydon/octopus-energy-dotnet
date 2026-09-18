@@ -5,7 +5,7 @@ REST list endpoints return `count`, `next`, `previous`, and `results`. Resource 
 ## Automatic pagination
 
 ```csharp
-await foreach (Product product in client.Products.ListAsync(cancellationToken))
+await foreach (Product product in client.Products.ListAsync())
 {
     // Each item; the SDK fetches further pages as needed.
 }
@@ -25,7 +25,7 @@ Official defaults and maxima are exposed on `RestPageSizeLimits` - use these con
 
 Passing a larger `page_size` throws `OctopusEnergyRequestException` before any HTTP call.
 
-Implementer source: [coding notes](../planning/coding-notes.md) (§6).
+Implementer source: [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 6).
 
 ## GraphQL (v2)
 

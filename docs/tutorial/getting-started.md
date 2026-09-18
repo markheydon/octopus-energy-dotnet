@@ -40,7 +40,7 @@ The products catalogue is public - no API key required when you use the paramete
 ```csharp
 using OctopusEnergy.Client.Models.Products;
 
-await foreach (Product product in client.Products.ListAsync(cancellationToken))
+await foreach (Product product in client.Products.ListAsync())
 {
     Console.WriteLine(product.DisplayName);
 }
@@ -55,7 +55,7 @@ Account calls require an API key and your account number (`A-XXXXXXXX`):
 ```csharp
 using OctopusEnergy.Client.Models.Accounts;
 
-Account account = await client.Accounts.GetAsync("A-12345678", cancellationToken);
+Account account = await client.Accounts.GetAsync("A-12345678");
 Console.WriteLine($"{account.Number}: {account.Properties.Count} properties");
 ```
 

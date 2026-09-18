@@ -14,6 +14,8 @@ REST uses HTTP status codes. GraphQL (v2) usually returns HTTP 200 with `errors.
 ## Catch SDK failures
 
 ```csharp
+CancellationToken cancellationToken = default;
+
 try
 {
     Account account = await client.Accounts.GetAsync("A-UNKNOWN", cancellationToken);

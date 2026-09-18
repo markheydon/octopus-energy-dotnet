@@ -15,7 +15,7 @@ The SDK returns typed models and documents official contract limits (for example
 
 Model and display the unit your interval payload uses. Do not assume gas is always kWh.
 
-**Tariff rates** use **p/kWh** for unit rates and **p/day** for standing charges. Product detail and rate history expose these as decimal properties (for example `StandardUnitRateIncVat`).
+**Tariff rates** use **p/kWh** for unit rates and **p/day** for standing charges. Product detail exposes snapshot rates on `ProductTariff` (for example `StandardUnitRateIncVat`). Rate history returns `TariffCharge` rows with `ValueIncVat` and `ValueExcVat`.
 
 **Quotes and bills** often use **pence** rather than pounds. Check field names and magnitudes before formatting for display.
 
@@ -23,12 +23,12 @@ Model and display the unit your interval payload uses. Do not assume gas is alwa
 
 ## VAT
 
-Many money fields appear twice:
+Many money fields appear twice as excluding- and including-VAT variants:
 
-- Properties ending in `ExcVat` (wire `value_exc_vat`) - excluding VAT
-- Properties ending in `IncVat` (wire `value_inc_vat`) - including VAT
+- Property names ending in `ExcVat` / `IncVat` (for example `StandardUnitRateExcVat` on product detail)
+- Wire names vary by endpoint: `standard_unit_rate_exc_vat` on product tariffs; `value_exc_vat` on standing-charge and unit-rate history (`TariffCharge`)
 
-Domestic supply VAT is typically **5%**. The SDK documents that rate; it does not validate your tax treatment or business rules (G2: fail fast only on official local contract constraints).
+Domestic supply VAT is typically **5%**. The SDK documents that rate; it does not validate your tax treatment or business rules.
 
 Use the field that matches your display or reconciliation need. Do not assume every monetary value is VAT-inclusive.
 
@@ -53,7 +53,7 @@ DateTimeOffset from = OctopusEnergyTime.AssumeEuropeLondon(
 
 **Agile** day-ahead unit rates typically publish by **16:00 Europe/London**. Before then, a **short day** (for example **46** half-hour slots instead of **48**) is normal - do not treat it as missing data.
 
-An Agile **pricing day** follows the **CET market index**, roughly **23:00–23:00 UK** civil time, not a simple UTC or calendar-day boundary.
+An Agile **pricing day** follows the **CET market index**, roughly **23:00-23:00 UK** civil time, not a simple UTC or calendar-day boundary.
 
 **Go** tariffs use long `valid_from` / `valid_to` windows rather than 48 half-hour slots. **Economy 7** uses separate day and night rate URLs (`E-2R-…` tariff codes).
 
@@ -65,4 +65,4 @@ This SDK returns documented rates; it does not predict wholesale prices or recom
 - [Pagination](../how-to/pagination.md)
 - [Error handling](../how-to/error-handling.md)
 - [REST and GraphQL](rest-and-graphql.md) - v1 is REST; GraphQL extras are v2
-- [Coding notes](../planning/coding-notes.md) (§7–9) - implementer source for numbers and quirks
+- [Coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (sections 7-9) - implementer source for numbers and quirks

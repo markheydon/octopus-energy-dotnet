@@ -18,6 +18,8 @@ using OctopusEnergy.Client;
 using OctopusEnergy.Client.Models.Accounts;
 
 const string apiKey = "sk_test_not_a_real_key";
+CancellationToken cancellationToken = default;
+
 using var client = new OctopusEnergyClient(apiKey);
 
 Account account = await client.Accounts.GetAsync("A-12345678", cancellationToken);
@@ -39,10 +41,26 @@ Each `AccountProperty` includes address fields, `ElectricityMeterPoints`, and `G
 
 Use tariff codes from agreements with [tariff codes and GSP](tariff-codes.md) and `client.TariffRates` for standing charges and unit-rate history. Consumption intervals are on `client.Consumption` (dedicated how-to to follow).
 
+## Import vs export MPANs
+
+The REST payload includes `is_export` on electricity meter points when the API returns it. When the field is missing, use `TariffCode.Parse` on agreement codes or other context. The API is not always obvious when you have multiple MPANs on one property.
+
+```csharp
+if (point.IsExport == true)
+{
+    // Export MPAN - consumption endpoints still use the field name "consumption".
+}
+```
+
 ## Errors
 
-- Empty account number → `OctopusEnergyRequestException` before HTTP
-- Unknown account → `OctopusEnergyApiException` (typically HTTP 404 with a `detail` message)
+| HTTP status | Exception | Typical cause |
+|---|---|---|
+| 401 | `OctopusEnergyApiException` | Missing or invalid API key |
+| 403 | `OctopusEnergyApiException` | API access not enabled for the account user |
+| 404 | `OctopusEnergyApiException` | Unknown account number |
+
+Empty or whitespace account numbers throw `OctopusEnergyRequestException` before any HTTP call.
 
 See [error handling](error-handling.md).
 

@@ -8,7 +8,7 @@ Unofficial .NET client for the [Octopus Energy](https://octopus.energy/) **custo
 
 > **Prerelease software.** HTTP transport, pagination, errors, API-key authentication, the products catalogue, and account detail are implemented. Further resource methods are being added. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
 
-**Documentation:** [Consumer docs](https://markheydon.github.io/octopus-energy-dotnet/) (GitHub Pages) — source in [`docs/`](docs/). Implementer notes: [coding notes](docs/planning/coding-notes.md).
+**Documentation:** [Consumer docs](https://markheydon.me.uk/octopus-energy-dotnet/) (GitHub Pages) - source in [`docs/`](docs/). Implementer notes: [coding notes](docs/planning/coding-notes.md).
 
 ## Goals
 
@@ -44,7 +44,7 @@ await foreach (var product in client.Products.ListAsync())
 
 For account and consumption calls, pass your API key from the [Octopus dashboard](https://octopus.energy/dashboard/new/accounts/personal-details/api-access). Treat it as a secret.
 
-See [getting started](https://markheydon.github.io/octopus-energy-dotnet/tutorial/getting-started/), [authentication](https://markheydon.github.io/octopus-energy-dotnet/how-to/authentication/), and [units, VAT, and time](https://markheydon.github.io/octopus-energy-dotnet/explanation/units-vat-and-time/) for kWh, VAT fields, BST, and Agile 16:00 behaviour.
+See [getting started](https://markheydon.me.uk/octopus-energy-dotnet/tutorial/getting-started.html), [authentication](https://markheydon.me.uk/octopus-energy-dotnet/how-to/authentication.html), and [units, VAT, and time](https://markheydon.me.uk/octopus-energy-dotnet/explanation/units-vat-and-time.html) for kWh, VAT fields, BST, and Agile 16:00 behaviour.
 
 ## Building from source
 

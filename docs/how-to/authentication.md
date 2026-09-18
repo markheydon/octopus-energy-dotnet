@@ -52,4 +52,4 @@ using var client = new OctopusEnergyClient(apiKey, httpClient);
 
 GraphQL JWT exchange is a v2 implementation detail. v1 REST uses Basic only.
 
-See [coding notes](../planning/coding-notes.md) (§3 REST).
+See [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 3, REST).
