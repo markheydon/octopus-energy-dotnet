@@ -36,11 +36,28 @@ Warnings fail the build.
 dotnet format OctopusEnergy.slnx --verify-no-changes
 ```
 
+## Recorded HTTP fixtures
+
+Default `dotnet test` and CI use **recorded JSON fixtures** only. Tests queue
+responses with `QueuedHttpMessageHandler` and `FixtureFile.Read(...)`; they never
+call `api.octopus.energy` unless you opt in.
+
+To add a fixture:
+
+1. Capture a representative response locally and redact secrets and real account identifiers.
+2. Save it under `tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/`.
+3. Load it in tests with `FixtureFile.Read("your-fixture.json")`.
+
+See [Fixtures/README.md](../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/README.md) for naming and pagination notes.
+
 ## Live API keys
 
 Do not put API keys in the repo. CI uses recorded fixtures only. Optional live checks must be local and opt-in.
 
-To smoke-test the SDK against the live UK API, run the [products console sample](../samples/README.md):
+Set `OCTOPUS_ENERGY_ENABLE_LIVE_TESTS=1` to run live xUnit smoke tests under
+`tests/OctopusEnergy.Client.Tests/Live/`. They remain skipped in CI.
+
+To smoke-test the SDK against the live UK API without xUnit, run the [products console sample](../samples/README.md):
 
 ```bash
 dotnet run --project samples/ProductsConsole
