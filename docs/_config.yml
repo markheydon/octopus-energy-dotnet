@@ -1,0 +1,23 @@
+title: OctopusEnergy.Client
+description: Unofficial .NET SDK for the Octopus Energy customer APIs
+theme: jekyll-theme-minimal
+
+url: https://markheydon.github.io
+baseurl: /octopus-energy-dotnet
+
+markdown: kramdown
+permalink: pretty
+
+plugins:
+  - jekyll-readme-index
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-seo-tag
+  - jekyll-github-metadata
+
+repository: markheydon/octopus-energy-dotnet
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor

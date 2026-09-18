@@ -6,7 +6,7 @@ Dashboard API keys expose account structure and consumption. Treat keys as secre
 
 This package is **prerelease**. The public API will change. See the [repository README](https://github.com/markheydon/octopus-energy-dotnet) and [VERSIONING.md](https://github.com/markheydon/octopus-energy-dotnet/blob/main/VERSIONING.md).
 
-Full consumer documentation: [docs/](https://github.com/markheydon/octopus-energy-dotnet/tree/main/docs).
+Full consumer documentation: [markheydon.github.io/octopus-energy-dotnet](https://markheydon.github.io/octopus-energy-dotnet/).
 
 ## Units
 
@@ -14,7 +14,7 @@ Full consumer documentation: [docs/](https://github.com/markheydon/octopus-energ
 - Gas: **SMETS1** reports kWh; **SMETS2** reports **m³**.
 - Tariff rates: **p/kWh** and **p/day**. Quotes and bills often use **pence**.
 
-Details: [units, VAT, and time](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/explanation/units-vat-and-time.md).
+Details: [units, VAT, and time](https://markheydon.github.io/octopus-energy-dotnet/explanation/units-vat-and-time/).
 
 ## VAT
 
@@ -35,4 +35,4 @@ Agile day-ahead rates typically publish by **16:00 Europe/London**; a short day 
 Use `OctopusEnergyTime.AssumeEuropeLondon(...)` when you need to construct a UK
 civil time that the API would treat as local.
 
-Details: [units, VAT, and time](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/explanation/units-vat-and-time.md).
+Details: [units, VAT, and time](https://markheydon.github.io/octopus-energy-dotnet/explanation/units-vat-and-time/).

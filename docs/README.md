@@ -2,7 +2,7 @@
 
 Documentation in this folder is for **developers using the NuGet package** - except `planning/`, which is for SDK implementers.
 
-Internal policy: repository root (`GOALS.md`, `SCOPE.md`, `CONVENTIONS.md`) and [`plan/`](../plan/). ADRs: [`adr/`](../adr/).
+Internal policy: repository root ([`GOALS.md`](https://github.com/markheydon/octopus-energy-dotnet/blob/main/GOALS.md), [`SCOPE.md`](https://github.com/markheydon/octopus-energy-dotnet/blob/main/SCOPE.md), [`CONVENTIONS.md`](https://github.com/markheydon/octopus-energy-dotnet/blob/main/CONVENTIONS.md)) and [`plan/`](https://github.com/markheydon/octopus-energy-dotnet/tree/main/plan). ADRs: [`adr/`](https://github.com/markheydon/octopus-energy-dotnet/tree/main/adr).
 
 ## How we write consumer docs
 
@@ -35,7 +35,7 @@ README files (repository root and NuGet package) are short entry points with lin
 
 ## Related links
 
-- [README](../README.md)
-- [VERSIONING.md](../VERSIONING.md)
-- [SUPPORT.md](../SUPPORT.md)
+- [Repository README](https://github.com/markheydon/octopus-energy-dotnet/blob/main/README.md)
+- [VERSIONING.md](https://github.com/markheydon/octopus-energy-dotnet/blob/main/VERSIONING.md)
+- [SUPPORT.md](https://github.com/markheydon/octopus-energy-dotnet/blob/main/SUPPORT.md)
 - [Octopus API documentation](https://docs.octopus.energy/)
