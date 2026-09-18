@@ -15,6 +15,8 @@ Smoke-tests every implemented public SDK surface against `https://api.octopus.en
 
 When `OCTOPUS_ENERGY_API_KEY` is set, authenticated sections run first so an invalid key fails fast. Public sections always run.
 
+At the end, a **smoke summary** lists each check with ✓ (pass), `-` (skip), or ✗ (fail), plus counts. Skips are expected when optional data is missing (no gas meter, no MPAN override, and so on). Exit code `0` when nothing failed.
+
 ### Prerequisites
 
 - .NET 10.0 SDK
