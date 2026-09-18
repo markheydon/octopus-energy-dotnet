@@ -44,7 +44,7 @@ await foreach (var product in client.Products.ListAsync())
 
 For account and consumption calls, pass your API key from the [Octopus dashboard](https://octopus.energy/dashboard/new/accounts/personal-details/api-access). Treat it as a secret.
 
-See [getting started](docs/tutorial/getting-started.md) and [authentication](docs/how-to/authentication.md).
+See [getting started](docs/tutorial/getting-started.md), [authentication](docs/how-to/authentication.md), and [units, VAT, and time](docs/explanation/units-vat-and-time.md) for kWh, VAT fields, BST, and Agile 16:00 behaviour.
 
 ## Building from source
 

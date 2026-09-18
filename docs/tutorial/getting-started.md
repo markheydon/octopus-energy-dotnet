@@ -1,10 +1,12 @@
 # Getting started
 
-`OctopusEnergy.Client` is a prerelease SDK. HTTP transport, pagination, typed errors, API-key authentication, the products catalogue, and account detail are available. Consumption resource methods are still being added.
+`OctopusEnergy.Client` is an **unofficial**, prerelease SDK for the Octopus Energy **customer** APIs. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
+
+A dashboard API key exposes your account structure and smart-meter consumption. Treat it as a secret and do not share it with third-party services you do not trust. Partner enrolment, quoting, and operations APIs are out of scope — see [customer vs partner](../explanation/customer-vs-partner.md).
 
 ## 1. Create an API key
 
-Generate a key in the [Octopus dashboard](https://octopus.energy/dashboard/new/accounts/personal-details/api-access). Treat it as a secret.
+Generate a key in the [Octopus dashboard](https://octopus.energy/dashboard/new/accounts/personal-details/api-access).
 
 ## 2. Install the package
 
@@ -14,7 +16,7 @@ dotnet add package OctopusEnergy.Client
 
 ## 3. Construct the client
 
-For account and consumption calls, pass your API key:
+Pass your API key for account, consumption, and other authenticated calls:
 
 ```csharp
 using OctopusEnergy.Client;
@@ -31,33 +33,22 @@ using var client = new OctopusEnergyClient();
 
 See [authentication](../how-to/authentication.md) for custom base URLs and supplying your own `HttpClient`.
 
-## 4. Parse tariff codes (optional)
+## 4. List products
 
-If you already have a tariff code from an account or product response, parse it without building URL segments yourself:
-
-```csharp
-TariffCode tariff = TariffCode.Parse("E-1R-AGILE-FLEX-22-11-25-C");
-string ratesPath = tariff.GetRelativeChargePath(TariffChargeKind.StandardUnitRates);
-```
-
-See [tariff codes and GSP](../how-to/tariff-codes.md).
-
-## 5. List products
-
-Public catalogue endpoints work without an API key:
+The products catalogue is public — no API key required when you use the parameterless constructor:
 
 ```csharp
 using OctopusEnergy.Client.Models.Products;
 
-await foreach (Product product in client.Products.ListAsync(cancellationToken: cancellationToken))
+await foreach (Product product in client.Products.ListAsync(cancellationToken))
 {
     Console.WriteLine(product.DisplayName);
 }
 ```
 
-See [products](../how-to/products.md) for filters, product detail, and GSP tariff maps.
+Pagination is automatic. See [products](../how-to/products.md) for filters and product detail.
 
-## 6. Fetch account detail
+## 5. Fetch account detail
 
 Account calls require an API key and your account number (`A-XXXXXXXX`):
 
@@ -68,14 +59,14 @@ Account account = await client.Accounts.GetAsync("A-12345678", cancellationToken
 Console.WriteLine($"{account.Number}: {account.Properties.Count} properties");
 ```
 
-See [account detail](../how-to/accounts.md). Consumption services are tracked on feature [#6](https://github.com/markheydon/octopus-energy-dotnet/issues/6).
+See [account detail](../how-to/accounts.md). Electricity and gas consumption are available on `client.Consumption`; a dedicated how-to will follow.
 
 ## Next steps
 
+- [Units, VAT, and time](../explanation/units-vat-and-time.md) — kWh, pence, VAT fields, BST, and Agile 16:00
 - [Products catalogue](../how-to/products.md)
 - [Account detail](../how-to/accounts.md)
 - [Authentication](../how-to/authentication.md)
-- [Tariff codes and GSP](../how-to/tariff-codes.md)
 - [Pagination](../how-to/pagination.md)
 - [Error handling](../how-to/error-handling.md)
 - [API coverage](../reference/api-coverage.md)

@@ -73,7 +73,7 @@ ProductDetail historic = await client.Products.GetAsync(
 
 ## Standing charges and unit-rate history
 
-Product detail includes hypermedia `links` on each tariff (for example `standing_charges`, `standard_unit_rates`). Typed methods to fetch rate history are tracked on issue [#11](https://github.com/markheydon/octopus-energy-dotnet/issues/11). Until then, parse a tariff code and build a relative path with [tariff codes and GSP](tariff-codes.md).
+Product detail includes hypermedia `links` on each tariff (for example `standing_charges`, `standard_unit_rates`). Use `client.TariffRates` to list standing charges and unit rates for a parsed `TariffCode`. A dedicated how-to for rate history will follow; until then, see [tariff codes and GSP](tariff-codes.md) and [units, VAT, and time](../explanation/units-vat-and-time.md).
 
 ## Related
 
