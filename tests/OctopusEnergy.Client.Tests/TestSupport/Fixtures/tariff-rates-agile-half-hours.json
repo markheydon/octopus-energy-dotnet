@@ -1,0 +1,21 @@
+{
+  "count": 2,
+  "next": "https://api.example.test/v1/products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "value_exc_vat": 17.43,
+      "value_inc_vat": 18.3015,
+      "valid_from": "2024-03-31T00:00:00Z",
+      "valid_to": "2024-03-31T00:30:00Z",
+      "payment_method": null
+    },
+    {
+      "value_exc_vat": 16.8,
+      "value_inc_vat": 17.64,
+      "valid_from": "2024-03-31T00:30:00Z",
+      "valid_to": "2024-03-31T01:00:00Z",
+      "payment_method": null
+    }
+  ]
+}

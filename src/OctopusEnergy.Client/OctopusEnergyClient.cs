@@ -128,6 +128,7 @@ public sealed class OctopusEnergyClient : IDisposable
         Rest = new RestClient(_httpClient);
         Accounts = new AccountService(Rest);
         Products = new ProductService(Rest);
+        TariffRates = new TariffRatesService(Rest);
     }
 
     /// <summary>
@@ -139,6 +140,11 @@ public sealed class OctopusEnergyClient : IDisposable
     /// Product catalogue and product detail.
     /// </summary>
     public ProductService Products { get; }
+
+    /// <summary>
+    /// Standing charges and unit rates for product tariffs.
+    /// </summary>
+    public TariffRatesService TariffRates { get; }
 
     internal RestClient Rest { get; }
 
