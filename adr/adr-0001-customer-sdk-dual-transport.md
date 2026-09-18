@@ -27,11 +27,11 @@ DEC-005: Authentication for GraphQL, when added, is `obtainKrakenToken` with **A
 
 ## Alternatives considered
 
-ALT-001: Wrap the entire GraphQL schema. Rejected — partner/ops surface, `KT-CT-1113` failures, poor IntelliSense.
+ALT-001: Wrap the entire GraphQL schema. Rejected - partner/ops surface, `KT-CT-1113` failures, poor IntelliSense.
 
-ALT-002: REST-only forever. Rejected as a permanent rule — Mini telemetry, Intelligent dispatches, and `viewer` need GraphQL — but accepted as **v1** scope.
+ALT-002: REST-only forever. Rejected as a permanent rule - Mini telemetry, Intelligent dispatches, and `viewer` need GraphQL - but accepted as **v1** scope.
 
-ALT-003: Separate NuGet packages for REST and GraphQL. Rejected for v1/v2 — extra versioning cost; revisit only if GraphQL dependencies become heavy.
+ALT-003: Separate NuGet packages for REST and GraphQL. Rejected for v1/v2 - extra versioning cost; revisit only if GraphQL dependencies become heavy.
 
 ## Consequences
 

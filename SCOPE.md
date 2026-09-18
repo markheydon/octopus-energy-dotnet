@@ -5,7 +5,7 @@
 
 ---
 
-## In Scope — v1.0 (REST customer core)
+## In Scope - v1.0 (REST customer core)
 
 - Authenticated HTTP client using the customer dashboard **API key** (HTTP Basic, empty password) against `https://api.octopus.energy/v1/`.
 - Configurable base URL (default UK host) so other Kraken retail hosts can be tried later without claiming support.
@@ -26,7 +26,7 @@
 
 ---
 
-## In Scope — v2 (GraphQL customer extras)
+## In Scope - v2 (GraphQL customer extras)
 
 Not required for v1.0. Tracked as a separate GitHub milestone.
 

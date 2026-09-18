@@ -3,7 +3,7 @@
 # Conventions
 
 **Project:** OctopusEnergy.Client
-**Last updated:** 13 September 2026
+**Last updated:** 18 September 2026
 
 When in doubt, follow this file. To change a convention, update it and add an ADR for significant architecture changes.
 
@@ -14,28 +14,33 @@ When in doubt, follow this file. To change a convention, update it and add an AD
 ```
 src/
 └── OctopusEnergy.Client/
-    ├── OctopusEnergyClient.cs
-    ├── Infrastructure/          # Internal plumbing
+    ├── OctopusEnergyClient.cs           # Public entry point
+    ├── OctopusEnergyException.cs        # Public exception hierarchy (root)
+    ├── OctopusEnergy*Exception.cs
+    ├── RestPageSizeLimits.cs            # Public contract limits (pagination)
+    ├── Infrastructure/                  # Internal plumbing
     │   ├── Authentication/
     │   ├── Configuration/
-    │   ├── Http/                # REST transport, exceptions, REST pagination
-    │   ├── GraphQL/             # v2: token, documents, GraphQL errors
+    │   ├── Http/                        # REST transport and pagination internals
+    │   ├── GraphQL/                     # v2: token, documents, GraphQL errors
     │   └── Serialization/
-    ├── Models/                  # Resource-grouped models
-    └── Services/                # Resource-oriented services
+    ├── Models/                          # Resource-grouped models
+    └── Services/                        # Resource-oriented services
 
 tests/
 └── OctopusEnergy.Client.Tests/
     ├── OctopusEnergyClientTests.cs
     ├── Infrastructure/
     ├── Services/
-    └── TestSupport/             # Recorded fixtures (no live keys in CI)
+    └── TestSupport/                     # Recorded fixtures (no live keys in CI)
 ```
+
+Place every **public** type in the `OctopusEnergy.Client` namespace at the project root (one type per file). Subfolders group internal code and resource-specific models or services; folder names do not have to mirror namespaces. Optional physical subfolders such as `Exceptions/` are fine if the namespace stays `OctopusEnergy.Client`.
 
 **Namespace layout:**
 
-- `OctopusEnergy.Client` — `OctopusEnergyClient` and public pagination types
-- `OctopusEnergy.Client.Infrastructure.*` — transport
+- `OctopusEnergy.Client` - `OctopusEnergyClient`, public exception types, and other caller-facing helpers (for example pagination limits)
+- `OctopusEnergy.Client.Infrastructure.*` - transport and other internal plumbing
 - `OctopusEnergy.Client.Models.[Resource]`
 - `OctopusEnergy.Client.Services.[Resource].[Resource]Service`
 
@@ -52,13 +57,13 @@ tests/
 
 ## Patterns in Use
 
-- **Client + Services** — one `OctopusEnergyClient` with discoverable resources.
-- **Strongly typed contracts** — explicit models; `JsonPropertyName` on every serialised property.
-- **Exception hierarchy** — SDK-specific types, not raw `HttpRequestException` as the public contract.
-- **Async-first** — cancellation-aware.
-- **Customer allow-list** — do not add a method because it exists on the GraphQL schema. Add it because a customer API key can call it (documented + runtime-verified).
-- **No full schema codegen** — hand-picked operations.
-- **Documented contract validation only** — e.g. REST `page_size` maxima from Octopus docs.
+- **Client + Services** - one `OctopusEnergyClient` with discoverable resources.
+- **Strongly typed contracts** - explicit models; `JsonPropertyName` on every serialised property.
+- **Exception hierarchy** - SDK-specific types, not raw `HttpRequestException` as the public contract.
+- **Async-first** - cancellation-aware.
+- **Customer allow-list** - do not add a method because it exists on the GraphQL schema. Add it because a customer API key can call it (documented + runtime-verified).
+- **No full schema codegen** - hand-picked operations.
+- **Documented contract validation only** - e.g. REST `page_size` maxima from Octopus docs.
 
 ---
 
@@ -90,4 +95,5 @@ tests/
 
 | Date | Change | Reason |
 |---|---|---|
+| 18 September 2026 | Clarify project-root public types | Align tree with PR #31 layout |
 | 13 September 2026 | Initial draft | Project kickoff |

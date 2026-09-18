@@ -8,15 +8,15 @@ description: Review all open comment threads on a pull request, fix the issues r
 ## When to Use
 
 - A PR has received a code review with open comment threads.
-- Before merging — ensures no review feedback is silently ignored.
+- Before merging - ensures no review feedback is silently ignored.
 
-## Step 1 — Identify the PR
+## Step 1 - Identify the PR
 
 If a PR number was provided, use it. If not, ask which PR number (and repo if not the current one).
 
 Confirm the PR number and repo before proceeding.
 
-## Step 2 — Read All Open Review Threads
+## Step 2 - Read All Open Review Threads
 
 Fetch all open (unresolved) review comment threads on the PR.
 
@@ -29,7 +29,7 @@ For each thread, extract and list:
 
 Present this list as a table and confirm before making changes. If there are no open threads, report that and stop.
 
-## Step 2.5 — Thread Reply Transport Rules
+## Step 2.5 - Thread Reply Transport Rules
 
 Before posting any reply, confirm you can post **into the existing thread itself**.
 
@@ -50,7 +50,7 @@ If thread-level reply tooling is unavailable:
 3. Provide the exact reply text per thread for manual paste.
 4. Do **not** resolve threads in this fallback path.
 
-## Step 3 — Address Each Thread
+## Step 3 - Address Each Thread
 
 Work through threads one at a time.
 
@@ -76,7 +76,7 @@ Work through threads one at a time.
 1. Post: `Thanks for the kind words!`
 2. Resolve the conversation.
 
-## Step 4 — Summary
+## Step 4 - Summary
 
 Output a summary table of all threads, actions taken, and resolution status.
 

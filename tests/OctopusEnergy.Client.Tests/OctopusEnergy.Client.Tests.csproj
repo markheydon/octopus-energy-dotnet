@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\src\OctopusEnergy.Client\OctopusEnergy.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="TestSupport\Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

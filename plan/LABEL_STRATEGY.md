@@ -1,10 +1,10 @@
 # Label Strategy
 
 The **canonical label taxonomy** for `markheydon` repositories is maintained in
-[`markheydon/solo-dev-board — plan/LABEL_STRATEGY.md`](https://github.com/markheydon/solo-dev-board/blob/main/plan/LABEL_STRATEGY.md).
+[`markheydon/solo-dev-board - plan/LABEL_STRATEGY.md`](https://github.com/markheydon/solo-dev-board/blob/main/plan/LABEL_STRATEGY.md).
 
 This repository uses the same prefixed label groups. Pull request titles follow
-[`solo-dev-board — plan/PULL_REQUEST_POLICY.md`](https://github.com/markheydon/solo-dev-board/blob/main/plan/PULL_REQUEST_POLICY.md).
+[`solo-dev-board - plan/PULL_REQUEST_POLICY.md`](https://github.com/markheydon/solo-dev-board/blob/main/plan/PULL_REQUEST_POLICY.md).
 
 ---
 
@@ -79,7 +79,7 @@ PR titles use `[Type] <imperative summary> (#issue)` when a tracking issue exist
 
 ## Size labels (optional)
 
-`size/xs` through `size/xl` — effort estimate; add at planning time, not required on creation.
+`size/xs` through `size/xl` - effort estimate; add at planning time, not required on creation.
 
 ---
 
