@@ -161,6 +161,90 @@ public sealed class AccountServiceTests
         Assert.Empty(account.Properties);
     }
 
+    [Fact]
+    public async Task GetAsync_WhenNestedMeterPointListsNull_DeserialisesEmptyLists()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(
+            HttpStatusCode.OK,
+            """
+            {
+              "number": "A-TEST0001",
+              "properties": [
+                {
+                  "id": 9000001,
+                  "address_line_1": "1 Example Street",
+                  "town": "LONDON",
+                  "postcode": "W1 1AA",
+                  "electricity_meter_points": null,
+                  "gas_meter_points": null
+                }
+              ]
+            }
+            """);
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        Account account = await client.Accounts.GetAsync("A-TEST0001", cancellationToken: CancellationToken.None);
+
+        AccountProperty property = Assert.Single(account.Properties);
+        Assert.NotNull(property.ElectricityMeterPoints);
+        Assert.Empty(property.ElectricityMeterPoints);
+        Assert.NotNull(property.GasMeterPoints);
+        Assert.Empty(property.GasMeterPoints);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenMeterPointHasEmptyMeters_DeserialisesEmptyMeterList()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(
+            HttpStatusCode.OK,
+            """
+            {
+              "number": "A-TEST0001",
+              "properties": [
+                {
+                  "id": 9000001,
+                  "address_line_1": "1 Example Street",
+                  "town": "LONDON",
+                  "postcode": "W1 1AA",
+                  "electricity_meter_points": [
+                    {
+                      "mpan": "1000000000999",
+                      "profile_class": 8,
+                      "consumption_standard": 2900,
+                      "meters": [],
+                      "agreements": [
+                        {
+                          "tariff_code": "E-1R-VAR-22-11-01-N",
+                          "valid_from": "2023-07-25T00:00:00+01:00",
+                          "valid_to": null
+                        }
+                      ],
+                      "is_export": true
+                    }
+                  ],
+                  "gas_meter_points": []
+                }
+              ]
+            }
+            """);
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        Account account = await client.Accounts.GetAsync("A-TEST0001", cancellationToken: CancellationToken.None);
+
+        ElectricityMeterPoint exportPoint = Assert.Single(account.Properties[0].ElectricityMeterPoints);
+        Assert.Equal("1000000000999", exportPoint.Mpan);
+        Assert.True(exportPoint.IsExport);
+        Assert.NotNull(exportPoint.Meters);
+        Assert.Empty(exportPoint.Meters);
+        Assert.Single(exportPoint.Agreements);
+    }
+
     private static HttpClient CreateHttpClient(QueuedHttpMessageHandler handler)
     {
         return new HttpClient(handler)

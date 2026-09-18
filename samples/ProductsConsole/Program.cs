@@ -60,6 +60,10 @@ try
     {
         Console.WriteLine("Smoke check succeeded (account detail and public catalogue).");
     }
+    else if (hasApiKey)
+    {
+        Console.WriteLine("Smoke check succeeded (authenticated client and public catalogue).");
+    }
     else
     {
         Console.WriteLine("Smoke check succeeded (public catalogue).");
@@ -127,10 +131,18 @@ static async Task RunAuthenticatedSmokeAsync(
     if (string.IsNullOrWhiteSpace(accountNumber))
     {
         Console.WriteLine(
-            "Set {0} to fetch account detail. Skipping account call.",
+            "Set {0} to fetch account detail. Listing one product to smoke-test HTTP Basic auth.",
             AccountNumberEnvironmentVariable);
         Console.WriteLine();
         WriteOptionalAccountNumberHelp(AccountNumberEnvironmentVariable);
+        Console.WriteLine();
+
+        string productCode = await RunProductsSmokeAsync(
+            authenticatedClient,
+            1,
+            cancellationToken);
+
+        Console.WriteLine("Authenticated list succeeded (first product: {0}).", productCode);
         return;
     }
 

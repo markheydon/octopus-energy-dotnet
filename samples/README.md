@@ -6,7 +6,7 @@ Opt-in console apps that call the live Octopus Energy UK API. They are for local
 
 Smoke-tests the products catalogue and optionally account detail against `https://api.octopus.energy/v1/`:
 
-1. **Authenticated path (optional, runs first when a key is set)** — when `OCTOPUS_ENERGY_API_KEY` and `OCTOPUS_ENERGY_ACCOUNT_NUMBER` are set, `new OctopusEnergyClient(apiKey)` fetches account detail and prints a small summary (account number, property count, meter-point counts). When only the API key is set, the sample skips the account call and explains how to set the account number. This runs before the public section so an invalid key fails fast.
+1. **Authenticated path (optional, runs first when a key is set)** — when `OCTOPUS_ENERGY_API_KEY` and `OCTOPUS_ENERGY_ACCOUNT_NUMBER` are set, `new OctopusEnergyClient(apiKey)` fetches account detail and prints a small summary (account number, property count, meter-point counts). When only the API key is set, the sample lists one product with the authenticated client to smoke-test HTTP Basic auth and explains how to set the account number. This runs before the public section so an invalid key fails fast.
 2. **Public path (always)** — `new OctopusEnergyClient()` lists five products and fetches detail for the first. No API key required; the catalogue is public.
 
 ### Prerequisites

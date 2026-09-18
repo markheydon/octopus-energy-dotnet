@@ -15,6 +15,7 @@ using OctopusEnergy.Client.Models.Accounts;
 
 const string apiKey = "sk_test_not_a_real_key";
 const string accountNumber = "A-12345678";
+CancellationToken cancellationToken = default;
 
 using var client = new OctopusEnergyClient(apiKey);
 
