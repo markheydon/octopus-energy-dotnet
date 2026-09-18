@@ -5,7 +5,7 @@ Public exception types live in the `OctopusEnergy.Client` namespace:
 | Type | When it is thrown |
 |---|---|
 | `OctopusEnergyException` | Base type for SDK failures |
-| `OctopusEnergyRequestException` | Local contract violations (for example `page_size` above a documented maximum) before HTTP |
+| `OctopusEnergyRequestException` | Local contract violations (for example `page_size` above a documented maximum, or an invalid tariff code or GSP) before HTTP |
 | `OctopusEnergyHttpException` | Non-success HTTP status without a documented API error payload |
 | `OctopusEnergyApiException` | Non-success HTTP with a documented REST `detail` message |
 

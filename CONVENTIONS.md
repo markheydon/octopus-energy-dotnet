@@ -18,6 +18,10 @@ src/
     ├── OctopusEnergyException.cs        # Public exception hierarchy (root)
     ├── OctopusEnergy*Exception.cs
     ├── RestPageSizeLimits.cs            # Public contract limits (pagination)
+    ├── TariffCode.cs                    # Tariff code parse/format and charge paths
+    ├── GridSupplyPoint.cs               # UK distribution region (GSP)
+    ├── GridSupplyPointParser.cs         # group_id (_C) and letter mapping
+    ├── EnergyFuel.cs / TariffRegisterKind.cs / TariffChargeKind.cs
     ├── Infrastructure/                  # Internal plumbing
     │   ├── Authentication/
     │   ├── Configuration/
@@ -95,5 +99,6 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 
 | Date | Change | Reason |
 |---|---|---|
+| 18 September 2026 | Add tariff/GSP helper types to tree | Issue #15 |
 | 18 September 2026 | Clarify project-root public types | Align tree with PR #31 layout |
 | 13 September 2026 | Initial draft | Project kickoff |

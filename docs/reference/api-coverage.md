@@ -9,6 +9,9 @@
 | Typed exception hierarchy | Implemented |
 | API-key HTTP Basic authentication | Implemented |
 | Configurable base URL (default UK host) | Implemented |
+| Tariff code parse/format (`TariffCode`) | Implemented |
+| GSP group id mapping (`GridSupplyPoint`, `GridSupplyPointParser`) | Implemented |
+| Charge list relative paths (`TariffCode.GetRelativeChargePath`) | Implemented |
 
 ## v1 resources (planned)
 
