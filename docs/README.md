@@ -1,6 +1,6 @@
 # OctopusEnergy.Client documentation
 
-Documentation in this folder is for **developers using the NuGet package** — except `planning/`, which is for SDK implementers.
+Documentation in this folder is for **developers using the NuGet package** - except `planning/`, which is for SDK implementers.
 
 Internal policy: repository root (`GOALS.md`, `SCOPE.md`, `CONVENTIONS.md`) and [`plan/`](../plan/). ADRs: [`adr/`](../adr/).
 

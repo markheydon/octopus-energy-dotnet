@@ -4,13 +4,13 @@ Work is tracked as GitHub Issues using **feature → story** (no epic unless a t
 
 **Features** (what we are building):
 
-- [#6 REST customer core](https://github.com/markheydon/octopus-energy-dotnet/issues/6) — SCOPE.md v1.0
-- [#7 GraphQL customer extras](https://github.com/markheydon/octopus-energy-dotnet/issues/7) — SCOPE.md v2
+- [#6 REST customer core](https://github.com/markheydon/octopus-energy-dotnet/issues/6) - SCOPE.md v1.0
+- [#7 GraphQL customer extras](https://github.com/markheydon/octopus-energy-dotnet/issues/7) - SCOPE.md v2
 
-**Milestones** (when it is meant to ship — version timeboxes, not copies of the feature titles):
+**Milestones** (when it is meant to ship - version timeboxes, not copies of the feature titles):
 
-- [v1.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/1) — first REST release
-- [v2.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/2) — GraphQL extras release
+- [v1.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/1) - first REST release
+- [v2.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/2) - GraphQL extras release
 
 Stories and enablers are sub-issues of the relevant feature and also sit on the matching milestone.
 

@@ -74,8 +74,8 @@ Rate limits on the mutation include `email_from_graphql_input_fields` 5/m, `fail
 
 ### Public
 
-- `GET /v1/products/` — `brand`, `is_variable`, `is_green`, `is_tracker`, `is_prepay`, `is_business`, `available_at`
-- `GET /v1/products/{product_code}/` — `tariffs_active_at`
+- `GET /v1/products/` - `brand`, `is_variable`, `is_green`, `is_tracker`, `is_prepay`, `is_business`, `available_at`
+- `GET /v1/products/{product_code}/` - `tariffs_active_at`
 - Unit rates / standing charges:
   - `/v1/products/{product}/electricity-tariffs/{tariff}/standing-charges/`
   - `.../standard-unit-rates/`, `day-unit-rates/`, `night-unit-rates/`
@@ -87,7 +87,7 @@ Rate limits on the mutation include `email_from_graphql_input_fields` 5/m, `fail
 
 ### Authenticated
 
-- `GET /v1/accounts/{account_number}/` — account numbers look like `A-XXXXXXXX`
+- `GET /v1/accounts/{account_number}/` - account numbers look like `A-XXXXXXXX`
 - `GET /v1/electricity-meter-points/{mpan}/meters/{serial}/consumption/`
 - `GET /v1/gas-meter-points/{mprn}/meters/{serial}/consumption/`
   - `period_from` / `period_to` ISO 8601; include `Z` or offset
@@ -97,7 +97,7 @@ Rate limits on the mutation include `email_from_graphql_input_fields` 5/m, `fail
   - Empty list for non-smart meters
   - Export MPANs still use field name `consumption`
 
-### Partner REST — do not wrap
+### Partner REST - do not wrap
 
 - `POST /v1/quotes/`
 - Quote share email
@@ -107,17 +107,17 @@ Rate limits on the mutation include `email_from_graphql_input_fields` 5/m, `fail
 
 ---
 
-## 5. GraphQL (v2) — candidate customer operations
+## 5. GraphQL (v2) - candidate customer operations
 
 Verify each with a real key before adding a service method.
 
 Likely useful:
 
-- `viewer` — discover accounts/portfolios so callers may omit `A-…`
-- `account(accountNumber)` — large type; use a **default projection** under complexity 200
+- `viewer` - discover accounts/portfolios so callers may omit `A-…`
+- `account(accountNumber)` - large type; use a **default projection** under complexity 200
 - Meter `consumption` fields (`startAt` timezone **required**)
 - `devices`, `flexPlannedDispatches` (`plannedDispatches` deprecated; removal around January 2026)
-- `smartMeterTelemetry` — Home Mini / CAD; `deviceId` is EUI64; nested discovery path is `account → electricityAgreements → meterPoint → meters → smartDevices`; field rate limits can be aggressive (community: on the order of 100/hour if over-polled)
+- `smartMeterTelemetry` - Home Mini / CAD; `deviceId` is EUI64; nested discovery path is `account → electricityAgreements → meterPoint → meters → smartDevices`; field rate limits can be aggressive (community: on the order of 100/hour if over-polled)
 - Octoplus / saving sessions / rewards / wheel of fortune
 - `createElectricityMeterReading` / `createGasMeterReading`
 - `initiateProductSwitch` (permission: switch product)
@@ -169,7 +169,7 @@ Example: `E-1R-AGILE-FLEX-22-11-25-C`
 
 Hide encoding behind typed helpers (`TariffCode`, GSP enum). Do not require callers to concatenate URLs.
 
-Variable tariffs auto-extend. Fixed products fall back to variable at end of term. Multiple MPANs: import vs export; REST JSON is not always obvious — tariff codes help.
+Variable tariffs auto-extend. Fixed products fall back to variable at end of term. Multiple MPANs: import vs export; REST JSON is not always obvious - tariff codes help.
 
 `brand=OCTOPUS_ENERGY` is not the only brand on the UK host.
 

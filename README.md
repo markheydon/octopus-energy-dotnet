@@ -8,7 +8,7 @@ Unofficial .NET client for the [Octopus Energy](https://octopus.energy/) **custo
 
 > **Prerelease software.** The package is currently a compile-only skeleton. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
 
-**Documentation:** [docs/](docs/) — consumer guides plus [planning notes](docs/planning/coding-notes.md) for implementers.
+**Documentation:** [docs/](docs/) - consumer guides plus [planning notes](docs/planning/coding-notes.md) for implementers.
 
 ## Goals
 
@@ -20,8 +20,8 @@ Scaffolding and research only. `OctopusEnergyClient` compiles and has no HTTP be
 
 Planned:
 
-- **v1** — REST: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
-- **v2** — GraphQL: viewer, bills, devices, Home Mini telemetry, Octoplus, meter readings, product switch
+- **v1** - REST: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
+- **v2** - GraphQL: viewer, bills, devices, Home Mini telemetry, Octoplus, meter readings, product switch
 
 ## Installation
 
@@ -64,7 +64,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). By participating, you agree to [CODE_OF_
 
 ## Licence
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
 
 ## Resources
 

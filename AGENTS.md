@@ -15,8 +15,8 @@ Read these before non-trivial changes:
 - `GOALS.md`
 - `SCOPE.md`
 - `CONVENTIONS.md`
-- `docs/planning/coding-notes.md` — research that affects implementation
-- `adr/` — accepted decisions
+- `docs/planning/coding-notes.md` - research that affects implementation
+- `adr/` - accepted decisions
 
 ## Language and Spelling
 

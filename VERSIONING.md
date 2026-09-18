@@ -37,7 +37,7 @@ v2 GraphQL work may ship as later `1.x` minors after `1.0.0`, or as `0.2.0-alpha
 
 ## Criteria for First Stable 1.0.0
 
-1. [In Scope — v1.0](SCOPE.md) implemented and covered by tests (recorded fixtures; live tests optional and not in CI).
+1. [In Scope - v1.0](SCOPE.md) implemented and covered by tests (recorded fixtures; live tests optional and not in CI).
 2. Goals `G1`–`G6` in [GOALS.md](GOALS.md) met for the REST customer core.
 3. SDK used in at least one application owned by the author.
 4. No known breaking changes planned immediately.

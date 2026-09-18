@@ -34,8 +34,8 @@ tests/
 
 **Namespace layout:**
 
-- `OctopusEnergy.Client` — `OctopusEnergyClient` and public pagination types
-- `OctopusEnergy.Client.Infrastructure.*` — transport
+- `OctopusEnergy.Client` - `OctopusEnergyClient` and public pagination types
+- `OctopusEnergy.Client.Infrastructure.*` - transport
 - `OctopusEnergy.Client.Models.[Resource]`
 - `OctopusEnergy.Client.Services.[Resource].[Resource]Service`
 
@@ -52,13 +52,13 @@ tests/
 
 ## Patterns in Use
 
-- **Client + Services** — one `OctopusEnergyClient` with discoverable resources.
-- **Strongly typed contracts** — explicit models; `JsonPropertyName` on every serialised property.
-- **Exception hierarchy** — SDK-specific types, not raw `HttpRequestException` as the public contract.
-- **Async-first** — cancellation-aware.
-- **Customer allow-list** — do not add a method because it exists on the GraphQL schema. Add it because a customer API key can call it (documented + runtime-verified).
-- **No full schema codegen** — hand-picked operations.
-- **Documented contract validation only** — e.g. REST `page_size` maxima from Octopus docs.
+- **Client + Services** - one `OctopusEnergyClient` with discoverable resources.
+- **Strongly typed contracts** - explicit models; `JsonPropertyName` on every serialised property.
+- **Exception hierarchy** - SDK-specific types, not raw `HttpRequestException` as the public contract.
+- **Async-first** - cancellation-aware.
+- **Customer allow-list** - do not add a method because it exists on the GraphQL schema. Add it because a customer API key can call it (documented + runtime-verified).
+- **No full schema codegen** - hand-picked operations.
+- **Documented contract validation only** - e.g. REST `page_size` maxima from Octopus docs.
 
 ---
 
