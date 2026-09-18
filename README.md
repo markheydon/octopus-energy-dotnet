@@ -16,7 +16,7 @@ Typed, discoverable SDK so callers do not reconstruct REST URLs or GraphQL docum
 
 ## Status
 
-Prerelease. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, and dashboard API-key authentication. Resource services are not implemented yet.
+Prerelease. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`). Resource services are not implemented yet.
 
 Planned:
 

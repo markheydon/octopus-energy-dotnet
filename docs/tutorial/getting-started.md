@@ -31,13 +31,25 @@ using var client = new OctopusEnergyClient();
 
 See [authentication](../how-to/authentication.md) for custom base URLs and supplying your own `HttpClient`.
 
-## 4. Call resource methods
+## 4. Parse tariff codes (optional)
+
+If you already have a tariff code from an account or product response, parse it without building URL segments yourself:
+
+```csharp
+TariffCode tariff = TariffCode.Parse("E-1R-AGILE-FLEX-22-11-25-C");
+string ratesPath = tariff.GetRelativeChargePath(TariffChargeKind.StandardUnitRates);
+```
+
+See [tariff codes and GSP](../how-to/tariff-codes.md).
+
+## 5. Call resource methods
 
 Resource services are not implemented yet. Track progress on feature [#6](https://github.com/markheydon/octopus-energy-dotnet/issues/6) (REST customer core) on milestone [v1.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/1).
 
 ## Next steps
 
 - [Authentication](../how-to/authentication.md)
+- [Tariff codes and GSP](../how-to/tariff-codes.md)
 - [Pagination](../how-to/pagination.md)
 - [Error handling](../how-to/error-handling.md)
 - [API coverage](../reference/api-coverage.md)
