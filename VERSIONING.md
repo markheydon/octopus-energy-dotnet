@@ -73,6 +73,7 @@ The workflow builds, tests, packs `OctopusEnergy.Client`, publishes to NuGet.org
 
 | Date | Change | Reason |
 |---|---|---|
+| 18 September 2026 | Clarify SCOPE.md v2 vs NuGet `1.x` | Milestone renamed v2.0 → v1.1 |
 | 18 September 2026 | Release `1.0.2` | Point NuGet PackageProjectUrl at consumer docs site |
 | 18 September 2026 | Release `1.0.1` | Add NuGet package README for nuget.org |
 | 18 September 2026 | Promote to Stable `1.0.0` | REST customer core shipped |
