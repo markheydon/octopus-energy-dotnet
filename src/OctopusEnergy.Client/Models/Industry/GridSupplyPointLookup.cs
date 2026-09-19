@@ -28,6 +28,11 @@ public sealed class GridSupplyPointLookup
     /// <summary>
     /// GSP identifier returned by the API (same encoding as <see cref="GridSupplyPoint"/>).
     /// </summary>
+    /// <remarks>
+    /// The wire field duplicates <see cref="GridSupplyPoint"/> (<c>group_id</c>). Prefer
+    /// <see cref="GridSupplyPoint"/> for new code.
+    /// </remarks>
     [JsonPropertyName("gsp")]
+    [Obsolete("Use GridSupplyPoint instead. The gsp wire field duplicates group_id on industry lookup responses.")]
     public GridSupplyPoint Gsp { get; init; }
 }
