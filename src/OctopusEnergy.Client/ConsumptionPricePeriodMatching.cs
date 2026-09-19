@@ -15,8 +15,10 @@ namespace OctopusEnergy.Client;
 /// </para>
 /// <para>
 /// Matching finds the rate period <c>[ValidFrom, ValidTo)</c> that contains the
-/// interval start instant. This is a join helper, not a cost calculator: it does
-/// not apply half-to-even billing rounding or split an interval across two rates.
+/// interval start instant. It does not match on full interval overlap: when the
+/// interval body crosses a rate boundary but the start falls outside every fetched
+/// rate window, no match is returned. This is a join helper, not a cost calculator:
+/// it does not apply half-to-even billing rounding or split an interval across two rates.
 /// </para>
 /// </remarks>
 public static class ConsumptionPricePeriodMatching
@@ -30,7 +32,8 @@ public static class ConsumptionPricePeriodMatching
     /// The rate whose half-open period <c>[ValidFrom, ValidTo)</c> contains
     /// <see cref="ConsumptionInterval.IntervalStart"/>, or <see langword="null"/> when
     /// none applies. When multiple rates contain the start, the one with the latest
-    /// <see cref="TariffCharge.ValidFrom"/> wins.
+    /// <see cref="TariffCharge.ValidFrom"/> wins; when <see cref="TariffCharge.ValidFrom"/>
+    /// ties, the first rate in <paramref name="rates"/> wins.
     /// </returns>
     public static TariffCharge? FindRateForInterval(
         ConsumptionInterval interval,

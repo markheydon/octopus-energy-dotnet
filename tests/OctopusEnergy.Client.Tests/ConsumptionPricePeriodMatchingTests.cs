@@ -162,6 +162,152 @@ public sealed class ConsumptionPricePeriodMatchingTests
         Assert.Same(narrowRate, match);
     }
 
+    [Fact]
+    public void JoinByInstant_WhenStartContainedButNotEqualValidFrom_IncludesPair()
+    {
+        DateTimeOffset rateStart = new(2024, 3, 31, 0, 0, 0, TimeSpan.Zero);
+        TariffCharge rate = CreateRate(rateStart);
+        ConsumptionInterval interval = new()
+        {
+            Consumption = 0.1m,
+            IntervalStart = rateStart.AddMinutes(15),
+            IntervalEnd = rateStart.AddMinutes(45),
+        };
+
+        IReadOnlyList<(ConsumptionInterval Interval, TariffCharge Rate)> matches =
+            ConsumptionPricePeriodMatching.JoinByInstant([interval], [rate]);
+
+        Assert.Single(matches);
+        Assert.Same(interval, matches[0].Interval);
+        Assert.Same(rate, matches[0].Rate);
+        AssertRateContainsIntervalStart(matches[0].Rate, matches[0].Interval.IntervalStart);
+    }
+
+    [Fact]
+    public void FindRateForInterval_WhenStartEqualsValidTo_ReturnsNull()
+    {
+        DateTimeOffset rateStart = new(2024, 10, 27, 0, 0, 0, TimeSpan.Zero);
+        TariffCharge rate = CreateRate(rateStart);
+        ConsumptionInterval interval = new()
+        {
+            Consumption = 0.1m,
+            IntervalStart = rate.ValidTo!.Value,
+            IntervalEnd = rate.ValidTo.Value.AddMinutes(30),
+        };
+
+        TariffCharge? match = ConsumptionPricePeriodMatching.FindRateForInterval(interval, [rate]);
+
+        Assert.Null(match);
+    }
+
+    [Fact]
+    public void FindRateForInterval_WhenNoRateContainsStart_ReturnsNull()
+    {
+        DateTimeOffset rateStart = new(2024, 6, 15, 12, 0, 0, TimeSpan.Zero);
+        TariffCharge rate = CreateRate(rateStart);
+        ConsumptionInterval interval = new()
+        {
+            Consumption = 0.1m,
+            IntervalStart = rateStart.AddHours(2),
+            IntervalEnd = rateStart.AddHours(2).AddMinutes(30),
+        };
+
+        TariffCharge? match = ConsumptionPricePeriodMatching.FindRateForInterval(interval, [rate]);
+
+        Assert.Null(match);
+    }
+
+    [Fact]
+    public void JoinByInstant_WhenNoRateContainsStart_OmitsInterval()
+    {
+        DateTimeOffset rateStart = new(2024, 6, 15, 12, 0, 0, TimeSpan.Zero);
+        TariffCharge rate = CreateRate(rateStart);
+        ConsumptionInterval interval = new()
+        {
+            Consumption = 0.1m,
+            IntervalStart = rateStart.AddHours(2),
+            IntervalEnd = rateStart.AddHours(2).AddMinutes(30),
+        };
+
+        IReadOnlyList<(ConsumptionInterval Interval, TariffCharge Rate)> matches =
+            ConsumptionPricePeriodMatching.JoinByInstant([interval], [rate]);
+
+        Assert.Empty(matches);
+    }
+
+    [Fact]
+    public void FindRateForInterval_WhenValidToNullAndStartContained_ReturnsRate()
+    {
+        DateTimeOffset rateStart = new(2024, 9, 30, 23, 0, 0, TimeSpan.Zero);
+        TariffCharge rate = new()
+        {
+            ValueExcVat = 37.6525m,
+            ValueIncVat = 39.535125m,
+            ValidFrom = rateStart,
+            ValidTo = null,
+        };
+        ConsumptionInterval interval = new()
+        {
+            Consumption = 0.05m,
+            IntervalStart = rateStart.AddMinutes(15),
+            IntervalEnd = rateStart.AddMinutes(45),
+        };
+
+        TariffCharge? match = ConsumptionPricePeriodMatching.FindRateForInterval(interval, [rate]);
+
+        Assert.NotNull(match);
+        Assert.Same(rate, match);
+        AssertRateContainsIntervalStart(match, interval.IntervalStart);
+    }
+
+    [Fact]
+    public void FindRateForInterval_WhenIntervalBodyOverlapsButStartOutside_ReturnsNull()
+    {
+        DateTimeOffset rateStart = new(2024, 6, 15, 1, 0, 0, TimeSpan.Zero);
+        TariffCharge rate = CreateRate(rateStart);
+        ConsumptionInterval interval = new()
+        {
+            Consumption = 0.1m,
+            IntervalStart = rateStart.AddMinutes(-20),
+            IntervalEnd = rateStart.AddMinutes(10),
+        };
+
+        TariffCharge? match = ConsumptionPricePeriodMatching.FindRateForInterval(interval, [rate]);
+
+        Assert.Null(match);
+    }
+
+    [Fact]
+    public void FindRateForInterval_WhenDuplicateValidFrom_PrefersFirstInList()
+    {
+        DateTimeOffset validFrom = new(2024, 6, 15, 12, 0, 0, TimeSpan.Zero);
+        TariffCharge first = new()
+        {
+            ValueExcVat = 10m,
+            ValueIncVat = 10.5m,
+            ValidFrom = validFrom,
+            ValidTo = validFrom.AddMinutes(30),
+        };
+        TariffCharge second = new()
+        {
+            ValueExcVat = 11m,
+            ValueIncVat = 11.55m,
+            ValidFrom = validFrom,
+            ValidTo = validFrom.AddHours(1),
+        };
+
+        TariffCharge? match = ConsumptionPricePeriodMatching.FindRateForInterval(
+            new ConsumptionInterval
+            {
+                Consumption = 0.1m,
+                IntervalStart = validFrom,
+                IntervalEnd = validFrom.AddMinutes(30),
+            },
+            [first, second]);
+
+        Assert.Same(first, match);
+    }
+
     private static List<ConsumptionInterval> DeserializeConsumption(string fixtureName)
     {
         PaginatedResponse<ConsumptionInterval> page = Deserialize<PaginatedResponse<ConsumptionInterval>>(fixtureName);

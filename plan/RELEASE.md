@@ -33,7 +33,7 @@ The client interface work (#54) includes source-breaking API changes for the nex
 - `GridSupplyPointLookup.Gsp` is obsolete; use `GridSupplyPointLookup.GridSupplyPoint` instead (duplicate wire field).
 - `OctopusEnergyParseException` is thrown for successful HTTP responses that cannot be deserialised (replacing `OctopusEnergyException` for that case). Callers catching `OctopusEnergyException` still work.
 - `OctopusEnergyTime.AssumeEuropeLondon` now throws for spring-forward gap times and resolves ambiguous autumn-back hours to standard time (GMT). Previously, gap times were accepted with an incorrect offset.
-- `ConsumptionPricePeriodMatching` now matches by rate period containing the interval start (`[ValidFrom, ValidTo)`), not exact `ValidFrom == IntervalStart`. This avoids silently dropping overlapping consumption intervals; the matched rate may use a different offset representation from `IntervalStart`.
+- `ConsumptionPricePeriodMatching` now matches by rate period containing the interval start (`[ValidFrom, ValidTo)`), not exact `ValidFrom == IntervalStart`. This avoids silently dropping overlapping consumption intervals; the matched rate may use a different offset representation from `IntervalStart`. Matching uses interval start only (not full interval overlap). When multiple rates contain the start, the latest `ValidFrom` wins; equal `ValidFrom` ties prefer the first rate in the supplied list (previously duplicate keys in the internal dictionary kept the last rate).
 
 ## Unreleased additive changes
 
