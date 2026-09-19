@@ -71,13 +71,16 @@ Account account = await client.Accounts.GetAsync("A-12345678");
 Console.WriteLine($"{account.Number}: {account.Properties.Count} properties");
 ```
 
-See [account detail](../how-to/accounts.md). Electricity and gas consumption are available on `client.Consumption`; a dedicated how-to will follow.
+See [account detail](../how-to/accounts.md). Electricity and gas consumption are on `client.Consumption` — see [consumption](../how-to/consumption.md).
 
 ## Next steps
 
 - [Units, VAT, and time](../explanation/units-vat-and-time.md) - kWh, pence, VAT fields, BST, and Agile 16:00
 - [Products catalogue](../how-to/products.md)
 - [Account detail](../how-to/accounts.md)
+- [Consumption](../how-to/consumption.md)
+- [Tariff rates](../how-to/tariff-rates.md)
+- [Industry lookups](../how-to/industry.md)
 - [Authentication](../how-to/authentication.md)
 - [Pagination](../how-to/pagination.md)
 - [Error handling](../how-to/error-handling.md)
