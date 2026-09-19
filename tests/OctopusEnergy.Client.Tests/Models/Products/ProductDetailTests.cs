@@ -90,6 +90,53 @@ public sealed class ProductDetailTests
     }
 
     [Fact]
+    public void TryGetTariff_WhenResolvedTariffCodeMismatch_ReturnsFalse()
+    {
+        ProductDetail detail = new()
+        {
+            Code = "AGILE-FLEX-22-11-25",
+            SingleRegisterElectricityTariffs = new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>
+            {
+                [GridSupplyPoint.C] = new()
+                {
+                    DirectDebitMonthly = new ProductTariff
+                    {
+                        Code = "E-1R-WRONG-CODE-C",
+                    },
+                },
+            },
+        };
+        TariffCode tariffCode = TariffCode.Parse("E-1R-AGILE-FLEX-22-11-25-C");
+
+        bool found = detail.TryGetTariff(
+            tariffCode,
+            ProductPaymentMethod.DirectDebitMonthly,
+            out ProductTariff? tariff);
+
+        Assert.False(found);
+        Assert.Null(tariff);
+    }
+
+    [Fact]
+    public void TryGetTariff_WhenDualRegisterGasTariffCodeRequested_ThrowsOctopusEnergyRequestException()
+    {
+        ProductDetail detail = DeserializeFixture();
+        TariffCode tariffCode = new(
+            EnergyFuel.Gas,
+            TariffRegisterKind.DualRegister,
+            "AGILE-FLEX-22-11-25",
+            GridSupplyPoint.A);
+
+        OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
+            () => detail.TryGetTariff(
+                tariffCode,
+                ProductPaymentMethod.DirectDebitMonthly,
+                out ProductTariff? _));
+
+        Assert.Contains("dual-register gas", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void TryGetTariff_WhenDualRegisterGasRequested_ThrowsOctopusEnergyRequestException()
     {
         ProductDetail detail = DeserializeFixture();

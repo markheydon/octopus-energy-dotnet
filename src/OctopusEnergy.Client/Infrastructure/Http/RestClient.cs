@@ -2,6 +2,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using OctopusEnergy.Client;
+using OctopusEnergy.Client.Infrastructure.Configuration;
 using OctopusEnergy.Client.Infrastructure.Serialization;
 using OctopusEnergy.Client.Models.Common;
 
@@ -12,11 +13,14 @@ internal sealed class RestClient
     internal const int DefaultMaxPageHops = 10_000;
 
     private readonly HttpClient _httpClient;
+    private readonly Uri _baseAddress;
+    private readonly string? _apiKey;
     private readonly int _maxPageHops;
 
-    internal RestClient(HttpClient httpClient, int maxPageHops = DefaultMaxPageHops)
+    internal RestClient(HttpClient httpClient, Uri baseAddress, string? apiKey = null, int maxPageHops = DefaultMaxPageHops)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(baseAddress);
 
         if (maxPageHops < 1)
         {
@@ -24,6 +28,8 @@ internal sealed class RestClient
         }
 
         _httpClient = httpClient;
+        _baseAddress = HttpClientConfiguration.NormalizeBaseAddress(baseAddress);
+        _apiKey = apiKey;
         _maxPageHops = maxPageHops;
     }
 
@@ -32,6 +38,7 @@ internal sealed class RestClient
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
 
         using HttpRequestMessage request = CreateGetRequest(relativePath);
+        OctopusEnergyRequestHeaders.Apply(request, _apiKey, _httpClient.DefaultRequestHeaders);
         using HttpResponseMessage response = await SendAsync(request, cancellationToken).ConfigureAwait(false);
         await using Stream contentStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 
@@ -90,14 +97,15 @@ internal sealed class RestClient
         }
     }
 
-    private static HttpRequestMessage CreateGetRequest(string path)
+    private HttpRequestMessage CreateGetRequest(string path)
     {
         if (Uri.TryCreate(path, UriKind.Absolute, out Uri? absoluteUri))
         {
             return new HttpRequestMessage(HttpMethod.Get, absoluteUri);
         }
 
-        return new HttpRequestMessage(HttpMethod.Get, path);
+        Uri requestUri = new(_baseAddress, path);
+        return new HttpRequestMessage(HttpMethod.Get, requestUri);
     }
 
     private string? ResolveNextPath(string? next)
@@ -109,12 +117,11 @@ internal sealed class RestClient
 
         if (Uri.TryCreate(next, UriKind.Absolute, out Uri? absoluteUri))
         {
-            if (_httpClient.BaseAddress is not null &&
-                absoluteUri.IsAbsoluteUri &&
-                _httpClient.BaseAddress.IsAbsoluteUri &&
-                string.Equals(absoluteUri.Host, _httpClient.BaseAddress.Host, StringComparison.OrdinalIgnoreCase))
+            if (absoluteUri.IsAbsoluteUri &&
+                _baseAddress.IsAbsoluteUri &&
+                string.Equals(absoluteUri.Host, _baseAddress.Host, StringComparison.OrdinalIgnoreCase))
             {
-                string basePath = _httpClient.BaseAddress.AbsolutePath.TrimEnd('/');
+                string basePath = _baseAddress.AbsolutePath.TrimEnd('/');
                 string nextPath = absoluteUri.AbsolutePath;
 
                 if (basePath.Length > 0 &&
