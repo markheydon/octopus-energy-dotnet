@@ -5,7 +5,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <PackageId>OctopusEnergy.Client</PackageId>
-    <Version>1.0.3</Version>
+    <Version>1.1.0</Version>
     <Authors>Mark Heydon</Authors>
     <Description>Unofficial .NET client for the Octopus Energy customer REST API. Not affiliated with Octopus Energy.</Description>
     <PackageProjectUrl>https://markheydon.me.uk/octopus-energy-dotnet/</PackageProjectUrl>

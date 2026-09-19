@@ -5,7 +5,7 @@ Unofficial .NET client for the [Octopus Energy](https://octopus.energy/) **custo
 [![CI](https://github.com/markheydon/octopus-energy-dotnet/actions/workflows/ci.yml/badge.svg)](https://github.com/markheydon/octopus-energy-dotnet/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/OctopusEnergy.Client.svg)](https://www.nuget.org/packages/OctopusEnergy.Client/)
 
-> **Stable `1.0.x`.** The REST customer core shipped in `1.0.0` (products, tariffs, rates, GSP, account, consumption, pagination, typed errors, and API-key authentication). Public API changes follow SemVer. See [VERSIONING.md](VERSIONING.md).
+> **Stable `1.x`.** The REST customer core shipped in `1.0.0`; `1.1.0` adds developer-experience improvements (hosting, testability, workflow helpers, consumption safety). Public API changes follow SemVer. See [VERSIONING.md](VERSIONING.md).
 
 **Documentation:** [Consumer docs](https://markheydon.me.uk/octopus-energy-dotnet/) (GitHub Pages) - source in [`docs/`](docs/). Implementer notes: [coding notes](docs/planning/coding-notes.md).
 
@@ -20,6 +20,7 @@ Stable. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed er
 Roadmap:
 
 - **v1 REST core** — shipped in `1.0.0`: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
+- **v1.1 REST developer experience** — shipped in `1.1.0`: HttpClientFactory, interfaces, workflow helpers, safer consumption listing, 429 retry, consumer how-tos
 - **v2 GraphQL extras** — planned (milestone v1.2; not in the package today): viewer, bills, devices, Home Mini telemetry, Octoplus, meter readings, product switch
 
 ## Installation

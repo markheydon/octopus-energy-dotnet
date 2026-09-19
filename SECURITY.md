@@ -34,7 +34,7 @@ Reports are reviewed privately. A fix is released. Public disclosure follows coo
 
 ## Supported Versions
 
-This project is in prerelease. Security fixes apply on a best-effort basis to the latest prerelease line. See [VERSIONING.md](VERSIONING.md).
+Security fixes apply to the latest stable `1.x` release. See [VERSIONING.md](VERSIONING.md) for the current version. Older minors receive fixes on a best-effort basis when practical.
 
 ## Scope
 
