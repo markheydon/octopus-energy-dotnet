@@ -4,9 +4,8 @@ Unofficial .NET client for the [Octopus Energy](https://octopus.energy/) **custo
 
 [![CI](https://github.com/markheydon/octopus-energy-dotnet/actions/workflows/ci.yml/badge.svg)](https://github.com/markheydon/octopus-energy-dotnet/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/OctopusEnergy.Client.svg)](https://www.nuget.org/packages/OctopusEnergy.Client/)
-[![NuGet (prerelease)](https://img.shields.io/nuget/vpre/OctopusEnergy.Client.svg?label=nuget%20prerelease)](https://www.nuget.org/packages/OctopusEnergy.Client/)
 
-> **Prerelease software.** HTTP transport, pagination, errors, API-key authentication, the products catalogue, tariff rates, grid supply points, account detail, and electricity/gas consumption are implemented. Public APIs will change. See [VERSIONING.md](VERSIONING.md).
+> **Stable `1.0.x`.** The REST customer core shipped in `1.0.0` (products, tariffs, rates, GSP, account, consumption, pagination, typed errors, and API-key authentication). Public API changes follow SemVer. See [VERSIONING.md](VERSIONING.md).
 
 **Documentation:** [Consumer docs](https://markheydon.me.uk/octopus-energy-dotnet/) (GitHub Pages) - source in [`docs/`](docs/). Implementer notes: [coding notes](docs/planning/coding-notes.md).
 
@@ -16,12 +15,12 @@ Typed, discoverable SDK so callers do not reconstruct REST URLs or GraphQL docum
 
 ## Status
 
-Prerelease. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, the products catalogue, tariff rates, grid supply points, account detail, electricity/gas consumption, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`).
+Stable. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, the products catalogue, tariff rates, grid supply points, account detail, electricity/gas consumption, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`).
 
-Planned:
+Roadmap:
 
-- **v1** - REST: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
-- **v2** - GraphQL: viewer, bills, devices, Home Mini telemetry, Octoplus, meter readings, product switch
+- **v1 REST core** — shipped in `1.0.0`: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
+- **v2 GraphQL extras** — planned (milestone v1.2; not in the package today): viewer, bills, devices, Home Mini telemetry, Octoplus, meter readings, product switch
 
 ## Installation
 
