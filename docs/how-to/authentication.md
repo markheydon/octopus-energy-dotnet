@@ -113,7 +113,7 @@ using var httpClient = new HttpClient { BaseAddress = new Uri("https://api.examp
 using var client = new OctopusEnergyClient(apiKey, httpClient);
 ```
 
-When `DefaultRequestHeaders` already includes `Accept: application/json`, the SDK does not add a second JSON `Accept` value on each request.
+When `DefaultRequestHeaders` already includes `Accept: application/json`, the SDK sets `Accept` on each request message instead. Per-request headers take precedence, so a duplicate `Accept` value is not sent on the wire.
 
 See also [pagination](pagination.md#supplying-your-own-httpclient).
 

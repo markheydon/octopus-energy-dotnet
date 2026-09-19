@@ -6,7 +6,7 @@ namespace OctopusEnergy.Client.Services.Products;
 /// <summary>
 /// Product catalogue and product detail operations.
 /// </summary>
-public sealed class ProductService
+public sealed class ProductService : IProductService
 {
     private const string ProductsPath = "products/";
 

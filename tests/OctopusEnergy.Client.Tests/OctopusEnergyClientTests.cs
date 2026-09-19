@@ -260,6 +260,32 @@ public sealed class OctopusEnergyClientTests
     }
 
     [Fact]
+    public async Task GetAsync_WhenHandlerAndDefaultAcceptIncludesJson_DoesNotDuplicateJsonAcceptHeader()
+    {
+        QueuedHttpMessageHandler innerHandler = new();
+        innerHandler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"results":[]}""");
+
+        using OctopusEnergyClientHandler sdkHandler = new()
+        {
+            InnerHandler = innerHandler,
+        };
+        using HttpClient httpClient = new(sdkHandler)
+        {
+            BaseAddress = new Uri("https://api.example.test/v1/"),
+        };
+        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        using OctopusEnergyClient client = new(httpClient);
+
+        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+
+        HttpRequestMessage request = Assert.Single(innerHandler.SentRequests);
+        Assert.Single(
+            request.Headers.Accept,
+            mediaType => string.Equals(mediaType.MediaType, "application/json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task GetAsync_WhenHandlerAndClientBothConfigured_DoesNotDuplicateUserAgentHeader()
     {
         const string apiKey = "test-api-key";

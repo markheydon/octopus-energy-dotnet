@@ -33,6 +33,18 @@ using var client = new OctopusEnergyClient();
 
 See [authentication](../how-to/authentication.md) for custom base URLs and supplying your own `HttpClient`.
 
+### Testability with interfaces
+
+Depend on `IOctopusEnergyClient` and the resource service interfaces (`IAccountService`, `IConsumptionService`, and so on) in application code so unit tests can substitute behaviour. Construct `OctopusEnergyClient` at the composition root; the concrete client implements `IOctopusEnergyClient` and exposes interface-typed resource properties.
+
+```csharp
+public sealed class AccountSummaryService(IOctopusEnergyClient client)
+{
+    public Task<Account> GetAsync(string accountNumber, CancellationToken cancellationToken = default) =>
+        client.Accounts.GetAsync(accountNumber, cancellationToken);
+}
+```
+
 ## 4. List products
 
 The products catalogue is public - no API key required when you use the parameterless constructor:

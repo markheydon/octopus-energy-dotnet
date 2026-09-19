@@ -1,4 +1,3 @@
-using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Models.Accounts;
 
 namespace OctopusEnergy.Client.Services.Accounts;
@@ -6,18 +5,8 @@ namespace OctopusEnergy.Client.Services.Accounts;
 /// <summary>
 /// Customer account operations.
 /// </summary>
-public sealed class AccountService : IAccountService
+public interface IAccountService
 {
-    private const string AccountsPathPrefix = "accounts/";
-
-    private readonly RestClient _rest;
-
-    internal AccountService(RestClient rest)
-    {
-        ArgumentNullException.ThrowIfNull(rest);
-        _rest = rest;
-    }
-
     /// <summary>
     /// Retrieves account detail including properties, meters, and agreements.
     /// </summary>
@@ -37,14 +26,5 @@ public sealed class AccountService : IAccountService
     /// Requires authentication with a dashboard API key. Discovering the account number without
     /// a bill is a v2 GraphQL <c>viewer</c> story; callers supply the account number for v1 REST.
     /// </remarks>
-    public Task<Account> GetAsync(string accountNumber, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrWhiteSpace(accountNumber))
-        {
-            throw new OctopusEnergyRequestException("Account number is required.");
-        }
-
-        string path = $"{AccountsPathPrefix}{Uri.EscapeDataString(accountNumber)}/";
-        return _rest.GetAsync<Account>(path, cancellationToken);
-    }
+    Task<Account> GetAsync(string accountNumber, CancellationToken cancellationToken = default);
 }
