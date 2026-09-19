@@ -133,12 +133,23 @@ public sealed class ProductServiceTests
         Assert.True(detail.SingleRegisterElectricityTariffs.ContainsKey(GridSupplyPoint.A));
         Assert.True(detail.SingleRegisterElectricityTariffs.ContainsKey(GridSupplyPoint.C));
 
-        ProductTariff regionA = detail.SingleRegisterElectricityTariffs[GridSupplyPoint.A].DirectDebitMonthly!;
-        Assert.Equal("E-1R-AGILE-FLEX-22-11-25-A", regionA.Code);
+        Assert.True(detail.TryGetTariff(
+            EnergyFuel.Electricity,
+            TariffRegisterKind.SingleRegister,
+            GridSupplyPoint.A,
+            ProductPaymentMethod.DirectDebitMonthly,
+            out ProductTariff? regionA));
+        Assert.Equal("E-1R-AGILE-FLEX-22-11-25-A", regionA!.Code);
         Assert.Equal(18.6585m, regionA.StandardUnitRateIncVat);
+        Assert.NotNull(regionA.ParsedTariffCode);
 
-        ProductTariff regionC = detail.SingleRegisterElectricityTariffs[GridSupplyPoint.C].DirectDebitMonthly!;
-        Assert.Equal("E-1R-AGILE-FLEX-22-11-25-C", regionC.Code);
+        Assert.True(detail.TryGetTariff(
+            EnergyFuel.Electricity,
+            TariffRegisterKind.SingleRegister,
+            GridSupplyPoint.C,
+            ProductPaymentMethod.DirectDebitMonthly,
+            out ProductTariff? regionC));
+        Assert.Equal("E-1R-AGILE-FLEX-22-11-25-C", regionC!.Code);
     }
 
     [Fact]

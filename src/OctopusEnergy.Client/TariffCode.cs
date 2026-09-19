@@ -136,7 +136,24 @@ public readonly record struct TariffCode
     /// <exception cref="OctopusEnergyRequestException">
     /// Day or night unit-rate paths are not available for gas tariffs or single-register electricity tariffs.
     /// </exception>
+    [Obsolete("Use TariffRatesService to list standing charges and unit rates instead of building REST paths manually.")]
     public string GetRelativeChargePath(TariffChargeKind chargeKind)
+    {
+        return BuildRelativeChargePath(chargeKind);
+    }
+
+    /// <summary>
+    /// Builds the relative REST path for a tariff charge list endpoint.
+    /// </summary>
+    /// <param name="chargeKind">The charge list to request.</param>
+    /// <returns>
+    /// A relative path suitable for <see cref="Infrastructure.Http.RestClient"/> (for example
+    /// <c>products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/</c>).
+    /// </returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Day or night unit-rate paths are not available for gas tariffs or single-register electricity tariffs.
+    /// </exception>
+    internal string BuildRelativeChargePath(TariffChargeKind chargeKind)
     {
         if (chargeKind is TariffChargeKind.DayUnitRates or TariffChargeKind.NightUnitRates)
         {

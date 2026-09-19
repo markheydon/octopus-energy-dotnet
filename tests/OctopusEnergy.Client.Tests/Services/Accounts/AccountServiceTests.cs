@@ -37,6 +37,9 @@ public sealed class AccountServiceTests
         Assert.Equal(2, importPoint.Agreements.Count);
         Assert.Null(importPoint.Agreements[1].ValidTo);
         Assert.Equal(new DateTimeOffset(2023, 4, 1, 0, 0, 0, TimeSpan.FromHours(1)), importPoint.Agreements[1].ValidFrom);
+        TariffCode? activeAgreementTariff = importPoint.Agreements[1].ParsedTariffCode;
+        Assert.NotNull(activeAgreementTariff);
+        Assert.Equal("E-1R-VAR-22-11-01-N", activeAgreementTariff.Value.ToString());
         Assert.False(importPoint.IsExport);
 
         ElectricityMeterPoint exportPoint = property.ElectricityMeterPoints[1];

@@ -27,21 +27,30 @@ string groupId = GridSupplyPointParser.ToGroupId(london);      // "_C"
 
 `GridSupplyPoint` serialises as `_C` in JSON when used on models.
 
-## Build a charge list path
+## List standing charges and unit rates
 
-Rate and standing-charge services use relative REST paths. Call `GetRelativeChargePath` on a parsed or constructed `TariffCode`:
+Use `client.TariffRates` rather than building REST paths manually. `TariffCode.GetRelativeChargePath` is obsolete and kept for compatibility only.
 
 ```csharp
 TariffCode agile = TariffCode.Parse("E-1R-AGILE-FLEX-22-11-25-C");
 
-string ratesPath = agile.GetRelativeChargePath(TariffChargeKind.StandardUnitRates);
-// products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/
+await foreach (TariffCharge rate in client.TariffRates.ListStandardUnitRatesAsync(
+    agile,
+    cancellationToken: cancellationToken))
+{
+    Console.WriteLine($"{rate.ValidFrom}: {rate.ValueIncVat} p/kWh");
+}
 
 TariffCode economy7 = TariffCode.Parse("E-2R-VAR-22-11-01-A");
-string dayPath = economy7.GetRelativeChargePath(TariffChargeKind.DayUnitRates);
+await foreach (TariffCharge dayRate in client.TariffRates.ListDayUnitRatesAsync(
+    economy7,
+    cancellationToken: cancellationToken))
+{
+    // ...
+}
 ```
 
-Gas tariffs support standing charges and standard unit rates only. Day and night unit-rate paths apply to dual-register electricity (`E-2R-…`) and throw `OctopusEnergyRequestException` for gas.
+Gas tariffs support standing charges and standard unit rates only. `ListDayUnitRatesAsync` and `ListNightUnitRatesAsync` throw `OctopusEnergyRequestException` for gas or single-register electricity.
 
 ## Compose a code without parsing
 

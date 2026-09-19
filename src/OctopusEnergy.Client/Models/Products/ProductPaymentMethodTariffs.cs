@@ -28,4 +28,20 @@ public sealed class ProductPaymentMethodTariffs
     [JsonPropertyName("non_direct_debit")]
     [JsonConverter(typeof(EmptyObjectAsNullConverter<ProductTariff>))]
     public ProductTariff? NonDirectDebit { get; init; }
+
+    /// <summary>
+    /// Returns the tariff for <paramref name="paymentMethod"/>, or <see langword="null"/> when absent.
+    /// </summary>
+    /// <param name="paymentMethod">Catalogue payment method.</param>
+    /// <returns>The tariff snapshot, or <see langword="null"/> when the API returned no tariff.</returns>
+    public ProductTariff? GetTariff(ProductPaymentMethod paymentMethod)
+    {
+        return paymentMethod switch
+        {
+            ProductPaymentMethod.DirectDebitMonthly => DirectDebitMonthly,
+            ProductPaymentMethod.DirectDebitQuarterly => DirectDebitQuarterly,
+            ProductPaymentMethod.NonDirectDebit => NonDirectDebit,
+            _ => throw new ArgumentOutOfRangeException(nameof(paymentMethod), paymentMethod, "Unknown payment method."),
+        };
+    }
 }
