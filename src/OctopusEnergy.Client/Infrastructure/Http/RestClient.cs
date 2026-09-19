@@ -38,7 +38,7 @@ internal sealed class RestClient
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
 
         using HttpRequestMessage request = CreateGetRequest(relativePath);
-        OctopusEnergyRequestHeaders.Apply(request, _apiKey);
+        OctopusEnergyRequestHeaders.Apply(request, _apiKey, _httpClient.DefaultRequestHeaders);
         using HttpResponseMessage response = await SendAsync(request, cancellationToken).ConfigureAwait(false);
         await using Stream contentStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 

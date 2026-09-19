@@ -9,6 +9,9 @@ namespace OctopusEnergy.Client;
 /// Register this handler when configuring a named or typed <see cref="HttpClient"/> so
 /// authentication, <c>Accept</c>, and <c>User-Agent</c> are applied per request without
 /// mutating shared <see cref="HttpClient.DefaultRequestHeaders"/>.
+/// When both this handler and <see cref="OctopusEnergyClient"/> are configured with an API key,
+/// the client applies authentication on the request first; this handler does not replace an
+/// existing <c>Authorization</c> header. Prefer configuring the key in one place only.
 /// See <see href="https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/how-to/authentication.md">authentication</see>
 /// for a hosted registration example.
 /// </remarks>

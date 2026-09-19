@@ -154,6 +154,138 @@ public sealed class OctopusEnergyClientTests
     }
 
     [Fact]
+    public async Task GetAsync_WhenSharedHttpClientAndDifferentApiKeys_SendsMatchingAuthorizationHeaders()
+    {
+        const string firstApiKey = "first-api-key";
+        const string secondApiKey = "second-api-key";
+
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"results":[]}""");
+        handler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"results":[]}""");
+
+        using HttpClient sharedHttpClient = new(handler)
+        {
+            BaseAddress = new Uri("https://api.example.test/v1/"),
+        };
+
+        using OctopusEnergyClient firstClient = new(firstApiKey, sharedHttpClient);
+        using OctopusEnergyClient secondClient = new(secondApiKey, sharedHttpClient);
+
+        await firstClient.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await secondClient.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+
+        Assert.Equal(2, handler.SentRequests.Count);
+        Assert.Null(sharedHttpClient.DefaultRequestHeaders.Authorization);
+        Assert.Equal(
+            BasicApiKeyHeader.Create(firstApiKey).Parameter,
+            handler.SentRequests[0].Headers.Authorization?.Parameter);
+        Assert.Equal(
+            BasicApiKeyHeader.Create(secondApiKey).Parameter,
+            handler.SentRequests[1].Headers.Authorization?.Parameter);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenHttpClientDefaultAcceptIncludesJson_DoesNotDuplicateJsonAcceptHeader()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"results":[]}""");
+
+        using HttpClient httpClient = new(handler)
+        {
+            BaseAddress = new Uri("https://api.example.test/v1/"),
+        };
+        httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        using OctopusEnergyClient client = new(httpClient);
+
+        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+
+        HttpRequestMessage request = Assert.Single(handler.SentRequests);
+        Assert.Single(
+            request.Headers.Accept,
+            mediaType => string.Equals(mediaType.MediaType, "application/json", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenHandlerCarriesAuthAndAnonymousClient_SendsAuthorizationHeader()
+    {
+        const string apiKey = "handler-api-key";
+
+        QueuedHttpMessageHandler innerHandler = new();
+        innerHandler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"results":[]}""");
+
+        using OctopusEnergyClientHandler sdkHandler = new(apiKey)
+        {
+            InnerHandler = innerHandler,
+        };
+        using HttpClient httpClient = new(sdkHandler)
+        {
+            BaseAddress = new Uri("https://api.example.test/v1/"),
+        };
+        using OctopusEnergyClient client = new(httpClient);
+
+        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+
+        HttpRequestMessage request = Assert.Single(innerHandler.SentRequests);
+        Assert.Equal(
+            BasicApiKeyHeader.Create(apiKey).Parameter,
+            request.Headers.Authorization?.Parameter);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenHandlerAndClientApiKeysDiffer_ClientApiKeyTakesPrecedence()
+    {
+        const string handlerApiKey = "handler-api-key";
+        const string clientApiKey = "client-api-key";
+
+        QueuedHttpMessageHandler innerHandler = new();
+        innerHandler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"results":[]}""");
+
+        using OctopusEnergyClientHandler sdkHandler = new(handlerApiKey)
+        {
+            InnerHandler = innerHandler,
+        };
+        using HttpClient httpClient = new(sdkHandler)
+        {
+            BaseAddress = new Uri("https://api.example.test/v1/"),
+        };
+        using OctopusEnergyClient client = new(clientApiKey, httpClient);
+
+        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+
+        HttpRequestMessage request = Assert.Single(innerHandler.SentRequests);
+        Assert.Equal(
+            BasicApiKeyHeader.Create(clientApiKey).Parameter,
+            request.Headers.Authorization?.Parameter);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenHandlerAndClientBothConfigured_DoesNotDuplicateUserAgentHeader()
+    {
+        const string apiKey = "test-api-key";
+
+        QueuedHttpMessageHandler innerHandler = new();
+        innerHandler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"results":[]}""");
+
+        using OctopusEnergyClientHandler sdkHandler = new(apiKey)
+        {
+            InnerHandler = innerHandler,
+        };
+        using HttpClient httpClient = new(sdkHandler)
+        {
+            BaseAddress = new Uri("https://api.example.test/v1/"),
+        };
+        using OctopusEnergyClient client = new(apiKey, httpClient);
+
+        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+
+        HttpRequestMessage request = Assert.Single(innerHandler.SentRequests);
+        Assert.Single(
+            request.Headers.UserAgent,
+            value => value.Product?.Name == OctopusEnergyUserAgent.ProductName);
+    }
+
+    [Fact]
     public void Constructor_WithSharedHttpClient_DoesNotLeakAuthorizationAcrossInstances()
     {
         const string firstApiKey = "first-api-key";

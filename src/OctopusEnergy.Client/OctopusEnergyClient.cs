@@ -94,6 +94,9 @@ public sealed class OctopusEnergyClient : IDisposable
     /// <see cref="DefaultBaseUrl"/> for relative REST paths without mutating the supplied instance.
     /// Authentication, <c>Accept</c>, and <c>User-Agent</c> are applied per request and do not
     /// replace headers on <see cref="HttpClient.DefaultRequestHeaders"/>.
+    /// When both this constructor and <see cref="OctopusEnergyClientHandler"/> supply an API key,
+    /// the client key is applied first and the handler does not replace an existing
+    /// <c>Authorization</c> header.
     /// </param>
     public OctopusEnergyClient(string apiKey, HttpClient httpClient)
         : this(ValidateApiKey(apiKey), httpClient, ownsHttpClient: false)
@@ -173,7 +176,7 @@ public sealed class OctopusEnergyClient : IDisposable
     private static HttpClient CreateOwnedHttpClient(Uri? baseAddress)
     {
         HttpClient httpClient = new(new HttpClientHandler(), disposeHandler: true);
-        httpClient.BaseAddress = ResolveBaseAddress(httpClient.BaseAddress, baseAddress);
+        HttpClientConfiguration.ApplyBaseAddress(httpClient, baseAddress, DefaultBaseUrl);
 
         return httpClient;
     }
