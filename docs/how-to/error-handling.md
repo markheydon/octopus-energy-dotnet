@@ -45,9 +45,45 @@ catch (OctopusEnergyParseException ex)
 
 Catch `OctopusEnergyException` when you do not need to distinguish subtypes.
 
+## Rate limiting and retries
+
+By default, the SDK retries transient HTTP `429 Too Many Requests` and `503 Service Unavailable` responses up to three times after the first failure (four HTTP calls in total). When the API sends a `Retry-After` header, the SDK waits for that duration (capped at 60 seconds) before retrying. When `Retry-After` is absent, the SDK uses exponential backoff from a one-second base delay, also capped at 60 seconds.
+
+Retries honour `CancellationToken` cancellation. Other status codes (including `401`, `403`, `404`, and `500`) are not retried.
+
+To disable SDK retry and fail fast:
+
+```csharp
+using OctopusEnergy.Client;
+
+using OctopusEnergyClient client = new(apiKey, OctopusEnergyRetryOptions.Disabled);
+```
+
+With `IHttpClientFactory`:
+
+```csharp
+using HttpClient httpClient = httpClientFactory.CreateClient("OctopusEnergy");
+using OctopusEnergyClient client = new(httpClient, OctopusEnergyRetryOptions.Disabled);
+```
+
+Custom limits:
+
+```csharp
+OctopusEnergyRetryOptions retryOptions = new()
+{
+    MaxAttempts = 1,
+    MaxDelay = TimeSpan.FromSeconds(10),
+    BaseDelay = TimeSpan.FromMilliseconds(500),
+};
+
+using OctopusEnergyClient client = new(httpClient, retryOptions);
+```
+
+If your host already retries HTTP 429 or 503 (for example with Polly on the `HttpClient` pipeline), disable one layer to avoid double backoff.
+
 ## Pagination and errors
 
-Pagination stops and throws on non-success HTTP responses. Items from pages that were already yielded remain available; the exception is raised when the failing page is requested. A truncated page is never returned after an error.
+Pagination stops and throws on non-success HTTP responses. Items from pages that were already yielded remain available; the exception is raised when the failing page is requested. A truncated page is never returned after an error. Each paginated page request has its own retry budget.
 
 ## Related
 
