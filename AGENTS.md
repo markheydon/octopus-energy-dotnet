@@ -148,6 +148,22 @@ Follow [plan/LABEL_STRATEGY.md](plan/LABEL_STRATEGY.md). Every pull request need
 
 The `[Story]` / `[Chore]` title prefix must agree with the `type/*` label. Do not use retired unprefixed labels (see LABEL_STRATEGY.md).
 
+### Milestone
+
+When the PR closes a tracking issue, set the **same GitHub milestone** as that issue (for example both on `v1.1`). Check with:
+
+```bash
+gh issue view NNN --json milestone
+```
+
+Copy the milestone title onto the PR at creation time, or immediately after if GitHub did not inherit it:
+
+```bash
+gh pr edit --milestone "v1.1"
+```
+
+If the linked issue has **no** milestone, leave the PR unset unless the user or plan specifies one. Document intentional mismatches in the PR body (for example a `1.0.x` patch off the v1.1 timebox).
+
 ### Create the PR
 
 Use `gh` from the repository root:
@@ -156,6 +172,7 @@ Use `gh` from the repository root:
 git push -u origin HEAD
 gh pr create \
   --title "[Story] … (#NNN)" \
+  --milestone "v1.1" \
   --label "type/story" \
   --label "status/in-review" \
   --label "priority/medium" \
@@ -175,11 +192,17 @@ gh pr create \
 ## API risk
 …
 
+## Milestone
+
+v1.1
+
 ## Related Issues
 
 Closes #NNN
 EOF
 )"
 ```
+
+After creation, confirm labels and milestone match the linked issue (`gh pr view --json labels,milestone`).
 
 Return the PR URL to the user. Do not merge without human review.
