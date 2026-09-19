@@ -57,6 +57,21 @@ internal sealed class RestClient
     }
 
     /// <summary>
+    /// Fetches a single REST list page without following <c>next</c>.
+    /// </summary>
+    internal async Task<PaginatedResult<TItem>> GetPageAsync<TItem>(
+        string relativePath,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
+
+        PaginatedResponse<TItem> page = await GetAsync<PaginatedResponse<TItem>>(relativePath, cancellationToken)
+            .ConfigureAwait(false);
+
+        return ToPaginatedResult(page);
+    }
+
+    /// <summary>
     /// Enumerates all items across REST pages, following <c>next</c> until it is null.
     /// Non-success HTTP responses throw; partial pages are not returned after a failure.
     /// </summary>
@@ -85,16 +100,27 @@ internal sealed class RestClient
                     $"Pagination stopped after {_maxPageHops} pages. The next URL may be malformed.");
             }
 
-            PaginatedResponse<TItem> page = await GetAsync<PaginatedResponse<TItem>>(nextPath, cancellationToken)
+            PaginatedResult<TItem> page = await GetPageAsync<TItem>(nextPath, cancellationToken)
                 .ConfigureAwait(false);
 
-            foreach (TItem item in page.Results ?? [])
+            foreach (TItem item in page.Results)
             {
                 yield return item;
             }
 
             nextPath = ResolveNextPath(page.Next);
         }
+    }
+
+    private static PaginatedResult<TItem> ToPaginatedResult<TItem>(PaginatedResponse<TItem> page)
+    {
+        return new PaginatedResult<TItem>
+        {
+            Count = page.Count,
+            Next = page.Next,
+            Previous = page.Previous,
+            Results = page.Results ?? [],
+        };
     }
 
     private HttpRequestMessage CreateGetRequest(string path)

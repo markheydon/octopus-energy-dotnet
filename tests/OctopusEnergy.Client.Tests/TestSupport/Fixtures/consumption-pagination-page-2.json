@@ -1,0 +1,12 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": "https://api.example.test/v1/electricity-meter-points/1000000000001/meters/1111111111/consumption/?page=1",
+  "results": [
+    {
+      "consumption": 0.3,
+      "interval_start": "2024-01-01T01:00:00Z",
+      "interval_end": "2024-01-01T01:30:00Z"
+    }
+  ]
+}

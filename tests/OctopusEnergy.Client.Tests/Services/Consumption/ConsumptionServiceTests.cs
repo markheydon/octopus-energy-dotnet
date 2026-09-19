@@ -1,6 +1,7 @@
 using System.Net;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Models.Accounts;
+using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Tests.TestSupport;
 
@@ -66,6 +67,104 @@ public sealed class ConsumptionServiceTests
         Assert.Contains("page_size=500", query, StringComparison.Ordinal);
         Assert.Contains("order_by=period", query, StringComparison.Ordinal);
         Assert.Contains("group_by=day", query, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ListElectricityPageAsync_WhenFixture_ReturnsCountAndIntervals()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-bst-spring-forward.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        PaginatedResult<ConsumptionInterval> page = await client.Consumption.ListElectricityPageAsync(
+            "1000000000001",
+            "1111111111",
+            cancellationToken: CancellationToken.None);
+
+        Assert.Equal(4, page.Count);
+        Assert.Equal(4, page.Results.Count);
+        Assert.Null(page.Next);
+        Assert.Single(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task ListElectricityPageAsync_WhenNextPageAvailable_DoesNotFollowNext()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-pagination-page-1.json"));
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-pagination-page-2.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        PaginatedResult<ConsumptionInterval> page = await client.Consumption.ListElectricityPageAsync(
+            "1000000000001",
+            "1111111111",
+            cancellationToken: CancellationToken.None);
+
+        Assert.Equal(3, page.Count);
+        Assert.Equal(2, page.Results.Count);
+        Assert.NotNull(page.Next);
+        Assert.Single(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task ListElectricityAsync_WhenTwoPages_ReturnsAllIntervals()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-pagination-page-1.json"));
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-pagination-page-2.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        List<ConsumptionInterval> intervals = await CollectAsync(
+            client.Consumption.ListElectricityAsync("1000000000001", "1111111111", cancellationToken: CancellationToken.None));
+
+        Assert.Equal(3, intervals.Count);
+        Assert.Equal(2, handler.SentRequests.Count);
+    }
+
+    [Fact]
+    public async Task ListElectricityAsync_WhenPageSizeIsZero_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        ConsumptionListRequest request = new() { PageSize = 0 };
+
+        await Assert.ThrowsAsync<OctopusEnergyRequestException>(
+            () => CollectAsync(client.Consumption.ListElectricityAsync(
+                "1000000000001",
+                "1111111111",
+                request,
+                CancellationToken.None)));
+
+        Assert.Empty(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task ListElectricityPageAsync_WhenPageSizeIsZero_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        ConsumptionListRequest request = new() { PageSize = 0 };
+
+        await Assert.ThrowsAsync<OctopusEnergyRequestException>(
+            () => client.Consumption.ListElectricityPageAsync(
+                "1000000000001",
+                "1111111111",
+                request,
+                CancellationToken.None));
+
+        Assert.Empty(handler.SentRequests);
     }
 
     [Fact]
