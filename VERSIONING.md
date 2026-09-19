@@ -1,7 +1,7 @@
 # Versioning Policy
 
 **Project:** OctopusEnergy.Client
-**Last updated:** 18 September 2026
+**Last updated:** 19 September 2026
 
 ---
 
@@ -32,6 +32,11 @@ Tag format: `1.x.y` (for example `1.0.0`).
 **Shipped:** `1.0.0` (18 September 2026) — first stable release of the REST customer core.
 
 v2 GraphQL work may ship as later `1.x` minors after `1.0.0`, or as `0.2.0-alpha` if it lands before REST MVP is stable. Do not block `1.0.0` on v2. SCOPE.md **v2** is a feature-phase label; it does not imply NuGet package version `2.0.0`.
+
+GitHub milestones (release timeboxes, not package majors):
+
+- GraphQL customer extras (SCOPE **v2**) map to milestone **v1.2** and ship as NuGet `1.x` minors.
+- REST developer experience maps to milestone **v1.1** and ships as NuGet `1.x` minors.
 
 ---
 
@@ -73,6 +78,7 @@ The workflow builds, tests, packs `OctopusEnergy.Client`, publishes to NuGet.org
 
 | Date | Change | Reason |
 |---|---|---|
+| 19 September 2026 | Retarget GraphQL extras milestone v1.1 → v1.2; v1.1 is REST DX | Align VERSIONING.md with GitHub milestone reorganisation (#61) |
 | 18 September 2026 | Clarify SCOPE.md v2 vs NuGet `1.x` | Milestone renamed v2.0 → v1.1 |
 | 18 September 2026 | Release `1.0.2` | Point NuGet PackageProjectUrl at consumer docs site |
 | 18 September 2026 | Release `1.0.1` | Add NuGet package README for nuget.org |
