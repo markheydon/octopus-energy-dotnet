@@ -151,7 +151,7 @@ public sealed class RestClientTests
         handler.Enqueue(HttpStatusCode.OK, """{"count":1,"next":"items/?page=3","results":[{"code":"B"}]}""");
 
         using HttpClient httpClient = CreateHttpClient(handler);
-        RestClient rest = new(httpClient, maxPageHops: 2);
+        RestClient rest = new(httpClient, new Uri("https://api.example.test/v1/"), maxPageHops: 2);
 
         OctopusEnergyException exception = await Assert.ThrowsAsync<OctopusEnergyException>(
             async () => await CollectAsync(rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None)));

@@ -1,4 +1,3 @@
-using OctopusEnergy.Client.Infrastructure.Authentication;
 using OctopusEnergy.Client.Infrastructure.Configuration;
 using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Services.Accounts;
@@ -33,7 +32,7 @@ public sealed class OctopusEnergyClient : IDisposable
     /// calls require an API key; use the <see cref="OctopusEnergyClient(string)"/> overload.
     /// </remarks>
     public OctopusEnergyClient()
-        : this(CreateDefaultHttpClient(), ownsHttpClient: true)
+        : this(CreateOwnedHttpClient(baseAddress: null), ownsHttpClient: true)
     {
     }
 
@@ -60,7 +59,7 @@ public sealed class OctopusEnergyClient : IDisposable
     /// REST API base URL. Must be an absolute URI. A trailing slash is applied when missing.
     /// </param>
     public OctopusEnergyClient(string apiKey, Uri baseAddress)
-        : this(ValidateApiKey(apiKey), CreateHttpClient(baseAddress), ownsHttpClient: true)
+        : this(ValidateApiKey(apiKey), CreateOwnedHttpClient(ValidateBaseAddress(baseAddress)), ownsHttpClient: true)
     {
     }
 
@@ -68,17 +67,18 @@ public sealed class OctopusEnergyClient : IDisposable
     /// Creates a client that uses the supplied <see cref="HttpClient"/>.
     /// </summary>
     /// <param name="httpClient">
-    /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null,
-    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When a base address
-    /// is already set, a trailing slash is applied when missing. When no
-    /// <c>Accept: application/json</c> header is present, one is added.
+    /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null, the SDK uses
+    /// <see cref="DefaultBaseUrl"/> for relative REST paths without mutating the supplied instance.
+    /// Authentication, <c>Accept</c>, and <c>User-Agent</c> are applied per request.
     /// </param>
     /// <remarks>
     /// Public catalogue endpoints work without authentication. No <c>Authorization</c> header
     /// is added unless an API key constructor is used.
+    /// For <c>IHttpClientFactory</c>, register <see cref="OctopusEnergyClientHandler"/> on the
+    /// named client and set <see cref="HttpClient.BaseAddress"/> at registration time.
     /// </remarks>
     public OctopusEnergyClient(HttpClient httpClient)
-        : this(httpClient, ownsHttpClient: false)
+        : this(httpClient, ownsHttpClient: false, apiKey: null)
     {
     }
 
@@ -90,11 +90,10 @@ public sealed class OctopusEnergyClient : IDisposable
     /// Treat as a secret; the SDK never logs it.
     /// </param>
     /// <param name="httpClient">
-    /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null,
-    /// <see cref="DefaultBaseUrl"/> is applied on the supplied instance. When a base address
-    /// is already set, a trailing slash is applied when missing. When no
-    /// <c>Accept: application/json</c> header is present, one is added. Any existing
-    /// <c>Authorization</c> header is replaced with HTTP Basic for the API key.
+    /// The HTTP client to use. When <see cref="HttpClient.BaseAddress"/> is null, the SDK uses
+    /// <see cref="DefaultBaseUrl"/> for relative REST paths without mutating the supplied instance.
+    /// Authentication, <c>Accept</c>, and <c>User-Agent</c> are applied per request and do not
+    /// replace headers on <see cref="HttpClient.DefaultRequestHeaders"/>.
     /// </param>
     public OctopusEnergyClient(string apiKey, HttpClient httpClient)
         : this(ValidateApiKey(apiKey), httpClient, ownsHttpClient: false)
@@ -112,6 +111,12 @@ public sealed class OctopusEnergyClient : IDisposable
         return apiKey;
     }
 
+    private static Uri ValidateBaseAddress(Uri baseAddress)
+    {
+        ArgumentNullException.ThrowIfNull(baseAddress);
+        return baseAddress;
+    }
+
     private OctopusEnergyClient(HttpClient httpClient, bool ownsHttpClient, string? apiKey = null)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
@@ -119,15 +124,9 @@ public sealed class OctopusEnergyClient : IDisposable
         _httpClient = httpClient;
         _ownsHttpClient = ownsHttpClient;
 
-        HttpClientConfiguration.ApplyBaseAddress(_httpClient, baseAddress: null, DefaultBaseUrl);
-        EnsureJsonAcceptHeader(_httpClient);
+        Uri baseAddress = ResolveBaseAddress(httpClient.BaseAddress, explicitBaseAddress: null);
 
-        if (apiKey is not null)
-        {
-            _httpClient.DefaultRequestHeaders.Authorization = BasicApiKeyHeader.Create(apiKey);
-        }
-
-        Rest = new RestClient(_httpClient);
+        Rest = new RestClient(_httpClient, baseAddress, apiKey);
         Accounts = new AccountService(Rest);
         Consumption = new ConsumptionService(Rest);
         Industry = new IndustryService(Rest);
@@ -171,31 +170,26 @@ public sealed class OctopusEnergyClient : IDisposable
         }
     }
 
-    private static HttpClient CreateDefaultHttpClient()
+    private static HttpClient CreateOwnedHttpClient(Uri? baseAddress)
     {
-        return CreateHttpClient(new Uri(DefaultBaseUrl));
-    }
-
-    private static HttpClient CreateHttpClient(Uri baseAddress)
-    {
-        ArgumentNullException.ThrowIfNull(baseAddress);
-
-        HttpClient httpClient = new();
-        HttpClientConfiguration.ApplyBaseAddress(httpClient, baseAddress, DefaultBaseUrl);
-        EnsureJsonAcceptHeader(httpClient);
+        HttpClient httpClient = new(new HttpClientHandler(), disposeHandler: true);
+        httpClient.BaseAddress = ResolveBaseAddress(httpClient.BaseAddress, baseAddress);
 
         return httpClient;
     }
 
-    private static void EnsureJsonAcceptHeader(HttpClient httpClient)
+    private static Uri ResolveBaseAddress(Uri? httpClientBaseAddress, Uri? explicitBaseAddress)
     {
-        if (httpClient.DefaultRequestHeaders.Accept.Any(mediaType =>
-                string.Equals(mediaType.MediaType, "application/json", StringComparison.OrdinalIgnoreCase)))
+        if (explicitBaseAddress is not null)
         {
-            return;
+            return HttpClientConfiguration.NormalizeBaseAddress(explicitBaseAddress);
         }
 
-        httpClient.DefaultRequestHeaders.Accept.Add(
-            new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        if (httpClientBaseAddress is not null)
+        {
+            return HttpClientConfiguration.NormalizeBaseAddress(httpClientBaseAddress);
+        }
+
+        return HttpClientConfiguration.NormalizeBaseAddress(new Uri(DefaultBaseUrl));
     }
 }
