@@ -112,7 +112,7 @@ public sealed class RestClientTests
         OctopusEnergyParseException exception = await Assert.ThrowsAsync<OctopusEnergyParseException>(
             () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
 
-        Assert.Contains("empty response body", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("JSON null", exception.Message, StringComparison.Ordinal);
     }
 
     [Fact]

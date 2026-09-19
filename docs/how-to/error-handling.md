@@ -8,6 +8,7 @@ Public exception types live in the `OctopusEnergy.Client` namespace:
 | `OctopusEnergyRequestException` | Local contract violations (for example `page_size` above a documented maximum, or an invalid tariff code or GSP) before HTTP |
 | `OctopusEnergyHttpException` | Non-success HTTP status without a documented API error payload |
 | `OctopusEnergyApiException` | Non-success HTTP with a documented REST `detail` message |
+| `OctopusEnergyParseException` | Successful HTTP response that cannot be deserialised (invalid JSON or JSON `null` where a model is expected) |
 
 REST uses HTTP status codes. GraphQL (v2) usually returns HTTP 200 with `errors.extensions.errorCode` values such as `KT-CT-1112`; those will map to the same hierarchy in a later release.
 
@@ -33,6 +34,11 @@ catch (OctopusEnergyHttpException ex)
 catch (OctopusEnergyRequestException ex)
 {
     // Invalid argument or documented limit before any HTTP call.
+    Console.WriteLine(ex.Message);
+}
+catch (OctopusEnergyParseException ex)
+{
+    // HTTP 2xx but the body could not be deserialised.
     Console.WriteLine(ex.Message);
 }
 ```

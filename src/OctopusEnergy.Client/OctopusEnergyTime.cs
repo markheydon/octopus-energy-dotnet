@@ -27,6 +27,9 @@ public static class OctopusEnergyTime
     /// <param name="localDateTime">Wall-clock time in the UK.</param>
     /// <returns>The instant with the correct offset for that civil time.</returns>
     /// <remarks>
+    /// Pass UK wall-clock components with <see cref="DateTimeKind.Unspecified"/>. Do not pass
+    /// <see cref="DateTimeKind.Local"/> from the machine timezone — its components are treated
+    /// as UK civil time without conversion.
     /// Ambiguous local times during the autumn clock change (the repeated hour) resolve to
     /// standard time (GMT) — the later instant. Civil times in the spring-forward gap do not
     /// exist and throw <see cref="OctopusEnergyRequestException"/>.
