@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using OctopusEnergy.Client;
 
 namespace OctopusEnergy.Client.Models.Products;
 
@@ -12,6 +13,13 @@ public sealed class ProductTariff
     /// </summary>
     [JsonPropertyName("code")]
     public string Code { get; init; } = string.Empty;
+
+    /// <summary>
+    /// Parsed <see cref="TariffCode"/> when <see cref="Code"/> is a valid wire-format code;
+    /// otherwise <see langword="null"/>.
+    /// </summary>
+    public TariffCode? ParsedTariffCode =>
+        TariffCode.TryParse(Code, out TariffCode parsed) ? parsed : null;
 
     /// <summary>
     /// Standing charge excluding VAT, in pence per day.

@@ -1,5 +1,6 @@
 using System.Net;
 using OctopusEnergy.Client;
+using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Tests.TestSupport;
 
@@ -105,6 +106,82 @@ public sealed class ConsumptionServiceTests
     }
 
     [Fact]
+    public async Task ListElectricityAsync_WhenMeterPointProvided_UsesMpanFromModel()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-empty.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        ElectricityMeterPoint meterPoint = new()
+        {
+            Mpan = "1000000000001",
+        };
+
+        await CollectAsync(
+            client.Consumption.ListElectricityAsync(meterPoint, "1111111111", cancellationToken: CancellationToken.None));
+
+        Assert.EndsWith(
+            "/electricity-meter-points/1000000000001/meters/1111111111/consumption/",
+            handler.SentRequests[0].RequestUri?.AbsolutePath,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ListGasAsync_WhenMeterPointProvided_UsesMprnFromModel()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-gas-smets2.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        GasMeterPoint meterPoint = new()
+        {
+            Mprn = "1234567890",
+        };
+
+        await CollectAsync(
+            client.Consumption.ListGasAsync(meterPoint, "G1234567", cancellationToken: CancellationToken.None));
+
+        Assert.EndsWith(
+            "/gas-meter-points/1234567890/meters/G1234567/consumption/",
+            handler.SentRequests[0].RequestUri?.AbsolutePath,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ListElectricityAsync_WhenMeterPointNull_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        await Assert.ThrowsAsync<ArgumentNullException>(
+            () => CollectAsync(client.Consumption.ListElectricityAsync((ElectricityMeterPoint)null!, "1111111111", cancellationToken: CancellationToken.None)));
+
+        Assert.Empty(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task ListElectricityAsync_WhenMeterPointMpanMissing_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        ElectricityMeterPoint meterPoint = new();
+
+        await Assert.ThrowsAsync<OctopusEnergyRequestException>(
+            () => CollectAsync(client.Consumption.ListElectricityAsync(meterPoint, "1111111111", cancellationToken: CancellationToken.None)));
+
+        Assert.Empty(handler.SentRequests);
+    }
+
+    [Fact]
     public async Task ListElectricityAsync_WhenMpanNull_ThrowsBeforeHttp()
     {
         QueuedHttpMessageHandler handler = new();
@@ -113,7 +190,7 @@ public sealed class ConsumptionServiceTests
         using OctopusEnergyClient client = new(httpClient);
 
         await Assert.ThrowsAsync<OctopusEnergyRequestException>(
-            () => CollectAsync(client.Consumption.ListElectricityAsync(null!, "1111111111", cancellationToken: CancellationToken.None)));
+            () => CollectAsync(client.Consumption.ListElectricityAsync((string)null!, "1111111111", cancellationToken: CancellationToken.None)));
 
         Assert.Empty(handler.SentRequests);
     }

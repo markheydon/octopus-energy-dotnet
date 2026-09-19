@@ -1,5 +1,6 @@
 using System.Globalization;
 using OctopusEnergy.Client.Infrastructure.Http;
+using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Consumption;
 
 namespace OctopusEnergy.Client.Services.Consumption;
@@ -44,6 +45,33 @@ public sealed class ConsumptionService
     }
 
     /// <summary>
+    /// Lists electricity consumption for an account meter point and meter serial, including export MPANs.
+    /// </summary>
+    /// <param name="meterPoint">Electricity meter point from <see cref="Services.Accounts.AccountService"/>.</param>
+    /// <param name="meterSerialNumber">Meter serial number.</param>
+    /// <param name="request">Optional period, pagination, ordering, and grouping.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Consumption intervals across pages. An empty sequence is valid for non-smart meters.</returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="meterPoint"/> is <see langword="null"/> or has no MPAN.
+    /// </exception>
+    public IAsyncEnumerable<ConsumptionInterval> ListElectricityAsync(
+        ElectricityMeterPoint meterPoint,
+        string meterSerialNumber,
+        ConsumptionListRequest? request = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(meterPoint);
+
+        if (string.IsNullOrWhiteSpace(meterPoint.Mpan))
+        {
+            throw new OctopusEnergyRequestException("Meter point MPAN is required.");
+        }
+
+        return ListElectricityAsync(meterPoint.Mpan, meterSerialNumber, request, cancellationToken);
+    }
+
+    /// <summary>
     /// Lists gas consumption for an MPRN and meter serial.
     /// </summary>
     /// <param name="mprn">Gas MPRN.</param>
@@ -64,6 +92,33 @@ public sealed class ConsumptionService
             request);
 
         return _rest.GetAllPagesAsync<ConsumptionInterval>(path, cancellationToken);
+    }
+
+    /// <summary>
+    /// Lists gas consumption for an account meter point and meter serial.
+    /// </summary>
+    /// <param name="meterPoint">Gas meter point from <see cref="Services.Accounts.AccountService"/>.</param>
+    /// <param name="meterSerialNumber">Meter serial number.</param>
+    /// <param name="request">Optional period, pagination, ordering, and grouping.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Consumption intervals across pages. An empty sequence is valid for non-smart meters.</returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="meterPoint"/> is <see langword="null"/> or has no MPRN.
+    /// </exception>
+    public IAsyncEnumerable<ConsumptionInterval> ListGasAsync(
+        GasMeterPoint meterPoint,
+        string meterSerialNumber,
+        ConsumptionListRequest? request = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(meterPoint);
+
+        if (string.IsNullOrWhiteSpace(meterPoint.Mprn))
+        {
+            throw new OctopusEnergyRequestException("Meter point MPRN is required.");
+        }
+
+        return ListGasAsync(meterPoint.Mprn, meterSerialNumber, request, cancellationToken);
     }
 
     private static void ValidateMeterIdentifiers(string meterPointIdentifier, string meterSerialNumber)

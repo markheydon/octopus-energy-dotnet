@@ -14,6 +14,13 @@ public sealed class TariffAgreement
     public string TariffCode { get; init; } = string.Empty;
 
     /// <summary>
+    /// Parsed <see cref="TariffCode"/> when <see cref="TariffCode"/> is a valid wire-format code;
+    /// otherwise <see langword="null"/>.
+    /// </summary>
+    public OctopusEnergy.Client.TariffCode? ParsedTariffCode =>
+        OctopusEnergy.Client.TariffCode.TryParse(TariffCode, out OctopusEnergy.Client.TariffCode parsed) ? parsed : null;
+
+    /// <summary>
     /// When the agreement started.
     /// </summary>
     [JsonPropertyName("valid_from")]
