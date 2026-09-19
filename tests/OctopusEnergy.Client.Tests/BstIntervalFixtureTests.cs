@@ -85,16 +85,26 @@ public sealed class BstIntervalFixtureTests
     }
 
     [Fact]
-    public void MatchByOffsetInstant_WhenJoiningConsumptionToRates_KeepsAllIntervals()
+    public void MatchByIntervalStartInRatePeriod_WhenSpringForward_KeepsAllIntervals()
     {
         ConsumptionPage consumption = Deserialize<ConsumptionPage>("consumption-bst-spring-forward.json");
         AgileRatesPage rates = Deserialize<AgileRatesPage>("agile-rates-utc-spring-forward.json");
 
         List<ConsumptionIntervalWire> correctMatches = consumption.Results
-            .Where(interval => rates.Results.Any(rate => rate.ValidFrom == interval.IntervalStart))
+            .Where(interval => rates.Results.Any(rate => RatePeriodContainsInstant(rate, interval.IntervalStart)))
             .ToList();
 
         Assert.Equal(4, correctMatches.Count);
+    }
+
+    private static bool RatePeriodContainsInstant(AgileRateWire rate, DateTimeOffset instant)
+    {
+        if (instant < rate.ValidFrom)
+        {
+            return false;
+        }
+
+        return instant < rate.ValidTo;
     }
 
     private static T Deserialize<T>(string fixtureName)

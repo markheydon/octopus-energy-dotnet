@@ -47,7 +47,7 @@ DateTimeOffset from = OctopusEnergyTime.AssumeEuropeLondon(
 
 Civil times in the spring-forward gap (the skipped hour) throw `OctopusEnergyRequestException`. Ambiguous times during the autumn clock change resolve to standard time (GMT).
 
-`ConsumptionPricePeriodMatching` helps align a consumption interval with a UTC Agile rate period by matching `ValidFrom` to `IntervalStart`. It is a join helper, not a price modeller.
+`ConsumptionPricePeriodMatching` helps align a consumption interval with a UTC Agile rate period by finding the rate whose `[ValidFrom, ValidTo)` window contains the interval start instant. Consumption may overlap the requested window; the helper does not require `ValidFrom` to equal `IntervalStart`. It matches on interval start only, not on whether the full interval overlaps a rate window. It is a join helper, not a cost calculator.
 
 `group_by=day` on consumption uses **local midnight**, not UTC.
 
