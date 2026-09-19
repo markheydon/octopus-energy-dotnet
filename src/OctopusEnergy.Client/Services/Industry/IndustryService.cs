@@ -6,7 +6,7 @@ namespace OctopusEnergy.Client.Services.Industry;
 /// <summary>
 /// Public industry lookups (postcode GSP and electricity meter-point metadata).
 /// </summary>
-public sealed class IndustryService
+public sealed class IndustryService : IIndustryService
 {
     private const string GridSupplyPointsPath = "industry/grid-supply-points/";
     private const string ElectricityMeterPointsPathPrefix = "electricity-meter-points/";

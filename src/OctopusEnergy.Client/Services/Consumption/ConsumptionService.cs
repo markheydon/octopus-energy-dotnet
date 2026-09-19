@@ -8,7 +8,7 @@ namespace OctopusEnergy.Client.Services.Consumption;
 /// <summary>
 /// Electricity and gas half-hourly (or grouped) consumption.
 /// </summary>
-public sealed class ConsumptionService
+public sealed class ConsumptionService : IConsumptionService
 {
     private const string ElectricityMeterPointsPathPrefix = "electricity-meter-points/";
     private const string GasMeterPointsPathPrefix = "gas-meter-points/";

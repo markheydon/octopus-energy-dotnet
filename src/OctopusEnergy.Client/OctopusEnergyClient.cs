@@ -14,7 +14,7 @@ namespace OctopusEnergy.Client;
 /// Resource services use the shared REST transport, pagination, and error handling
 /// implemented by this client.
 /// </remarks>
-public sealed class OctopusEnergyClient : IDisposable
+public sealed class OctopusEnergyClient : IOctopusEnergyClient
 {
     /// <summary>
     /// Default UK REST API base URL.
@@ -140,27 +140,27 @@ public sealed class OctopusEnergyClient : IDisposable
     /// <summary>
     /// Customer account detail.
     /// </summary>
-    public AccountService Accounts { get; }
+    public IAccountService Accounts { get; }
 
     /// <summary>
     /// Electricity and gas consumption intervals.
     /// </summary>
-    public ConsumptionService Consumption { get; }
+    public IConsumptionService Consumption { get; }
 
     /// <summary>
     /// Public industry lookups (postcode GSP and MPAN metadata).
     /// </summary>
-    public IndustryService Industry { get; }
+    public IIndustryService Industry { get; }
 
     /// <summary>
     /// Product catalogue and product detail.
     /// </summary>
-    public ProductService Products { get; }
+    public IProductService Products { get; }
 
     /// <summary>
     /// Standing charges and unit rates for product tariffs.
     /// </summary>
-    public TariffRatesService TariffRates { get; }
+    public ITariffRatesService TariffRates { get; }
 
     internal RestClient Rest { get; }
 

@@ -7,7 +7,7 @@ namespace OctopusEnergy.Client.Services.Products;
 /// <summary>
 /// Standing charges and unit rates for product tariffs.
 /// </summary>
-public sealed class TariffRatesService
+public sealed class TariffRatesService : ITariffRatesService
 {
     private readonly RestClient _rest;
 
