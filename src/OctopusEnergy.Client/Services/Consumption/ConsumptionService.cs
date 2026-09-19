@@ -87,7 +87,7 @@ public sealed class ConsumptionService : IConsumptionService
     /// Thrown when <paramref name="meterPoint"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="OctopusEnergyRequestException">
-    /// Thrown when <paramref name="meterPoint"/> has no MPAN.
+    /// Thrown when <paramref name="meterPoint"/> has no MPAN or <paramref name="meterSerialNumber"/> is null or whitespace.
     /// </exception>
     public Task<PaginatedResult<ConsumptionInterval>> ListElectricityPageAsync(
         ElectricityMeterPoint meterPoint,
@@ -207,7 +207,7 @@ public sealed class ConsumptionService : IConsumptionService
     /// Thrown when <paramref name="meterPoint"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="OctopusEnergyRequestException">
-    /// Thrown when <paramref name="meterPoint"/> has no MPRN.
+    /// Thrown when <paramref name="meterPoint"/> has no MPRN or <paramref name="meterSerialNumber"/> is null or whitespace.
     /// </exception>
     public Task<PaginatedResult<ConsumptionInterval>> ListGasPageAsync(
         GasMeterPoint meterPoint,

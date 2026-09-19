@@ -14,6 +14,11 @@ public sealed class PaginatedResult<TItem>
     /// <summary>
     /// URL of the next page, or <see langword="null"/> when this is the last page.
     /// </summary>
+    /// <remarks>
+    /// Informational only. The SDK does not expose a public API to fetch this URL directly.
+    /// For multi-page iteration, use the resource service <c>List*Async</c> methods (which follow
+    /// <c>next</c> automatically) or bound requests with <c>period_from</c> and <c>period_to</c>.
+    /// </remarks>
     public string? Next { get; init; }
 
     /// <summary>

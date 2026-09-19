@@ -188,6 +188,48 @@ public sealed class ConsumptionServiceTests
     }
 
     [Fact]
+    public async Task ListGasPageAsync_WhenFixture_ReturnsCountAndIntervals()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-gas-smets2.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        PaginatedResult<ConsumptionInterval> page = await client.Consumption.ListGasPageAsync(
+            "1234567890",
+            "G1234567",
+            cancellationToken: CancellationToken.None);
+
+        Assert.Equal(1, page.Count);
+        Assert.Single(page.Results);
+        Assert.Equal(GasConsumptionUnit.CubicMetres, page.Results[0].GasUnit);
+        Assert.Null(page.Next);
+        Assert.Single(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task ListGasPageAsync_WhenNextPageAvailable_DoesNotFollowNext()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-pagination-page-1.json"));
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("consumption-pagination-page-2.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        PaginatedResult<ConsumptionInterval> page = await client.Consumption.ListGasPageAsync(
+            "1234567890",
+            "G1234567",
+            cancellationToken: CancellationToken.None);
+
+        Assert.Equal(3, page.Count);
+        Assert.Equal(2, page.Results.Count);
+        Assert.NotNull(page.Next);
+        Assert.Single(handler.SentRequests);
+    }
+
+    [Fact]
     public async Task ListGasAsync_WhenSmets2_ReturnsCubicMetresUnit()
     {
         QueuedHttpMessageHandler handler = new();

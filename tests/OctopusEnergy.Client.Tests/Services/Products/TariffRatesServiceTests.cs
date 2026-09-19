@@ -57,6 +57,25 @@ public sealed class TariffRatesServiceTests
     }
 
     [Fact]
+    public async Task ListStandardUnitRatesAsync_WhenPageSizeIsZero_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        TariffChargeListRequest request = new() { PageSize = 0 };
+
+        await Assert.ThrowsAsync<OctopusEnergyRequestException>(
+            () => CollectAsync(client.TariffRates.ListStandardUnitRatesAsync(
+                TariffCode.Parse(AgileTariff),
+                request,
+                CancellationToken.None)));
+
+        Assert.Empty(handler.SentRequests);
+    }
+
+    [Fact]
     public async Task ListStandardUnitRatesAsync_WhenPageSizeExceedsMaximum_ThrowsBeforeHttp()
     {
         QueuedHttpMessageHandler handler = new();
