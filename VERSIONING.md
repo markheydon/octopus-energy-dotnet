@@ -78,6 +78,7 @@ The workflow builds, tests, packs `OctopusEnergy.Client`, publishes to NuGet.org
 
 | Date | Change | Reason |
 |---|---|---|
+| 19 September 2026 | Release `1.1.0` | REST developer-experience milestone v1.1 |
 | 19 September 2026 | Retarget GraphQL extras milestone v1.1 → v1.2; v1.1 is REST DX | Align VERSIONING.md with GitHub milestone reorganisation (#61) |
 | 18 September 2026 | Clarify SCOPE.md v2 vs NuGet `1.x` | Milestone renamed v2.0 → v1.1 |
 | 18 September 2026 | Release `1.0.2` | Point NuGet PackageProjectUrl at consumer docs site |

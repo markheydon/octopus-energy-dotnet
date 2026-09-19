@@ -13,7 +13,7 @@ Maintainer guide for publishing `OctopusEnergy.Client` to NuGet.org. Policy: [VE
 
 1. Bump `<Version>` if needed.
 2. Merge to `main`.
-3. Tag and push: `git tag v1.0.0 && git push origin v1.0.0`
+3. Tag and push: `git tag v1.1.0 && git push origin v1.1.0`
 4. Monitor the Release workflow.
 5. Verify nuget.org and GitHub Releases.
 
@@ -23,9 +23,11 @@ Maintainer guide for publishing `OctopusEnergy.Client` to NuGet.org. Policy: [VE
 
 For subsequent releases, bump `<Version>` in the csproj, merge to `main`, then tag and push (for example `v1.0.1` or `v1.1.0`).
 
-## Unreleased breaking changes
+## 1.1.0 — REST developer experience (19 September 2026)
 
-The client interface work (#54) includes source-breaking API changes for the next minor release:
+Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API hygiene, and consumer how-tos.
+
+### Source-breaking changes
 
 - `OctopusEnergyClient` resource properties (`Accounts`, `Consumption`, `Industry`, `Products`, `TariffRates`) now return interface types (`IAccountService`, and so on) instead of concrete service classes.
 - Supplied `HttpClient` instances are no longer mutated (`DefaultRequestHeaders`, `BaseAddress`). Authentication, `Accept`, and `User-Agent` are applied per request instead. See [authentication](../docs/how-to/authentication.md).
@@ -35,10 +37,14 @@ The client interface work (#54) includes source-breaking API changes for the nex
 - `OctopusEnergyTime.AssumeEuropeLondon` now throws for spring-forward gap times and resolves ambiguous autumn-back hours to standard time (GMT). Previously, gap times were accepted with an incorrect offset.
 - `ConsumptionPricePeriodMatching` now matches by rate period containing the interval start (`[ValidFrom, ValidTo)`), not exact `ValidFrom == IntervalStart`. This avoids silently dropping overlapping consumption intervals; the matched rate may use a different offset representation from `IntervalStart`. Matching uses interval start only (not full interval overlap). When multiple rates contain the start, the latest `ValidFrom` wins; equal `ValidFrom` ties prefer the first rate in the supplied list (previously duplicate keys in the internal dictionary kept the last rate).
 
-## Unreleased additive changes
+### Additive changes
 
-- **HTTP 429/503 retry (enabled by default).** REST calls retry transient `429 Too Many Requests` and `503 Service Unavailable` responses up to three times after the first failure, honouring `Retry-After` when present (capped at 60 seconds) or using exponential backoff otherwise. Pass `OctopusEnergyRetryOptions.Disabled` to any `OctopusEnergyClient` constructor for fail-fast behaviour. This changes runtime behaviour for callers that previously received an immediate `OctopusEnergyHttpException` on rate limiting; disable retries when timing or custom Polly policies matter.
+- **HTTP 429/503 retry (enabled by default).** REST calls retry transient `429 Too Many Requests` and `503 Service Unavailable` responses up to three times after the first failure, honouring `Retry-After` when present (capped at 60 seconds) or using exponential backoff otherwise. Pass `OctopusEnergyRetryOptions.Disabled` to any `OctopusEnergyClient` constructor for fail-fast behaviour. Disable retries when timing or custom Polly policies matter.
 - `OctopusEnergyRetryOptions` — configure retry attempts, base delay, and maximum delay for REST transport.
+- `IOctopusEnergyClient` and resource service interfaces for testability.
+- `OctopusEnergyClientHandler` for `IHttpClientFactory` registration.
+- Workflow helpers: `ParsedTariffCode`, meter-point consumption overloads, `ProductDetail.TryGetTariff`.
 - `PaginatedResult<T>` — public type for a single REST list page (`Count`, `Next`, `Previous`, `Results`).
 - `ListElectricityPageAsync` / `ListGasPageAsync` on `IConsumptionService` — fetch one consumption page and read total `count` without auto-pagination.
 - `RestPageSizeLimits.Validate` — rejects `page_size` less than 1 for consumption and tariff rate requests (previously sent to the API).
+- Consumer how-tos: [consumption](../docs/how-to/consumption.md), [tariff rates](../docs/how-to/tariff-rates.md), [industry lookups](../docs/how-to/industry.md).

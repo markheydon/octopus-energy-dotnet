@@ -2,7 +2,7 @@
 
 Unofficial .NET client for the **Octopus Energy customer REST API** (public catalogue plus authenticated account and consumption data). Not affiliated with Octopus Energy Limited.
 
-Stable `1.0.x` with SemVer guarantees for the REST customer core. GraphQL extras are planned for a later release; see [SCOPE.md](https://github.com/markheydon/octopus-energy-dotnet/blob/main/SCOPE.md).
+Stable `1.x` with SemVer guarantees for the REST customer core. `1.1.0` adds developer-experience improvements (hosting, testability, workflow helpers). GraphQL extras are planned for a later release; see [SCOPE.md](https://github.com/markheydon/octopus-energy-dotnet/blob/main/SCOPE.md).
 
 Dashboard API keys expose account structure and consumption. Treat keys as secrets and do not share them with untrusted third parties. This library is not a developer licence from Octopus Energy.
 
