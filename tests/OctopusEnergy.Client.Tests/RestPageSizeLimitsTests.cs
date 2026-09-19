@@ -19,4 +19,22 @@ public sealed class RestPageSizeLimitsTests
     {
         RestPageSizeLimits.Validate(RestPageSizeLimits.RatesMaximum, RestPageSizeLimits.RatesMaximum);
     }
+
+    [Fact]
+    public void Validate_WhenPageSizeIsZero_ThrowsBeforeHttpCall()
+    {
+        OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
+            () => RestPageSizeLimits.Validate(0, RestPageSizeLimits.ConsumptionMaximum));
+
+        Assert.Contains("must be at least 1", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Validate_WhenPageSizeIsNegative_ThrowsBeforeHttpCall()
+    {
+        OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
+            () => RestPageSizeLimits.Validate(-1, RestPageSizeLimits.ConsumptionMaximum));
+
+        Assert.Contains("must be at least 1", exception.Message, StringComparison.Ordinal);
+    }
 }

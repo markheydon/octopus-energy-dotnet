@@ -21,15 +21,21 @@ public static class RestPageSizeLimits
     public const int ConsumptionMaximum = 25_000;
 
     /// <summary>
-    /// Validates that <paramref name="pageSize"/> does not exceed a documented maximum.
+    /// Validates that <paramref name="pageSize"/> is within documented REST limits.
     /// </summary>
     /// <param name="pageSize">The requested page size.</param>
     /// <param name="maximum">The documented maximum for the endpoint.</param>
     /// <exception cref="OctopusEnergyRequestException">
-    /// Thrown when <paramref name="pageSize"/> exceeds <paramref name="maximum"/>.
+    /// Thrown when <paramref name="pageSize"/> is less than 1 or exceeds <paramref name="maximum"/>.
     /// </exception>
     public static void Validate(int pageSize, int maximum)
     {
+        if (pageSize < 1)
+        {
+            throw new OctopusEnergyRequestException(
+                $"page_size {pageSize} must be at least 1.");
+        }
+
         if (pageSize > maximum)
         {
             throw new OctopusEnergyRequestException(

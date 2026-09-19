@@ -2,12 +2,32 @@ using System.Net;
 using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.Http;
+using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Tests.TestSupport;
 
 namespace OctopusEnergy.Client.Tests.Infrastructure.Http;
 
 public sealed class RestClientTests
 {
+    [Fact]
+    public async Task GetPageAsync_WhenPaginatedResponse_ReturnsCountWithoutFollowingNext()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("pagination-page-1.json"));
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("pagination-page-2.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        PaginatedResult<TestItem> page = await client.Rest.GetPageAsync<TestItem>("items/", CancellationToken.None);
+
+        Assert.Equal(3, page.Count);
+        Assert.Equal(2, page.Results.Count);
+        Assert.Equal("ITEM-1", page.Results[0].Code);
+        Assert.NotNull(page.Next);
+        Assert.Single(handler.SentRequests);
+    }
+
     [Fact]
     public async Task GetAllPagesAsync_WhenTwoPages_ReturnsAllItems()
     {

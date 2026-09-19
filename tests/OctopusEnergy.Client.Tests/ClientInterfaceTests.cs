@@ -1,5 +1,6 @@
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Models.Accounts;
+using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.Products;
@@ -114,6 +115,20 @@ public sealed class ClientInterfaceTests
             CancellationToken cancellationToken = default) =>
             EmptyIntervals();
 
+        public Task<PaginatedResult<ConsumptionInterval>> ListElectricityPageAsync(
+            string mpan,
+            string meterSerialNumber,
+            ConsumptionListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(EmptyPage());
+
+        public Task<PaginatedResult<ConsumptionInterval>> ListElectricityPageAsync(
+            ElectricityMeterPoint meterPoint,
+            string meterSerialNumber,
+            ConsumptionListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(EmptyPage());
+
         public IAsyncEnumerable<ConsumptionInterval> ListGasAsync(
             string mprn,
             string meterSerialNumber,
@@ -127,6 +142,22 @@ public sealed class ClientInterfaceTests
             ConsumptionListRequest? request = null,
             CancellationToken cancellationToken = default) =>
             EmptyIntervals();
+
+        public Task<PaginatedResult<ConsumptionInterval>> ListGasPageAsync(
+            string mprn,
+            string meterSerialNumber,
+            ConsumptionListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(EmptyPage());
+
+        public Task<PaginatedResult<ConsumptionInterval>> ListGasPageAsync(
+            GasMeterPoint meterPoint,
+            string meterSerialNumber,
+            ConsumptionListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(EmptyPage());
+
+        private static PaginatedResult<ConsumptionInterval> EmptyPage() => new();
 
         private static async IAsyncEnumerable<ConsumptionInterval> EmptyIntervals()
         {

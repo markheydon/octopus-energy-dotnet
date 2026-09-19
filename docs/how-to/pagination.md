@@ -13,6 +13,12 @@ await foreach (Product product in client.Products.ListAsync())
 
 The same pattern applies to consumption intervals, tariff rate history, and other list resources.
 
+## Single-page consumption listing
+
+When you need the total `count` or one page of intervals without auto-following `next`, use `ListElectricityPageAsync` or `ListGasPageAsync` on `client.Consumption`. These return `PaginatedResult<ConsumptionInterval>` with `Count`, `Results`, and pagination metadata.
+
+`PaginatedResult.Next` is informational. The SDK does not expose a public method to fetch that URL. For multi-page iteration, use `ListElectricityAsync` / `ListGasAsync`, or bound the query with `period_from` and `period_to` on `ConsumptionListRequest`.
+
 ## Documented `page_size` limits
 
 Official defaults and maxima are exposed on `RestPageSizeLimits` - use these constants rather than hard-coding numbers:
@@ -23,7 +29,7 @@ Official defaults and maxima are exposed on `RestPageSizeLimits` - use these con
 | `RestPageSizeLimits.RatesMaximum` | `1,500` | Unit rates and standing charges |
 | `RestPageSizeLimits.ConsumptionMaximum` | `25,000` | Electricity and gas consumption |
 
-Passing a larger `page_size` throws `OctopusEnergyRequestException` before any HTTP call.
+Passing `page_size` less than 1 or above the documented maximum throws `OctopusEnergyRequestException` before any HTTP call. This applies to consumption and tariff rate list requests.
 
 Implementer source: [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 6).
 
