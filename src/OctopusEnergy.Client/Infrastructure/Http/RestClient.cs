@@ -16,8 +16,14 @@ internal sealed class RestClient
     private readonly Uri _baseAddress;
     private readonly string? _apiKey;
     private readonly int _maxPageHops;
+    private readonly OctopusEnergyRetryOptions _retryOptions;
 
-    internal RestClient(HttpClient httpClient, Uri baseAddress, string? apiKey = null, int maxPageHops = DefaultMaxPageHops)
+    internal RestClient(
+        HttpClient httpClient,
+        Uri baseAddress,
+        string? apiKey = null,
+        int maxPageHops = DefaultMaxPageHops,
+        OctopusEnergyRetryOptions? retryOptions = null)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
         ArgumentNullException.ThrowIfNull(baseAddress);
@@ -26,6 +32,9 @@ internal sealed class RestClient
         {
             throw new ArgumentOutOfRangeException(nameof(maxPageHops), maxPageHops, "Page hop limit must be at least 1.");
         }
+
+        _retryOptions = retryOptions ?? OctopusEnergyRetryOptions.Default;
+        _retryOptions.Validate();
 
         _httpClient = httpClient;
         _baseAddress = HttpClientConfiguration.NormalizeBaseAddress(baseAddress);
@@ -37,9 +46,14 @@ internal sealed class RestClient
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
 
-        using HttpRequestMessage request = CreateGetRequest(relativePath);
-        OctopusEnergyRequestHeaders.Apply(request, _apiKey);
-        using HttpResponseMessage response = await SendAsync(request, cancellationToken).ConfigureAwait(false);
+        using HttpResponseMessage response = await SendAsync(
+            () =>
+            {
+                HttpRequestMessage request = CreateGetRequest(relativePath);
+                OctopusEnergyRequestHeaders.Apply(request, _apiKey);
+                return request;
+            },
+            cancellationToken).ConfigureAwait(false);
         await using Stream contentStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 
         try
@@ -172,20 +186,49 @@ internal sealed class RestClient
     }
 
     private async Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request,
+        Func<HttpRequestMessage> requestFactory,
         CancellationToken cancellationToken)
     {
-        HttpResponseMessage response = await _httpClient.SendAsync(
-            request,
-            HttpCompletionOption.ResponseHeadersRead,
-            cancellationToken).ConfigureAwait(false);
+        int retryAttempt = 0;
 
-        if (!response.IsSuccessStatusCode)
+        while (true)
         {
-            await ThrowForResponseAsync(response, cancellationToken).ConfigureAwait(false);
+            using HttpRequestMessage request = requestFactory();
+            HttpResponseMessage response = await _httpClient.SendAsync(
+                request,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return response;
+            }
+
+            if (!ShouldRetry(response.StatusCode, retryAttempt))
+            {
+                await ThrowForResponseAsync(response, cancellationToken).ConfigureAwait(false);
+            }
+
+            TimeSpan delay = RetryAfterParser.GetDelay(response, retryAttempt, _retryOptions);
+            response.Dispose();
+
+            if (delay > TimeSpan.Zero)
+            {
+                await Task.Delay(delay, cancellationToken).ConfigureAwait(false);
+            }
+
+            retryAttempt++;
+        }
+    }
+
+    private bool ShouldRetry(HttpStatusCode statusCode, int retryAttempt)
+    {
+        if (!_retryOptions.Enabled || retryAttempt >= _retryOptions.MaxAttempts)
+        {
+            return false;
         }
 
-        return response;
+        return statusCode is HttpStatusCode.TooManyRequests or HttpStatusCode.ServiceUnavailable;
     }
 
     private static async Task ThrowForResponseAsync(

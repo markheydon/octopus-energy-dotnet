@@ -71,14 +71,18 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// <see cref="DefaultBaseUrl"/> for relative REST paths without mutating the supplied instance.
     /// Authentication, <c>Accept</c>, and <c>User-Agent</c> are applied per request.
     /// </param>
+    /// <param name="retryOptions">
+    /// Optional retry policy for HTTP 429 and 503 responses. When omitted,
+    /// <see cref="OctopusEnergyRetryOptions.Default"/> is used.
+    /// </param>
     /// <remarks>
     /// Public catalogue endpoints work without authentication. No <c>Authorization</c> header
     /// is added unless an API key constructor is used.
     /// For <c>IHttpClientFactory</c>, register <see cref="OctopusEnergyClientHandler"/> on the
     /// named client and set <see cref="HttpClient.BaseAddress"/> at registration time.
     /// </remarks>
-    public OctopusEnergyClient(HttpClient httpClient)
-        : this(httpClient, ownsHttpClient: false, apiKey: null)
+    public OctopusEnergyClient(HttpClient httpClient, OctopusEnergyRetryOptions? retryOptions = null)
+        : this(httpClient, ownsHttpClient: false, apiKey: null, retryOptions)
     {
     }
 
@@ -98,13 +102,17 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// the client key is applied first and the handler does not replace an existing
     /// <c>Authorization</c> header.
     /// </param>
-    public OctopusEnergyClient(string apiKey, HttpClient httpClient)
-        : this(ValidateApiKey(apiKey), httpClient, ownsHttpClient: false)
+    /// <param name="retryOptions">
+    /// Optional retry policy for HTTP 429 and 503 responses. When omitted,
+    /// <see cref="OctopusEnergyRetryOptions.Default"/> is used.
+    /// </param>
+    public OctopusEnergyClient(string apiKey, HttpClient httpClient, OctopusEnergyRetryOptions? retryOptions = null)
+        : this(ValidateApiKey(apiKey), httpClient, ownsHttpClient: false, retryOptions)
     {
     }
 
-    private OctopusEnergyClient(string apiKey, HttpClient httpClient, bool ownsHttpClient)
-        : this(httpClient, ownsHttpClient, apiKey)
+    private OctopusEnergyClient(string apiKey, HttpClient httpClient, bool ownsHttpClient, OctopusEnergyRetryOptions? retryOptions = null)
+        : this(httpClient, ownsHttpClient, apiKey, retryOptions)
     {
     }
 
@@ -120,7 +128,11 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         return baseAddress;
     }
 
-    private OctopusEnergyClient(HttpClient httpClient, bool ownsHttpClient, string? apiKey = null)
+    private OctopusEnergyClient(
+        HttpClient httpClient,
+        bool ownsHttpClient,
+        string? apiKey = null,
+        OctopusEnergyRetryOptions? retryOptions = null)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
 
@@ -129,7 +141,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
 
         Uri baseAddress = ResolveBaseAddress(httpClient.BaseAddress);
 
-        Rest = new RestClient(_httpClient, baseAddress, apiKey);
+        Rest = new RestClient(_httpClient, baseAddress, apiKey, retryOptions: retryOptions);
         Accounts = new AccountService(Rest);
         Consumption = new ConsumptionService(Rest);
         Industry = new IndustryService(Rest);
