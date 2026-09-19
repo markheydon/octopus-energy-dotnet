@@ -15,7 +15,7 @@ The same pattern applies to consumption intervals, tariff rate history, and othe
 
 ## Single-page consumption listing
 
-When you need the total `count` or one page of intervals without auto-following `next`, use `ListElectricityPageAsync` or `ListGasPageAsync` on `client.Consumption`. These return `PaginatedResult<ConsumptionInterval>` with `Count`, `Results`, and pagination metadata.
+When you need the total `count` or one page of intervals without auto-following `next`, use `ListElectricityPageAsync` or `ListGasPageAsync` on `client.Consumption`. These return `PaginatedResult<ConsumptionInterval>` with `Count`, `Results`, and pagination metadata. See [consumption](consumption.md) for filters, units, and meter-point overloads.
 
 `PaginatedResult.Next` is informational. The SDK does not expose a public method to fetch that URL. For multi-page iteration, use `ListElectricityAsync` / `ListGasAsync`, or bound the query with `period_from` and `period_to` on `ConsumptionListRequest`.
 

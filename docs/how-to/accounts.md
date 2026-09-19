@@ -39,7 +39,7 @@ foreach (AccountProperty property in account.Properties)
 
 Each `AccountProperty` includes address fields, `ElectricityMeterPoints`, and `GasMeterPoints`. Meter points carry MPAN/MPRN, GSP, agreements (tariff codes and date ranges), and nested meters with registers.
 
-Use tariff codes from agreements with [tariff codes and GSP](tariff-codes.md) and `client.TariffRates` for standing charges and unit-rate history. Consumption intervals are on `client.Consumption` (dedicated how-to to follow).
+Use tariff codes from agreements with [tariff codes and GSP](tariff-codes.md) and [tariff rates](tariff-rates.md) for standing charges and unit-rate history. Consumption intervals are on `client.Consumption` — see [consumption](consumption.md).
 
 ## Import vs export MPANs
 
@@ -67,5 +67,7 @@ See [error handling](error-handling.md).
 ## Related
 
 - [Authentication](authentication.md)
+- [Consumption](consumption.md)
+- [Tariff rates](tariff-rates.md)
 - [Units, VAT, and time](../explanation/units-vat-and-time.md)
 - [API coverage](../reference/api-coverage.md)

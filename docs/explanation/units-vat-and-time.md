@@ -64,6 +64,8 @@ This SDK returns documented rates; it does not predict wholesale prices or recom
 ## Related
 
 - [Getting started](../tutorial/getting-started.md)
+- [Consumption](../how-to/consumption.md)
+- [Tariff rates](../how-to/tariff-rates.md)
 - [Pagination](../how-to/pagination.md)
 - [Error handling](../how-to/error-handling.md)
 - [REST and GraphQL](rest-and-graphql.md) - v1 is REST; GraphQL extras are v2
