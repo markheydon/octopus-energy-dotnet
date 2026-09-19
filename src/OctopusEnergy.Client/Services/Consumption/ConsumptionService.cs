@@ -52,8 +52,11 @@ public sealed class ConsumptionService
     /// <param name="request">Optional period, pagination, ordering, and grouping.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Consumption intervals across pages. An empty sequence is valid for non-smart meters.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="meterPoint"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="OctopusEnergyRequestException">
-    /// Thrown when <paramref name="meterPoint"/> is <see langword="null"/> or has no MPAN.
+    /// Thrown when <paramref name="meterPoint"/> has no MPAN.
     /// </exception>
     public IAsyncEnumerable<ConsumptionInterval> ListElectricityAsync(
         ElectricityMeterPoint meterPoint,
@@ -102,8 +105,11 @@ public sealed class ConsumptionService
     /// <param name="request">Optional period, pagination, ordering, and grouping.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Consumption intervals across pages. An empty sequence is valid for non-smart meters.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="meterPoint"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="OctopusEnergyRequestException">
-    /// Thrown when <paramref name="meterPoint"/> is <see langword="null"/> or has no MPRN.
+    /// Thrown when <paramref name="meterPoint"/> has no MPRN.
     /// </exception>
     public IAsyncEnumerable<ConsumptionInterval> ListGasAsync(
         GasMeterPoint meterPoint,

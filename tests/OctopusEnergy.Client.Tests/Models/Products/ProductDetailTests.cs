@@ -75,6 +75,21 @@ public sealed class ProductDetailTests
     }
 
     [Fact]
+    public void TryGetTariff_WhenTariffCodeProductCodeMismatch_ReturnsFalse()
+    {
+        ProductDetail detail = DeserializeFixture();
+        TariffCode tariffCode = TariffCode.Parse("E-1R-VAR-22-11-01-C");
+
+        bool found = detail.TryGetTariff(
+            tariffCode,
+            ProductPaymentMethod.DirectDebitMonthly,
+            out ProductTariff? tariff);
+
+        Assert.False(found);
+        Assert.Null(tariff);
+    }
+
+    [Fact]
     public void TryGetTariff_WhenDualRegisterGasRequested_ThrowsOctopusEnergyRequestException()
     {
         ProductDetail detail = DeserializeFixture();

@@ -88,6 +88,10 @@ public sealed class ProductDetail : Product
     /// <see langword="true"/> when a tariff exists for the region and payment method;
     /// <see langword="false"/> when the region or payment method is absent.
     /// </returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="fuel"/> is gas and <paramref name="registerKind"/> is dual-register,
+    /// because dual-register gas tariffs are not available in the product catalogue.
+    /// </exception>
     public bool TryGetTariff(
         EnergyFuel fuel,
         TariffRegisterKind registerKind,
@@ -114,20 +118,44 @@ public sealed class ProductDetail : Product
     /// <param name="paymentMethod">Payment method.</param>
     /// <param name="tariff">The tariff when found.</param>
     /// <returns>
-    /// <see langword="true"/> when a matching catalogue tariff exists;
-    /// <see langword="false"/> when the region or payment method is absent.
+    /// <see langword="true"/> when a matching catalogue tariff exists for this product;
+    /// <see langword="false"/> when the product code does not match, or the region or payment method is absent.
     /// </returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="tariffCode"/> is gas and dual-register,
+    /// because dual-register gas tariffs are not available in the product catalogue.
+    /// </exception>
     public bool TryGetTariff(
         TariffCode tariffCode,
         ProductPaymentMethod paymentMethod,
         out ProductTariff? tariff)
     {
-        return TryGetTariff(
-            tariffCode.Fuel,
-            tariffCode.RegisterKind,
-            tariffCode.GridSupplyPoint,
-            paymentMethod,
-            out tariff);
+        tariff = null;
+
+        if (!string.Equals(tariffCode.ProductCode, Code, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        if (!TryGetTariff(
+                tariffCode.Fuel,
+                tariffCode.RegisterKind,
+                tariffCode.GridSupplyPoint,
+                paymentMethod,
+                out tariff)
+            || tariff is null)
+        {
+            tariff = null;
+            return false;
+        }
+
+        if (!string.Equals(tariff.Code, tariffCode.ToString(), StringComparison.Ordinal))
+        {
+            tariff = null;
+            return false;
+        }
+
+        return true;
     }
 
     private bool TryGetPaymentMethodTariffs(

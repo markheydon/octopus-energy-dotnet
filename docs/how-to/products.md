@@ -49,16 +49,36 @@ ProductDetail agile = await client.Products.GetAsync(
 Console.WriteLine(agile.TariffsActiveAt);
 ```
 
-Tariff maps are keyed by `GridSupplyPoint` (parsed from `_A` … `_P` JSON keys):
+Tariff maps are keyed by `GridSupplyPoint` (parsed from `_A` … `_P` JSON keys). Use `TryGetTariff` to resolve a catalogue tariff by fuel, register kind, region, and payment method:
 
 ```csharp
-ProductPaymentMethodTariffs london = agile.SingleRegisterElectricityTariffs[GridSupplyPoint.C];
-ProductTariff tariff = london.DirectDebitMonthly!;
-Console.WriteLine(tariff.Code);
-Console.WriteLine(tariff.StandardUnitRateIncVat);
+if (agile.TryGetTariff(
+        EnergyFuel.Electricity,
+        TariffRegisterKind.SingleRegister,
+        GridSupplyPoint.C,
+        ProductPaymentMethod.DirectDebitMonthly,
+        out ProductTariff? tariff))
+{
+    Console.WriteLine(tariff!.Code);
+    Console.WriteLine(tariff.StandardUnitRateIncVat);
+    Console.WriteLine(tariff.ParsedTariffCode?.ProductCode);
+}
 ```
 
-Empty payment-method objects in the API JSON (for example `{}` for `direct_debit_quarterly`) deserialise as `null`.
+When you already have a parsed `TariffCode` (for example from `TariffAgreement.ParsedTariffCode`), pass it directly. The helper checks that the product code matches this `ProductDetail` and that the returned tariff code matches:
+
+```csharp
+TariffCode? agreementCode = importPoint.Agreements[0].ParsedTariffCode;
+if (agreementCode is not null
+    && agile.TryGetTariff(agreementCode.Value, ProductPaymentMethod.DirectDebitMonthly, out ProductTariff? matched))
+{
+    Console.WriteLine(matched!.Code);
+}
+```
+
+You can still index `SingleRegisterElectricityTariffs[GridSupplyPoint.C].DirectDebitMonthly` when you prefer direct dictionary access.
+
+Empty payment-method objects in the API JSON (for example `{}` for `direct_debit_quarterly`) deserialise as `null`; `TryGetTariff` returns `false` for absent payment methods.
 
 ## Historical tariff snapshots
 
