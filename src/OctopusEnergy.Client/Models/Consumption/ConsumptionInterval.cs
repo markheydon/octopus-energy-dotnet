@@ -39,6 +39,10 @@ public sealed class ConsumptionInterval
     /// <summary>
     /// Parsed gas unit when <see cref="ConsumptionUnits"/> is present.
     /// </summary>
+    /// <remarks>
+    /// Applies to gas intervals only. Electricity consumption is always reported in kWh;
+    /// electricity callers should ignore this property.
+    /// </remarks>
     public GasConsumptionUnit GasUnit => ParseGasUnit(ConsumptionUnits);
 
     private static GasConsumptionUnit ParseGasUnit(string? units)

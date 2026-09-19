@@ -106,7 +106,7 @@ public sealed class RestClientTests
     }
 
     [Fact]
-    public async Task GetAsync_WhenSuccessBodyIsInvalidJson_ThrowsOctopusEnergyException()
+    public async Task GetAsync_WhenSuccessBodyIsInvalidJson_ThrowsOctopusEnergyParseException()
     {
         QueuedHttpMessageHandler handler = new();
         handler.Enqueue(HttpStatusCode.OK, "not json");
@@ -114,10 +114,25 @@ public sealed class RestClientTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        OctopusEnergyException exception = await Assert.ThrowsAsync<OctopusEnergyException>(
+        OctopusEnergyParseException exception = await Assert.ThrowsAsync<OctopusEnergyParseException>(
             () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
 
         Assert.Contains("could not be deserialised", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenSuccessBodyIsNullJson_ThrowsOctopusEnergyParseException()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, "null");
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        OctopusEnergyParseException exception = await Assert.ThrowsAsync<OctopusEnergyParseException>(
+            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+
+        Assert.Contains("JSON null", exception.Message, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -38,12 +38,14 @@ Octopus treats datetimes **without an offset** as **Europe/London**. The SDK use
 
 **Consumption intervals** may switch between `Z` and `+01:00` around BST transitions. **Agile unit rates stay UTC.** Join rates to consumption by **instant** (`DateTimeOffset`), not by UTC calendar date or `DateTimeKind.Unspecified`.
 
-When you need to construct a UK civil time the API would treat as local, use:
+When you need to construct a UK civil time the API would treat as local, pass wall-clock components with `DateTimeKind.Unspecified` (not `DateTimeKind.Local` from the machine timezone):
 
 ```csharp
 DateTimeOffset from = OctopusEnergyTime.AssumeEuropeLondon(
-    new DateTime(2024, 3, 31, 1, 30, 0, DateTimeKind.Unspecified));
+    new DateTime(2024, 3, 31, 0, 30, 0, DateTimeKind.Unspecified));
 ```
+
+Civil times in the spring-forward gap (the skipped hour) throw `OctopusEnergyRequestException`. Ambiguous times during the autumn clock change resolve to standard time (GMT).
 
 `ConsumptionPricePeriodMatching` helps align a consumption interval with a UTC Agile rate period by matching `ValidFrom` to `IntervalStart`. It is a join helper, not a price modeller.
 
