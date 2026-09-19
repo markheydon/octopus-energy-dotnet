@@ -35,12 +35,11 @@ v2 GraphQL list operations will use Relay cursors with `first` ≤ 100. v1 REST 
 
 When you pass an `HttpClient` to `OctopusEnergyClient`:
 
-- If `BaseAddress` is null, the client sets it to the default UK API URL on the instance you supply.
-- If `BaseAddress` is already set, a trailing slash is appended when missing so relative REST paths resolve correctly.
-- If no `Accept: application/json` header is present, the client adds one.
-- When you use an API-key constructor, HTTP Basic authentication is applied and any existing `Authorization` header is replaced.
+- If `BaseAddress` is null, the SDK uses the default UK API URL internally for relative paths without mutating the supplied instance.
+- If `BaseAddress` is already set, a trailing slash is normalised when resolving relative REST paths.
+- `Accept: application/json`, `User-Agent`, and HTTP Basic authentication (when an API key is supplied) are applied per request, not on `DefaultRequestHeaders`.
 
-Prefer a dedicated `HttpClient` per client instance, or register via `IHttpClientFactory`, rather than sharing one instance across unrelated callers.
+Prefer resolving clients from `IHttpClientFactory` in hosted applications, or a dedicated `HttpClient` per SDK client instance in console tools.
 
 See [authentication](authentication.md) for API-key handling and secret hygiene.
 

@@ -33,16 +33,60 @@ using var client = new OctopusEnergyClient(
     new Uri("https://api.example.test/v1/"));
 ```
 
-A trailing slash is applied when missing so relative REST paths resolve correctly. The same normalisation applies when you supply your own `HttpClient` with a `BaseAddress`.
+A trailing slash is applied when missing so relative REST paths resolve correctly.
+
+## Hosted applications (`IHttpClientFactory`)
+
+In ASP.NET Core or worker hosts, register a named `HttpClient` and add `OctopusEnergyClientHandler` so authentication, `Accept`, and `User-Agent` are applied **per request** without mutating shared `HttpClient` default headers.
+
+The SDK does not reference `Microsoft.Extensions.Http`; add that package in your host project.
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using OctopusEnergy.Client;
+
+const string apiKey = Environment.GetEnvironmentVariable("OCTOPUS_ENERGY_API_KEY")
+    ?? throw new InvalidOperationException("Set OCTOPUS_ENERGY_API_KEY.");
+
+services.AddHttpClient("OctopusEnergy", client =>
+{
+    client.BaseAddress = new Uri(OctopusEnergyClient.DefaultBaseUrl);
+})
+.AddHttpMessageHandler(() => new OctopusEnergyClientHandler(apiKey));
+
+// Resolve from the factory when constructing the SDK client:
+IHttpClientFactory httpClientFactory = services.BuildServiceProvider()
+    .GetRequiredService<IHttpClientFactory>();
+using HttpClient httpClient = httpClientFactory.CreateClient("OctopusEnergy");
+using OctopusEnergyClient client = new(apiKey, httpClient);
+```
+
+For public catalogue calls only, omit the API key on the handler:
+
+```csharp
+services.AddHttpClient("OctopusEnergy", client =>
+{
+    client.BaseAddress = new Uri(OctopusEnergyClient.DefaultBaseUrl);
+})
+.AddHttpMessageHandler(() => new OctopusEnergyClientHandler());
+```
+
+Set `BaseAddress` on the named client at registration time. The SDK normalises trailing slashes when resolving relative paths but does not rewrite `BaseAddress` on a factory-created instance.
+
+When you pass an `HttpClient` from `IHttpClientFactory`, the SDK still applies authentication, `Accept`, and `User-Agent` on each outbound REST request. Registering `OctopusEnergyClientHandler` is optional but keeps behaviour consistent if the same named client is used outside the SDK.
+
+Do not call `new HttpClient()` per request; resolve clients from the factory (or use `new OctopusEnergyClient()` for short-lived console tools).
 
 ## Supplying your own `HttpClient`
 
-When you pass an `HttpClient`, the SDK applies HTTP Basic for the API key and replaces any existing `Authorization` header. If `BaseAddress` is already set without a trailing slash, one is appended. See also [pagination](pagination.md#supplying-your-own-httpclient).
+When you pass an `HttpClient` directly, the SDK does **not** modify `DefaultRequestHeaders` or `BaseAddress` on the instance you supply. Authentication, `Accept`, and `User-Agent` are applied per request. If `BaseAddress` is null, the default UK API URL is used internally for relative paths.
 
 ```csharp
 using var httpClient = new HttpClient { BaseAddress = new Uri("https://api.example.test/v1/") };
 using var client = new OctopusEnergyClient(apiKey, httpClient);
 ```
+
+See also [pagination](pagination.md#supplying-your-own-httpclient).
 
 ## Protect the key in your application
 
