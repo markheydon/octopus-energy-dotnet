@@ -15,7 +15,7 @@
 | Tariff rates service (`TariffRatesService`; `TariffCode.GetRelativeChargePath` obsolete) | Implemented |
 | Product catalogue lookup helpers (`ProductDetail.TryGetTariff`, `ParsedTariffCode`) | Implemented |
 | Consumption meter-point overloads (`ConsumptionService`) | Implemented |
-| Consumption–rate join helper (`ConsumptionPricePeriodMatching`) | Implemented |
+| Consumption–rate join helper (`ConsumptionPricePeriodMatching`; overlap/containment match) | Implemented |
 
 ## v1 resources
 
