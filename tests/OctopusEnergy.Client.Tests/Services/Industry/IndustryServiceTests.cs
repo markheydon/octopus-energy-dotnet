@@ -21,7 +21,9 @@ public sealed class IndustryServiceTests
 
         Assert.Single(results);
         Assert.Equal(GridSupplyPoint.C, results[0].GridSupplyPoint);
+#pragma warning disable CS0618 // Obsolete Gsp duplicates group_id; still deserialises from wire.
         Assert.Equal(GridSupplyPoint.C, results[0].Gsp);
+#pragma warning restore CS0618
         Assert.Equal("W1 1AA", results[0].Postcode);
         Assert.Contains("postcode=W1%201AA", handler.SentRequests[0].RequestUri?.Query, StringComparison.Ordinal);
     }

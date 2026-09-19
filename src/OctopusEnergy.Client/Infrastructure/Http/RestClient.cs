@@ -48,11 +48,11 @@ internal sealed class RestClient
                 contentStream,
                 OctopusJsonSerializerOptions.Default,
                 cancellationToken).ConfigureAwait(false)
-                ?? throw new OctopusEnergyException("The API returned an empty response body.");
+                ?? throw new OctopusEnergyParseException("The API returned JSON null where a response model was expected.");
         }
         catch (JsonException ex)
         {
-            throw new OctopusEnergyException("The API returned a response that could not be deserialised.", ex);
+            throw new OctopusEnergyParseException("The API returned a response that could not be deserialised.", ex);
         }
     }
 
