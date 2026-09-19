@@ -7,6 +7,9 @@ namespace OctopusEnergy.Client.Models.Accounts;
 /// </summary>
 public sealed class TariffAgreement
 {
+    private OctopusEnergy.Client.TariffCode? _parsedTariffCode;
+    private bool _parsedTariffCodeInitialized;
+
     /// <summary>
     /// Tariff code (for example <c>E-1R-VAR-22-11-01-N</c>).
     /// </summary>
@@ -17,8 +20,24 @@ public sealed class TariffAgreement
     /// Parsed tariff code when <see cref="TariffCode"/> is a valid wire-format string;
     /// otherwise <see langword="null"/>.
     /// </summary>
-    public OctopusEnergy.Client.TariffCode? ParsedTariffCode =>
-        OctopusEnergy.Client.TariffCode.TryParse(TariffCode, out OctopusEnergy.Client.TariffCode parsed) ? parsed : null;
+    public OctopusEnergy.Client.TariffCode? ParsedTariffCode
+    {
+        get
+        {
+            if (_parsedTariffCodeInitialized)
+            {
+                return _parsedTariffCode;
+            }
+
+            _parsedTariffCodeInitialized = true;
+            _parsedTariffCode = OctopusEnergy.Client.TariffCode.TryParse(
+                TariffCode,
+                out OctopusEnergy.Client.TariffCode parsed)
+                ? parsed
+                : null;
+            return _parsedTariffCode;
+        }
+    }
 
     /// <summary>
     /// When the agreement started.

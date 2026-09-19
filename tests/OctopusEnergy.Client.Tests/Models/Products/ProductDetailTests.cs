@@ -118,7 +118,7 @@ public sealed class ProductDetailTests
     }
 
     [Fact]
-    public void TryGetTariff_WhenDualRegisterGasTariffCodeRequested_ThrowsOctopusEnergyRequestException()
+    public void TryGetTariff_WhenDualRegisterGasTariffCodeRequested_ReturnsFalse()
     {
         ProductDetail detail = DeserializeFixture();
         TariffCode tariffCode = new(
@@ -127,29 +127,29 @@ public sealed class ProductDetailTests
             "AGILE-FLEX-22-11-25",
             GridSupplyPoint.A);
 
-        OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
-            () => detail.TryGetTariff(
-                tariffCode,
-                ProductPaymentMethod.DirectDebitMonthly,
-                out ProductTariff? _));
+        bool found = detail.TryGetTariff(
+            tariffCode,
+            ProductPaymentMethod.DirectDebitMonthly,
+            out ProductTariff? tariff);
 
-        Assert.Contains("dual-register gas", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.False(found);
+        Assert.Null(tariff);
     }
 
     [Fact]
-    public void TryGetTariff_WhenDualRegisterGasRequested_ThrowsOctopusEnergyRequestException()
+    public void TryGetTariff_WhenDualRegisterGasRequested_ReturnsFalse()
     {
         ProductDetail detail = DeserializeFixture();
 
-        OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
-            () => detail.TryGetTariff(
-                EnergyFuel.Gas,
-                TariffRegisterKind.DualRegister,
-                GridSupplyPoint.A,
-                ProductPaymentMethod.DirectDebitMonthly,
-                out ProductTariff? _));
+        bool found = detail.TryGetTariff(
+            EnergyFuel.Gas,
+            TariffRegisterKind.DualRegister,
+            GridSupplyPoint.A,
+            ProductPaymentMethod.DirectDebitMonthly,
+            out ProductTariff? tariff);
 
-        Assert.Contains("dual-register gas", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.False(found);
+        Assert.Null(tariff);
     }
 
     private static ProductDetail DeserializeFixture()

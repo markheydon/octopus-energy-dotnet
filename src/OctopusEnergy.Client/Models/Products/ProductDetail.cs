@@ -88,10 +88,6 @@ public sealed class ProductDetail : Product
     /// <see langword="true"/> when a tariff exists for the region and payment method;
     /// <see langword="false"/> when the region or payment method is absent.
     /// </returns>
-    /// <exception cref="OctopusEnergyRequestException">
-    /// Thrown when <paramref name="fuel"/> is gas and <paramref name="registerKind"/> is dual-register,
-    /// because dual-register gas tariffs are not available in the product catalogue.
-    /// </exception>
     public bool TryGetTariff(
         EnergyFuel fuel,
         TariffRegisterKind registerKind,
@@ -121,10 +117,6 @@ public sealed class ProductDetail : Product
     /// <see langword="true"/> when a matching catalogue tariff exists for this product;
     /// <see langword="false"/> when the product code does not match, or the region or payment method is absent.
     /// </returns>
-    /// <exception cref="OctopusEnergyRequestException">
-    /// Thrown when <paramref name="tariffCode"/> is gas and dual-register,
-    /// because dual-register gas tariffs are not available in the product catalogue.
-    /// </exception>
     public bool TryGetTariff(
         TariffCode tariffCode,
         ProductPaymentMethod paymentMethod,
@@ -177,8 +169,7 @@ public sealed class ProductDetail : Product
             EnergyFuel.Gas => registerKind switch
             {
                 TariffRegisterKind.SingleRegister => SingleRegisterGasTariffs,
-                TariffRegisterKind.DualRegister => throw new OctopusEnergyRequestException(
-                    "Dual-register gas tariffs are not available in the product catalogue."),
+                TariffRegisterKind.DualRegister => new Dictionary<GridSupplyPoint, ProductPaymentMethodTariffs>(),
                 _ => throw new ArgumentOutOfRangeException(nameof(registerKind), registerKind, "Unknown register kind."),
             },
             _ => throw new ArgumentOutOfRangeException(nameof(fuel), fuel, "Unknown fuel."),

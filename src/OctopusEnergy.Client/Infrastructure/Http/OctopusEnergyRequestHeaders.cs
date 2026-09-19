@@ -5,10 +5,7 @@ namespace OctopusEnergy.Client.Infrastructure.Http;
 
 internal static class OctopusEnergyRequestHeaders
 {
-    internal static void Apply(
-        HttpRequestMessage request,
-        string? apiKey,
-        HttpRequestHeaders? defaultRequestHeaders = null)
+    internal static void Apply(HttpRequestMessage request, string? apiKey)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -17,7 +14,7 @@ internal static class OctopusEnergyRequestHeaders
             request.Headers.TryAddWithoutValidation("User-Agent", OctopusEnergyUserAgent.Value);
         }
 
-        if (!HasJsonAcceptHeader(request.Headers) && !HasJsonAcceptHeader(defaultRequestHeaders))
+        if (!HasJsonAcceptHeader(request.Headers))
         {
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }

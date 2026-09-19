@@ -8,6 +8,9 @@ namespace OctopusEnergy.Client.Models.Products;
 /// </summary>
 public sealed class ProductTariff
 {
+    private TariffCode? _parsedTariffCode;
+    private bool _parsedTariffCodeInitialized;
+
     /// <summary>
     /// Full tariff code (for example <c>E-1R-AGILE-FLEX-22-11-25-C</c>).
     /// </summary>
@@ -18,8 +21,20 @@ public sealed class ProductTariff
     /// Parsed <see cref="TariffCode"/> when <see cref="Code"/> is a valid wire-format code;
     /// otherwise <see langword="null"/>.
     /// </summary>
-    public TariffCode? ParsedTariffCode =>
-        TariffCode.TryParse(Code, out TariffCode parsed) ? parsed : null;
+    public TariffCode? ParsedTariffCode
+    {
+        get
+        {
+            if (_parsedTariffCodeInitialized)
+            {
+                return _parsedTariffCode;
+            }
+
+            _parsedTariffCodeInitialized = true;
+            _parsedTariffCode = TariffCode.TryParse(Code, out TariffCode parsed) ? parsed : null;
+            return _parsedTariffCode;
+        }
+    }
 
     /// <summary>
     /// Standing charge excluding VAT, in pence per day.

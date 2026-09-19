@@ -127,7 +127,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         _httpClient = httpClient;
         _ownsHttpClient = ownsHttpClient;
 
-        Uri baseAddress = ResolveBaseAddress(httpClient.BaseAddress, explicitBaseAddress: null);
+        Uri baseAddress = ResolveBaseAddress(httpClient.BaseAddress);
 
         Rest = new RestClient(_httpClient, baseAddress, apiKey);
         Accounts = new AccountService(Rest);
@@ -181,13 +181,8 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         return httpClient;
     }
 
-    private static Uri ResolveBaseAddress(Uri? httpClientBaseAddress, Uri? explicitBaseAddress)
+    private static Uri ResolveBaseAddress(Uri? httpClientBaseAddress)
     {
-        if (explicitBaseAddress is not null)
-        {
-            return HttpClientConfiguration.NormalizeBaseAddress(explicitBaseAddress);
-        }
-
         if (httpClientBaseAddress is not null)
         {
             return HttpClientConfiguration.NormalizeBaseAddress(httpClientBaseAddress);
