@@ -27,12 +27,16 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// <summary>
     /// Creates a client with the default UK API base URL.
     /// </summary>
+    /// <param name="retryOptions">
+    /// Optional retry policy for HTTP 429 and 503 responses. When omitted,
+    /// <see cref="OctopusEnergyRetryOptions.Default"/> is used.
+    /// </param>
     /// <remarks>
     /// Public catalogue endpoints work without authentication. Account and consumption
-    /// calls require an API key; use the <see cref="OctopusEnergyClient(string)"/> overload.
+    /// calls require an API key; use the <see cref="OctopusEnergyClient(string, OctopusEnergyRetryOptions?)"/> overload.
     /// </remarks>
-    public OctopusEnergyClient()
-        : this(CreateOwnedHttpClient(baseAddress: null), ownsHttpClient: true)
+    public OctopusEnergyClient(OctopusEnergyRetryOptions? retryOptions = null)
+        : this(CreateOwnedHttpClient(baseAddress: null), ownsHttpClient: true, apiKey: null, retryOptions)
     {
     }
 
@@ -43,8 +47,12 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Dashboard API key. Sent as HTTP Basic authentication with an empty password.
     /// Treat as a secret; the SDK never logs it.
     /// </param>
-    public OctopusEnergyClient(string apiKey)
-        : this(ValidateApiKey(apiKey), new Uri(DefaultBaseUrl))
+    /// <param name="retryOptions">
+    /// Optional retry policy for HTTP 429 and 503 responses. When omitted,
+    /// <see cref="OctopusEnergyRetryOptions.Default"/> is used.
+    /// </param>
+    public OctopusEnergyClient(string apiKey, OctopusEnergyRetryOptions? retryOptions = null)
+        : this(ValidateApiKey(apiKey), new Uri(DefaultBaseUrl), retryOptions)
     {
     }
 
@@ -58,8 +66,12 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// <param name="baseAddress">
     /// REST API base URL. Must be an absolute URI. A trailing slash is applied when missing.
     /// </param>
-    public OctopusEnergyClient(string apiKey, Uri baseAddress)
-        : this(ValidateApiKey(apiKey), CreateOwnedHttpClient(ValidateBaseAddress(baseAddress)), ownsHttpClient: true)
+    /// <param name="retryOptions">
+    /// Optional retry policy for HTTP 429 and 503 responses. When omitted,
+    /// <see cref="OctopusEnergyRetryOptions.Default"/> is used.
+    /// </param>
+    public OctopusEnergyClient(string apiKey, Uri baseAddress, OctopusEnergyRetryOptions? retryOptions = null)
+        : this(ValidateApiKey(apiKey), CreateOwnedHttpClient(ValidateBaseAddress(baseAddress)), ownsHttpClient: true, retryOptions)
     {
     }
 

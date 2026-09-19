@@ -37,6 +37,8 @@ The client interface work (#54) includes source-breaking API changes for the nex
 
 ## Unreleased additive changes
 
+- **HTTP 429/503 retry (enabled by default).** REST calls retry transient `429 Too Many Requests` and `503 Service Unavailable` responses up to three times after the first failure, honouring `Retry-After` when present (capped at 60 seconds) or using exponential backoff otherwise. Pass `OctopusEnergyRetryOptions.Disabled` to any `OctopusEnergyClient` constructor for fail-fast behaviour. This changes runtime behaviour for callers that previously received an immediate `OctopusEnergyHttpException` on rate limiting; disable retries when timing or custom Polly policies matter.
+- `OctopusEnergyRetryOptions` — configure retry attempts, base delay, and maximum delay for REST transport.
 - `PaginatedResult<T>` — public type for a single REST list page (`Count`, `Next`, `Previous`, `Results`).
 - `ListElectricityPageAsync` / `ListGasPageAsync` on `IConsumptionService` — fetch one consumption page and read total `count` without auto-pagination.
 - `RestPageSizeLimits.Validate` — rejects `page_size` less than 1 for consumption and tariff rate requests (previously sent to the API).

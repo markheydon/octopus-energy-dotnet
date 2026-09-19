@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Net.Http.Headers;
 
 namespace OctopusEnergy.Client.Infrastructure.Http;
@@ -22,30 +21,20 @@ internal static class RetryAfterParser
 
     private static bool TryGetRetryAfterDelay(HttpResponseHeaders headers, out TimeSpan delay)
     {
-        if (!headers.TryGetValues("Retry-After", out IEnumerable<string>? values))
+        RetryConditionHeaderValue? retryAfter = headers.RetryAfter;
+        if (retryAfter is null)
         {
             delay = default;
             return false;
         }
 
-        string? value = values.FirstOrDefault();
-        if (string.IsNullOrWhiteSpace(value))
+        if (retryAfter.Delta is TimeSpan delta)
         {
-            delay = default;
-            return false;
-        }
-
-        if (int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int seconds))
-        {
-            delay = TimeSpan.FromSeconds(Math.Max(0, seconds));
+            delay = delta < TimeSpan.Zero ? TimeSpan.Zero : delta;
             return true;
         }
 
-        if (DateTimeOffset.TryParse(
-                value,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
-                out DateTimeOffset retryAt))
+        if (retryAfter.Date is DateTimeOffset retryAt)
         {
             delay = retryAt - DateTimeOffset.UtcNow;
             if (delay < TimeSpan.Zero)

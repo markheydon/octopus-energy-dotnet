@@ -72,7 +72,7 @@ using HttpClient httpClient = httpClientFactory.CreateClient("OctopusEnergy");
 using OctopusEnergyClient client = new(httpClient);
 ```
 
-Pass `OctopusEnergyRetryOptions` as the second constructor argument to customise or disable HTTP 429/503 retry behaviour; see [error handling](error-handling.md#rate-limiting-and-retries).
+Pass `OctopusEnergyRetryOptions` to any `OctopusEnergyClient` constructor to customise or disable HTTP 429/503 retry behaviour; see [error handling](error-handling.md#rate-limiting-and-retries).
 
 ### Client carries auth
 

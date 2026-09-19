@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.Http;
@@ -114,13 +115,114 @@ public sealed class RestClientRetryTests
             response => response.Headers.TryAddWithoutValidation("Retry-After", "30"));
         handler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"previous":null,"results":[]}""");
 
+        using CancellationTokenSource cancellationTokenSource = new();
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
-        using CancellationTokenSource cancellationTokenSource = new();
-        cancellationTokenSource.Cancel();
 
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", cancellationTokenSource.Token));
+        Task<PaginatedResponseStub> requestTask = client.Rest.GetAsync<PaginatedResponseStub>(
+            "items/",
+            cancellationTokenSource.Token);
+
+        while (handler.SentRequests.Count < 1)
+        {
+            await Task.Delay(10, TestContext.Current.CancellationToken);
+        }
+
+        await cancellationTokenSource.CancelAsync();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await requestTask);
+        Assert.Single(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task GetAsync_When429WithoutRetryAfter_UsesExponentialBackoff()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.TooManyRequests, "rate limited");
+        handler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"previous":null,"results":[]}""");
+
+        OctopusEnergyRetryOptions retryOptions = new()
+        {
+            BaseDelay = TimeSpan.FromMilliseconds(100),
+            MaxDelay = TimeSpan.FromSeconds(5),
+        };
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        RestClient rest = new(
+            httpClient,
+            new Uri("https://api.example.test/v1/"),
+            retryOptions: retryOptions);
+
+        DateTimeOffset started = DateTimeOffset.UtcNow;
+        PaginatedResponseStub result = await rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        TimeSpan elapsed = DateTimeOffset.UtcNow - started;
+
+        Assert.Equal(0, result.Count);
+        Assert.Equal(2, handler.SentRequests.Count);
+        Assert.True(elapsed >= TimeSpan.FromMilliseconds(80));
+        Assert.True(elapsed < TimeSpan.FromSeconds(2));
+    }
+
+    [Fact]
+    public async Task GetAsync_When429WithRetryAfterHttpDate_ThenSucceeds()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(
+            HttpStatusCode.TooManyRequests,
+            "rate limited",
+            response => response.Headers.RetryAfter = new RetryConditionHeaderValue(DateTimeOffset.UtcNow));
+        handler.Enqueue(HttpStatusCode.OK, """{"count":0,"next":null,"previous":null,"results":[]}""");
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        PaginatedResponseStub result = await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+
+        Assert.Equal(0, result.Count);
+        Assert.Equal(2, handler.SentRequests.Count);
+    }
+
+    [Fact]
+    public async Task GetAllPagesAsync_WhenSecondPage429_RetriesWithIndependentBudget()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("pagination-page-1.json"));
+        handler.Enqueue(
+            HttpStatusCode.TooManyRequests,
+            "rate limited",
+            response => response.Headers.TryAddWithoutValidation("Retry-After", "0"));
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("pagination-page-2.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        List<TestItem> items = [];
+        await foreach (TestItem item in client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None))
+        {
+            items.Add(item);
+        }
+
+        Assert.Equal(["ITEM-1", "ITEM-2", "ITEM-3"], items.Select(item => item.Code));
+        Assert.Equal(3, handler.SentRequests.Count);
+    }
+
+    [Fact]
+    public async Task GetAsync_WhenRetryDisabledViaApiKeyConstructor_ThrowsImmediately()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(
+            HttpStatusCode.TooManyRequests,
+            "rate limited",
+            response => response.Headers.TryAddWithoutValidation("Retry-After", "0"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new("sk_test_key", httpClient, OctopusEnergyRetryOptions.Disabled);
+
+        OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
+            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, exception.StatusCode);
+        Assert.Single(handler.SentRequests);
     }
 
     [Fact]
@@ -176,6 +278,12 @@ public sealed class RestClientRetryTests
         {
             BaseAddress = new Uri("https://api.example.test/v1/"),
         };
+    }
+
+    private sealed class TestItem
+    {
+        [JsonPropertyName("code")]
+        public string Code { get; init; } = string.Empty;
     }
 
     private sealed class PaginatedResponseStub

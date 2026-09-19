@@ -41,6 +41,11 @@ internal sealed class QueuedHttpMessageHandler : HttpMessageHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Task.FromCanceled<HttpResponseMessage>(cancellationToken);
+        }
+
         if (_responses.Count == 0)
         {
             throw new InvalidOperationException($"No queued response for {request.Method} {request.RequestUri}.");

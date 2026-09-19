@@ -56,6 +56,12 @@ To disable SDK retry and fail fast:
 ```csharp
 using OctopusEnergy.Client;
 
+using OctopusEnergyClient client = new(apiKey, OctopusEnergyRetryOptions.Disabled);
+```
+
+With `IHttpClientFactory`:
+
+```csharp
 using HttpClient httpClient = httpClientFactory.CreateClient("OctopusEnergy");
 using OctopusEnergyClient client = new(httpClient, OctopusEnergyRetryOptions.Disabled);
 ```
