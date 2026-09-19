@@ -136,13 +136,30 @@ Start from the PR template. Tick applicable **Type of Change** and **Checklist**
 
 Omit empty sections. Do not claim checks passed unless you ran them.
 
+### Labels
+
+Follow [plan/LABEL_STRATEGY.md](plan/LABEL_STRATEGY.md). Every pull request needs exactly one label from each required group:
+
+| Group | On open PR | Examples |
+|---|---|---|
+| `type/*` | Match the title prefix | `type/story`, `type/chore`, `type/documentation` |
+| `status/*` | `status/in-review` | `status/done` after merge |
+| `priority/*` | Copy from the linked issue when present; otherwise `priority/medium` | `priority/high`, `priority/medium` |
+
+The `[Story]` / `[Chore]` title prefix must agree with the `type/*` label. Do not use retired unprefixed labels (see LABEL_STRATEGY.md).
+
 ### Create the PR
 
 Use `gh` from the repository root:
 
 ```bash
 git push -u origin HEAD
-gh pr create --title "[Story] … (#NNN)" --body "$(cat <<'EOF'
+gh pr create \
+  --title "[Story] … (#NNN)" \
+  --label "type/story" \
+  --label "status/in-review" \
+  --label "priority/medium" \
+  --body "$(cat <<'EOF'
 ## Summary
 …
 
