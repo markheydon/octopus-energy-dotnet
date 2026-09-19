@@ -36,11 +36,11 @@ public sealed class TariffCodeTests
     }
 
     [Fact]
-    public void GetRelativeChargePath_WhenElectricityStandard_ReturnsExpectedPath()
+    public void BuildRelativeChargePath_WhenElectricityStandard_ReturnsExpectedPath()
     {
         TariffCode tariffCode = TariffCode.Parse(AgileElectricity);
 
-        string path = tariffCode.GetRelativeChargePath(TariffChargeKind.StandardUnitRates);
+        string path = tariffCode.BuildRelativeChargePath(TariffChargeKind.StandardUnitRates);
 
         Assert.Equal(
             "products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/standard-unit-rates/",
@@ -48,11 +48,11 @@ public sealed class TariffCodeTests
     }
 
     [Fact]
-    public void GetRelativeChargePath_WhenElectricityDay_ReturnsDayUnitRatesPath()
+    public void BuildRelativeChargePath_WhenElectricityDay_ReturnsDayUnitRatesPath()
     {
         TariffCode tariffCode = TariffCode.Parse(EconomySevenElectricity);
 
-        string path = tariffCode.GetRelativeChargePath(TariffChargeKind.DayUnitRates);
+        string path = tariffCode.BuildRelativeChargePath(TariffChargeKind.DayUnitRates);
 
         Assert.Equal(
             "products/VAR-22-11-01/electricity-tariffs/E-2R-VAR-22-11-01-A/day-unit-rates/",
@@ -60,11 +60,11 @@ public sealed class TariffCodeTests
     }
 
     [Fact]
-    public void GetRelativeChargePath_WhenElectricityNight_ReturnsNightUnitRatesPath()
+    public void BuildRelativeChargePath_WhenElectricityNight_ReturnsNightUnitRatesPath()
     {
         TariffCode tariffCode = TariffCode.Parse(EconomySevenElectricity);
 
-        string path = tariffCode.GetRelativeChargePath(TariffChargeKind.NightUnitRates);
+        string path = tariffCode.BuildRelativeChargePath(TariffChargeKind.NightUnitRates);
 
         Assert.Equal(
             "products/VAR-22-11-01/electricity-tariffs/E-2R-VAR-22-11-01-A/night-unit-rates/",
@@ -72,11 +72,11 @@ public sealed class TariffCodeTests
     }
 
     [Fact]
-    public void GetRelativeChargePath_WhenGasStanding_ReturnsGasTariffPath()
+    public void BuildRelativeChargePath_WhenGasStanding_ReturnsGasTariffPath()
     {
         TariffCode tariffCode = TariffCode.Parse(GasTariff);
 
-        string path = tariffCode.GetRelativeChargePath(TariffChargeKind.StandingCharges);
+        string path = tariffCode.BuildRelativeChargePath(TariffChargeKind.StandingCharges);
 
         Assert.Equal(
             "products/VAR-22-11-01/gas-tariffs/G-1R-VAR-22-11-01-N/standing-charges/",
@@ -84,23 +84,23 @@ public sealed class TariffCodeTests
     }
 
     [Fact]
-    public void GetRelativeChargePath_WhenGasDayUnitRates_ThrowsOctopusEnergyRequestException()
+    public void BuildRelativeChargePath_WhenGasDayUnitRates_ThrowsOctopusEnergyRequestException()
     {
         TariffCode tariffCode = TariffCode.Parse(GasTariff);
 
         OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
-            () => tariffCode.GetRelativeChargePath(TariffChargeKind.DayUnitRates));
+            () => tariffCode.BuildRelativeChargePath(TariffChargeKind.DayUnitRates));
 
         Assert.Contains("gas", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public void GetRelativeChargePath_WhenSingleRegisterElectricityDayUnitRates_ThrowsOctopusEnergyRequestException()
+    public void BuildRelativeChargePath_WhenSingleRegisterElectricityDayUnitRates_ThrowsOctopusEnergyRequestException()
     {
         TariffCode tariffCode = TariffCode.Parse(AgileElectricity);
 
         OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
-            () => tariffCode.GetRelativeChargePath(TariffChargeKind.DayUnitRates));
+            () => tariffCode.BuildRelativeChargePath(TariffChargeKind.DayUnitRates));
 
         Assert.Contains("dual-register", exception.Message, StringComparison.OrdinalIgnoreCase);
     }

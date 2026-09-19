@@ -101,7 +101,7 @@ public sealed class TariffRatesService
         TariffChargeKind chargeKind,
         TariffChargeListRequest? request)
     {
-        string path = tariffCode.GetRelativeChargePath(chargeKind);
+        string path = tariffCode.BuildRelativeChargePath(chargeKind);
 
         if (request is null)
         {

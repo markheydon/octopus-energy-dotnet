@@ -12,7 +12,9 @@
 | `DateTimeOffset` models; Europe/London default (`OctopusEnergyTime`) | Implemented |
 | Tariff code parse/format (`TariffCode`) | Implemented |
 | GSP group id mapping (`GridSupplyPoint`, `GridSupplyPointParser`) | Implemented |
-| Charge list relative paths (`TariffCode.GetRelativeChargePath`) | Implemented |
+| Tariff rates service (`TariffRatesService`; `TariffCode.GetRelativeChargePath` obsolete) | Implemented |
+| Product catalogue lookup helpers (`ProductDetail.TryGetTariff`, `ParsedTariffCode`) | Implemented |
+| Consumption meter-point overloads (`ConsumptionService`) | Implemented |
 | Consumption–rate join helper (`ConsumptionPricePeriodMatching`) | Implemented |
 
 ## v1 resources
