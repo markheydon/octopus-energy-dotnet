@@ -21,42 +21,46 @@ updates:
         update-types:
           - version-update:semver-major
     groups:
-      patch-and-minor:
-        update-types:
-          - minor
-          - patch
       tests:
         patterns:
-          - "^xunit"
-          - "^Moq"
-          - "Microsoft\\.NET\\.Test\\.Sdk"
-          - "^Microsoft\\.Testing"
-          - "^coverlet"
+          - xunit*
+          - Moq
+          - Microsoft.NET.Test.Sdk
+          - Microsoft.Testing.*
+          - coverlet*
         update-types:
           - minor
           - patch
       microsoft-extensions:
         patterns:
-          - "^Microsoft\\.Extensions\\."
+          - Microsoft.Extensions.*
         update-types:
           - minor
           - patch
       azure:
         patterns:
-          - "^Azure\\."
+          - Azure.*
+          - Microsoft.Azure.*
+          - Aspire.*
         update-types:
           - minor
           - patch
       opentelemetry:
         patterns:
-          - "^OpenTelemetry\\."
+          - OpenTelemetry.*
         update-types:
           - minor
           - patch
       analyzers:
         patterns:
-          - "Analyzer$"
-          - "^Microsoft\\.CodeAnalysis"
+          - "*Analyzers*"
+          - Microsoft.CodeAnalysis.*
+        update-types:
+          - minor
+          - patch
+      other:
+        patterns:
+          - "*"
         update-types:
           - minor
           - patch
@@ -76,7 +80,10 @@ updates:
       - status/todo
       - priority/medium
     groups:
-      patch-and-minor:
+      github-actions:
+        patterns:
+          - "*"
         update-types:
+          - major
           - minor
           - patch
