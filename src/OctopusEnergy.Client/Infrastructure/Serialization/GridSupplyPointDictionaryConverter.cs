@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace OctopusEnergy.Client.Infrastructure.Serialization;
 
@@ -31,6 +32,7 @@ internal sealed class GridSupplyPointDictionaryConverter<TValue> : JsonConverter
         }
 
         Dictionary<GridSupplyPoint, TValue> dictionary = new();
+        JsonTypeInfo<TValue> valueTypeInfo = (JsonTypeInfo<TValue>)options.GetTypeInfo(typeof(TValue))!;
 
         while (reader.Read())
         {
@@ -49,10 +51,11 @@ internal sealed class GridSupplyPointDictionaryConverter<TValue> : JsonConverter
 
             if (!GridSupplyPointParser.TryParse(propertyName, out GridSupplyPoint supplyPoint))
             {
-                JsonSerializer.Deserialize<TValue>(ref reader, options);
+                JsonSerializer.Deserialize(ref reader, valueTypeInfo);
                 continue;
             }
-            TValue? value = JsonSerializer.Deserialize<TValue>(ref reader, options);
+
+            TValue? value = JsonSerializer.Deserialize(ref reader, valueTypeInfo);
             if (value is not null)
             {
                 dictionary[supplyPoint] = value;
@@ -68,11 +71,12 @@ internal sealed class GridSupplyPointDictionaryConverter<TValue> : JsonConverter
         IReadOnlyDictionary<GridSupplyPoint, TValue> value,
         JsonSerializerOptions options)
     {
+        JsonTypeInfo<TValue> valueTypeInfo = (JsonTypeInfo<TValue>)options.GetTypeInfo(typeof(TValue))!;
         writer.WriteStartObject();
         foreach (KeyValuePair<GridSupplyPoint, TValue> entry in value)
         {
             writer.WritePropertyName(GridSupplyPointParser.ToGroupId(entry.Key));
-            JsonSerializer.Serialize(writer, entry.Value, options);
+            JsonSerializer.Serialize(writer, entry.Value, valueTypeInfo);
         }
 
         writer.WriteEndObject();

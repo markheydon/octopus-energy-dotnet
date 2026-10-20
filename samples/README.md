@@ -1,6 +1,16 @@
 # Samples
 
-Opt-in console apps that call the live Octopus Energy UK API. They are for local smoke checks by humans and agents. CI does not run them.
+Opt-in console apps that call the live Octopus Energy UK API. They are for local smoke checks by humans and agents. CI runs the file-based products smoke only; the Products console sample is not run in CI.
+
+## File-based products (`.NET 10+`)
+
+Smoke-tests the readme-style quick start in a [file-based app](https://learn.microsoft.com/en-us/dotnet/core/sdk/file-based-apps) with reflection-based JSON disabled by default. CI references the client via `#:project`; after installing from NuGet, use `#:package OctopusEnergy.Client@<version>` instead (no `JsonSerializerIsReflectionEnabledByDefault` workaround).
+
+```bash
+dotnet run samples/FileBasedProducts/ListProducts.cs
+```
+
+The script lists up to five public products and prints the first display name. It calls the live UK API.
 
 ## Products console
 

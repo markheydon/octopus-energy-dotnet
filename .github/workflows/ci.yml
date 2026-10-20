@@ -62,6 +62,9 @@ jobs:
           dotnet build OctopusEnergy.slnx --no-restore --configuration Release -warnaserror
           dotnet test OctopusEnergy.slnx --no-build --configuration Release --report-trx --results-directory TestResults
 
+      - name: File-based app smoke (public products API)
+        run: dotnet run samples/FileBasedProducts/ListProducts.cs --configuration Release
+
       - name: Upload test results
         uses: actions/upload-artifact@v7
         if: always()

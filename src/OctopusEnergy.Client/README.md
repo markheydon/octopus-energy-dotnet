@@ -29,6 +29,24 @@ await foreach (var product in client.Products.ListAsync())
 
 For account and consumption calls, pass your API key from the [Octopus dashboard](https://octopus.energy/dashboard/new/accounts/personal-details/api-access).
 
+### File-based apps (.NET 10+)
+
+```csharp
+#:package OctopusEnergy.Client@1.1.0
+#:property PublishAot=false
+
+using OctopusEnergy.Client;
+
+using var client = new OctopusEnergyClient();
+
+await foreach (var product in client.Products.ListAsync())
+{
+    Console.WriteLine(product.DisplayName);
+}
+```
+
+`PublishAot=false` avoids native publish constraints unrelated to REST JSON. SDK-style projects and file-based apps work without `JsonSerializerIsReflectionEnabledByDefault`.
+
 ## Documentation
 
 Full guides (authentication, products, tariffs, consumption, units, VAT, and time zones): [markheydon.me.uk/octopus-energy-dotnet](https://markheydon.me.uk/octopus-energy-dotnet/).

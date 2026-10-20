@@ -73,6 +73,30 @@ Console.WriteLine($"{account.Number}: {account.Properties.Count} properties");
 
 See [account detail](../how-to/accounts.md). Electricity and gas consumption are on `client.Consumption` — see [consumption](../how-to/consumption.md).
 
+## File-based apps (.NET 10+)
+
+You can run the quick start from a single `.cs` file with `#:package` (no `.csproj`). The client uses source-generated JSON metadata, so you do not need `JsonSerializerIsReflectionEnabledByDefault=true`.
+
+```csharp
+#:package OctopusEnergy.Client@1.1.0
+#:property PublishAot=false
+
+using OctopusEnergy.Client;
+
+using var client = new OctopusEnergyClient();
+
+await foreach (var product in client.Products.ListAsync())
+{
+    Console.WriteLine(product.DisplayName);
+}
+```
+
+```bash
+dotnet run ListProducts.cs
+```
+
+See [samples/FileBasedProducts](https://github.com/markheydon/octopus-energy-dotnet/tree/main/samples/FileBasedProducts) for a repo smoke script. Native AOT publish of consumer apps is not fully validated for every SDK code path; REST response deserialisation is covered by CI with reflection-based JSON disabled.
+
 ## Next steps
 
 - [Units, VAT, and time](../explanation/units-vat-and-time.md) - kWh, pence, VAT fields, BST, and Agile 16:00
