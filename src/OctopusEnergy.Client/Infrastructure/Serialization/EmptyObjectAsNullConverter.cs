@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace OctopusEnergy.Client.Infrastructure.Serialization;
 
@@ -30,7 +31,8 @@ internal sealed class EmptyObjectAsNullConverter<T> : JsonConverter<T?>
 
         if (document.RootElement.EnumerateObject().Any())
         {
-            return document.RootElement.Deserialize<T>(options);
+            JsonTypeInfo<T> typeInfo = (JsonTypeInfo<T>)options.GetTypeInfo(typeof(T))!;
+            return JsonSerializer.Deserialize(document.RootElement, typeInfo);
         }
 
         return null;
@@ -45,6 +47,7 @@ internal sealed class EmptyObjectAsNullConverter<T> : JsonConverter<T?>
             return;
         }
 
-        JsonSerializer.Serialize(writer, value, options);
+        JsonTypeInfo<T> typeInfo = (JsonTypeInfo<T>)options.GetTypeInfo(typeof(T))!;
+        JsonSerializer.Serialize(writer, value, typeInfo);
     }
 }

@@ -48,3 +48,7 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 - `ListElectricityPageAsync` / `ListGasPageAsync` on `IConsumptionService` — fetch one consumption page and read total `count` without auto-pagination.
 - `RestPageSizeLimits.Validate` — rejects `page_size` less than 1 for consumption and tariff rate requests (previously sent to the API).
 - Consumer how-tos: [consumption](../docs/how-to/consumption.md), [tariff rates](../docs/how-to/tariff-rates.md), [industry lookups](../docs/how-to/industry.md).
+
+### Additive (post-1.1.0)
+
+- **Trim-safe REST JSON** — `System.Text.Json` source generation for all REST wire models used by `RestClient`, so file-based apps and hosts with `JsonSerializerIsReflectionEnabledByDefault=false` work without consumer MSBuild workarounds. Does not claim full Native AOT compatibility for the entire package (see issue #68).

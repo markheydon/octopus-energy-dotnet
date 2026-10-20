@@ -46,6 +46,16 @@ For account and consumption calls, pass your API key from the [Octopus dashboard
 
 See [getting started](https://markheydon.me.uk/octopus-energy-dotnet/tutorial/getting-started/), [authentication](https://markheydon.me.uk/octopus-energy-dotnet/how-to/authentication/), [consumption](https://markheydon.me.uk/octopus-energy-dotnet/how-to/consumption/), [tariff rates](https://markheydon.me.uk/octopus-energy-dotnet/how-to/tariff-rates/), [industry lookups](https://markheydon.me.uk/octopus-energy-dotnet/how-to/industry/), and [units, VAT, and time](https://markheydon.me.uk/octopus-energy-dotnet/explanation/units-vat-and-time/) for kWh, VAT fields, BST, and Agile 16:00 behaviour.
 
+## Compatibility
+
+| Host | Supported without extra MSBuild JSON settings |
+|------|-----------------------------------------------|
+| SDK-style `.csproj` apps | Yes |
+| File-based apps (`dotnet run app.cs`, .NET 10+) | Yes — use `#:package OctopusEnergy.Client@<version>` |
+| Native AOT publish of apps using this library | REST JSON deserialisation is source-generated; the package is not marketed as fully AOT-compatible end-to-end |
+
+File-based apps enable trim-friendly JSON defaults. You do not need `#:property JsonSerializerIsReflectionEnabledByDefault=true` for this client.
+
 ## Building from source
 
 ```bash

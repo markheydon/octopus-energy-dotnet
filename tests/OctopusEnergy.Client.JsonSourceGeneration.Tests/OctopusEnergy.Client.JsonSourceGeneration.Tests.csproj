@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\OctopusEnergy.Client\OctopusEnergy.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\products-list-page-1.json" Link="Fixtures\products-list-page-1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\products-agile-detail.json" Link="Fixtures\products-agile-detail.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\accounts-detail.json" Link="Fixtures\accounts-detail.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\consumption-bst-spring-forward.json" Link="Fixtures\consumption-bst-spring-forward.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\tariff-rates-agile-half-hours.json" Link="Fixtures\tariff-rates-agile-half-hours.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\industry-grid-supply-points-london.json" Link="Fixtures\industry-grid-supply-points-london.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\electricity-meter-point-london.json" Link="Fixtures\electricity-meter-point-london.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\api-error-not-found.json" Link="Fixtures\api-error-not-found.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
