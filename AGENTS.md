@@ -47,13 +47,15 @@ Project skills live in `.agents/skills/`. Read the matching `SKILL.md` when the 
 | Skill | Use when |
 |---|---|
 | `create-architectural-decision-record` | Creating or major-updating an ADR |
+| `code-review` | Reviewing code changes for merge-blocking issues |
+| `goals-review` | Auditing changes or repository health against project goals and scope |
 | `documentation-writer` | Diátaxis-aligned documentation |
 | `project-documentation` | Project-aware docs placement |
-| `pr-address-review` | Addressing open PR review threads |
 
 ## Task Routing
 
 - **SDK work** (`src/`, `tests/`): `CONVENTIONS.md` and coding notes.
+- **Code review**: use the `code-review` skill; use `goals-review` for project-goal, scope, or whole-repository drift audits.
 - **Documentation** (`**/*.md` except `adr/`): documentation skills.
 - **ADRs** (`adr/*.md`): ADR skill only.
 
