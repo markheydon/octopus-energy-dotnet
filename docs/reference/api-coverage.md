@@ -31,9 +31,34 @@
 
 How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md). See also [getting started](../tutorial/getting-started.md) and [units, VAT, and time](../explanation/units-vat-and-time.md).
 
-## v1.2 GraphQL (planned)
+## v1.2 GraphQL (in progress)
 
-GraphQL customer operations (milestone **v1.2**) listed in [SCOPE.md](../../SCOPE.md). None started. NuGet **1.2.x** when shipped — see [release labels](../../VERSIONING.md#release-labels-quick-reference).
+Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). NuGet **1.2.x** when the public surface ships — see [release labels](../../VERSIONING.md#release-labels-quick-reference). Unreleased groundwork is documented in [plan/RELEASE.md](../../plan/RELEASE.md) (section *Unreleased (v1.2 groundwork)*).
+
+**Public SDK surface:** still REST-only. No public GraphQL resource services or operations yet.
+
+### Infrastructure (unreleased, internal)
+
+| Capability | Status |
+|---|---|
+| GraphQL HTTP transport to the Kraken endpoint | Implemented (`internal`) |
+| `obtainKrakenToken` with dashboard **API key only** (no email/password) | Implemented (`internal`) |
+| JWT cache, refresh via `refreshToken`, `KT-CT-1112` retry | Implemented (`internal`) |
+| `OctopusEnergyClient.GraphQl` accessor | Implemented (`internal`) until customer GraphQL stories land |
+
+### Customer operations (planned public)
+
+| Area | Status |
+|---|---|
+| `viewer` / portfolios / multi-account | Planned |
+| Richer `account` projections (bills, transactions, payments) | Planned |
+| Meter reading mutations | Planned |
+| SmartFlex / Intelligent devices, Home Mini telemetry | Planned |
+| Octoplus / saving sessions | Planned |
+| Product switch mutation (if customer permissions allow) | Planned |
+| `rateLimitInfo` | Planned |
+
+Keep this table aligned with [SCOPE.md](../../SCOPE.md) and [plan/RELEASE.md](../../plan/RELEASE.md) as groundwork merges and public services ship.
 
 ## Explicitly not covered
 

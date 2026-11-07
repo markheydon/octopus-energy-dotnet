@@ -1,0 +1,11 @@
+{
+  "data": null,
+  "errors": [
+    {
+      "message": "The Kraken token has expired.",
+      "extensions": {
+        "errorCode": "KT-CT-1112"
+      }
+    }
+  ]
+}

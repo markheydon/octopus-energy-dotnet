@@ -6,8 +6,11 @@ internal sealed class QueuedHttpMessageHandler : HttpMessageHandler
 {
     private readonly Queue<Func<HttpRequestMessage, HttpResponseMessage>> _responses = new();
     private readonly List<HttpRequestMessage> _sentRequests = [];
+    private readonly List<string> _sentRequestBodies = [];
 
     internal IReadOnlyList<HttpRequestMessage> SentRequests => _sentRequests;
+
+    internal IReadOnlyList<string> SentRequestBodies => _sentRequestBodies;
 
     internal void Enqueue(HttpStatusCode statusCode, string content, string mediaType = "application/json")
     {
@@ -37,13 +40,13 @@ internal sealed class QueuedHttpMessageHandler : HttpMessageHandler
         _responses.Enqueue(responseFactory);
     }
 
-    protected override Task<HttpResponseMessage> SendAsync(
+    protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            return Task.FromCanceled<HttpResponseMessage>(cancellationToken);
+            return await Task.FromCanceled<HttpResponseMessage>(cancellationToken).ConfigureAwait(false);
         }
 
         if (_responses.Count == 0)
@@ -52,8 +55,16 @@ internal sealed class QueuedHttpMessageHandler : HttpMessageHandler
         }
 
         _sentRequests.Add(request);
+        if (request.Content is not null)
+        {
+            _sentRequestBodies.Add(await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false));
+        }
+        else
+        {
+            _sentRequestBodies.Add(string.Empty);
+        }
 
         Func<HttpRequestMessage, HttpResponseMessage> responseFactory = _responses.Dequeue();
-        return Task.FromResult(responseFactory(request));
+        return responseFactory(request);
     }
 }

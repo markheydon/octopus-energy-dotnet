@@ -1,0 +1,8 @@
+{
+  "data": {
+    "obtainKrakenToken": {
+      "token": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJleHAiOjQ3MTAwMDAwMDB9.test-refreshed-access-signature",
+      "refreshToken": "REFRESH-TOKEN-ROTATED"
+    }
+  }
+}
