@@ -15,6 +15,11 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/stu-bell/devcontainer-features/cursor-cli:0": {}
   },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb",
+    "storage": "32gb"
+  },
   "containerEnv": {
     "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
     "DOTNET_NOLOGO": "1",
