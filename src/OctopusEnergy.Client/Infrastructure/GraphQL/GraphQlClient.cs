@@ -41,9 +41,7 @@ internal sealed class GraphQlClient : IDisposable
 
         if (ContainsErrorCode(response.Errors, ExpiredTokenErrorCode))
         {
-            await _tokenProvider.ForceRefreshAsync(cancellationToken).ConfigureAwait(false);
-            authorization = await _tokenProvider.GetAuthorizationHeaderValueAsync(cancellationToken)
-                .ConfigureAwait(false);
+            authorization = await _tokenProvider.ForceRefreshAsync(cancellationToken).ConfigureAwait(false);
 
             response = await _transport.PostAsync<TData>(
                 query,

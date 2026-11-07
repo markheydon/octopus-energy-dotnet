@@ -82,4 +82,32 @@ public sealed class OctopusEnergyClientHandlerTests
         Assert.Equal("Bearer", sentRequest.Headers.Authorization?.Scheme);
         Assert.Equal("existing-token", sentRequest.Headers.Authorization?.Parameter);
     }
+
+    [Fact]
+    public async Task SendAsync_WhenRequestHasRawJwtAuthorization_DoesNotReplaceWithBasic()
+    {
+        const string apiKey = "test-api-key-value";
+        const string krakenHeader = "eyJhbGciOiJub25lIn0.eyJleHAiOjE3MDAwMDAwMDB9.signature";
+
+        QueuedHttpMessageHandler innerHandler = new();
+        innerHandler.Enqueue(HttpStatusCode.OK, "ok");
+
+        using OctopusEnergyClientHandler handler = new(apiKey)
+        {
+            InnerHandler = innerHandler,
+        };
+        using HttpClient httpClient = new(handler);
+
+        using HttpRequestMessage request = new(HttpMethod.Get, "https://api.example.test/v1/items/");
+        request.Headers.TryAddWithoutValidation("Authorization", krakenHeader);
+        using HttpResponseMessage response = await httpClient.SendAsync(request, TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        HttpRequestMessage sentRequest = Assert.Single(innerHandler.SentRequests);
+        Assert.NotEqual("Basic", sentRequest.Headers.Authorization?.Scheme);
+        Assert.True(
+            sentRequest.Headers.TryGetValues("Authorization", out IEnumerable<string>? values),
+            "Expected a raw Authorization header value.");
+        Assert.Equal(krakenHeader, Assert.Single(values));
+    }
 }

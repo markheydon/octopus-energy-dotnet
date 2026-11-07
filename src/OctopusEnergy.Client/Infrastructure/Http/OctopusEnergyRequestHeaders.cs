@@ -19,10 +19,16 @@ internal static class OctopusEnergyRequestHeaders
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        if (apiKey is not null && request.Headers.Authorization is null)
+        if (apiKey is not null && !HasAuthorizationHeader(request.Headers))
         {
             request.Headers.Authorization = BasicApiKeyHeader.Create(apiKey);
         }
+    }
+
+    internal static bool HasAuthorizationHeader(HttpRequestHeaders headers)
+    {
+        return headers.Authorization is not null
+            || headers.Any(header => string.Equals(header.Key, "Authorization", StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool HasJsonAcceptHeader(HttpRequestHeaders? headers)

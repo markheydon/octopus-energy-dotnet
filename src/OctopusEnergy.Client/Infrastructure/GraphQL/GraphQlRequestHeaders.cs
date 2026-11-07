@@ -19,7 +19,7 @@ internal static class GraphQlRequestHeaders
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        if (authorizationHeaderValue is not null && !HasAuthorizationHeader(request.Headers))
+        if (authorizationHeaderValue is not null && !OctopusEnergyRequestHeaders.HasAuthorizationHeader(request.Headers))
         {
             request.Headers.TryAddWithoutValidation("Authorization", authorizationHeaderValue);
         }
@@ -37,9 +37,4 @@ internal static class GraphQlRequestHeaders
             string.Equals(value.Product?.Name, OctopusEnergyUserAgent.ProductName, StringComparison.Ordinal));
     }
 
-    private static bool HasAuthorizationHeader(HttpRequestHeaders headers)
-    {
-        return headers.Authorization is not null
-            || headers.Any(header => string.Equals(header.Key, "Authorization", StringComparison.OrdinalIgnoreCase));
-    }
 }

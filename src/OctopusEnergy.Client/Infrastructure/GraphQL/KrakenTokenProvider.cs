@@ -55,7 +55,7 @@ internal sealed class KrakenTokenProvider : IDisposable
         }
     }
 
-    internal Task ForceRefreshAsync(CancellationToken cancellationToken)
+    internal Task<string> ForceRefreshAsync(CancellationToken cancellationToken)
     {
         _accessToken = null;
         _accessExpiresAtUtc = null;
@@ -134,6 +134,10 @@ internal sealed class KrakenTokenProvider : IDisposable
         if (result.RefreshExpiresIn is long refreshExpiresIn)
         {
             _refreshExpiresAtUtc = DateTimeOffset.FromUnixTimeSeconds(refreshExpiresIn);
+        }
+        else
+        {
+            _refreshExpiresAtUtc = null;
         }
     }
 
