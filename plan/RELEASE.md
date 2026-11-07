@@ -39,7 +39,7 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 
 ### Unreleased (v1.2 groundwork)
 
-- **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. No new public constructors or service methods; `OctopusEnergyClient.GraphQl` is `internal` until customer GraphQL stories land.
+- **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. No new public constructors or service methods; `OctopusEnergyClient.GraphQl` is `internal` until customer GraphQL stories land. Status tables: [API coverage](../docs/reference/api-coverage.md#v12-graphql-in-progress).
 
 ### Additive changes
 

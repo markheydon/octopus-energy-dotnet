@@ -3,7 +3,7 @@
 # Conventions
 
 **Project:** OctopusEnergy.Client
-**Last updated:** 18 September 2026
+**Last updated:** 7 November 2026
 
 When in doubt, follow this file. To change a convention, update it and add an ADR for significant architecture changes.
 
@@ -31,10 +31,14 @@ src/
     ├── Models/                          # Resource-grouped models
     │   ├── Accounts/                    # Account, property, meter models
     │   ├── Common/                      # Shared wire types (pagination, errors)
-    │   └── Products/                    # Product catalogue models
+    │   ├── Consumption/                 # Consumption interval and list request models
+    │   ├── Industry/                    # GSP and MPAN lookup models
+    │   └── Products/                    # Product catalogue and tariff charge models
     └── Services/                        # Resource-oriented services
         ├── Accounts/                    # AccountService
-        └── Products/                    # ProductService
+        ├── Consumption/                 # ConsumptionService
+        ├── Industry/                    # IndustryService
+        └── Products/                    # ProductService, TariffRatesService
 
 tests/
 └── OctopusEnergy.Client.Tests/
@@ -44,6 +48,7 @@ tests/
     └── TestSupport/                     # Recorded fixtures (no live keys in CI)
 
 samples/
+├── FileBasedProducts/                   # File-based quick-start smoke (CI)
 └── ProductsConsole/                     # Opt-in live API smoke (not run in CI)
 ```
 
@@ -108,6 +113,7 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 
 | Date | Change | Reason |
 |---|---|---|
+| 7 November 2026 | Extend project tree (Consumption, Industry, TariffRates, samples) | Goals review doc drift (#20 groundwork) |
 | 7 November 2026 | GraphQL folder note uses milestone v1.2 | Release-label doc tidy |
 | 18 September 2026 | Add Account service and models to tree | Issue #13 |
 | 18 September 2026 | Add Products service and models to tree | Issue #10 |
