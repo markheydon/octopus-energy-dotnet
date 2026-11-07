@@ -68,5 +68,5 @@ This SDK returns documented rates; it does not predict wholesale prices or recom
 - [Tariff rates](../how-to/tariff-rates.md)
 - [Pagination](../how-to/pagination.md)
 - [Error handling](../how-to/error-handling.md)
-- [REST and GraphQL](rest-and-graphql.md) - v1 is REST; GraphQL extras are v2
+- [REST and GraphQL](rest-and-graphql.md) - shipped REST today; GraphQL extras planned for milestone **v1.2**
 - [Coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (sections 7-9) - implementer source for numbers and quirks

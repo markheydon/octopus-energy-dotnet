@@ -31,9 +31,9 @@
 
 How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md). See also [getting started](../tutorial/getting-started.md) and [units, VAT, and time](../explanation/units-vat-and-time.md).
 
-## v2 (planned)
+## v1.2 GraphQL (planned)
 
-GraphQL customer operations listed in [SCOPE.md](../../SCOPE.md). None started.
+GraphQL customer operations (milestone **v1.2**) listed in [SCOPE.md](../../SCOPE.md). None started. NuGet **1.2.x** when shipped — see [release labels](../../VERSIONING.md#release-labels-quick-reference).
 
 ## Explicitly not covered
 

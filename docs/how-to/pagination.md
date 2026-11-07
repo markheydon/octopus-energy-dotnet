@@ -33,9 +33,9 @@ Passing `page_size` less than 1 or above the documented maximum throws `OctopusE
 
 Implementer source: [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 6).
 
-## GraphQL (v2)
+## GraphQL (milestone v1.2, planned)
 
-v2 GraphQL list operations will use Relay cursors with `first` ≤ 100. v1 REST callers do not configure this.
+Planned GraphQL list operations will use Relay cursors with `first` ≤ 100. REST callers today do not configure this.
 
 ## Supplying your own `HttpClient`
 

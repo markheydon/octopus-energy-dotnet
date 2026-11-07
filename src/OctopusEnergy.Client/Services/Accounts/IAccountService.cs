@@ -24,7 +24,7 @@ public interface IAccountService
     /// </exception>
     /// <remarks>
     /// Requires authentication with a dashboard API key. Discovering the account number without
-    /// a bill is a v2 GraphQL <c>viewer</c> story; callers supply the account number for v1 REST.
+    /// a bill is planned for milestone v1.2 GraphQL <c>viewer</c>; callers supply the account number for REST.
     /// </remarks>
     Task<Account> GetAsync(string accountNumber, CancellationToken cancellationToken = default);
 }

@@ -10,7 +10,7 @@ Public exception types live in the `OctopusEnergy.Client` namespace:
 | `OctopusEnergyApiException` | Non-success HTTP with a documented REST `detail` message |
 | `OctopusEnergyParseException` | Successful HTTP response that cannot be deserialised (invalid JSON or JSON `null` where a model is expected) |
 
-REST uses HTTP status codes. GraphQL (v2) usually returns HTTP 200 with `errors.extensions.errorCode` values such as `KT-CT-1112`; those will map to the same hierarchy in a later release.
+REST uses HTTP status codes. Milestone **v1.2** GraphQL usually returns HTTP 200 with `errors.extensions.errorCode` values such as `KT-CT-1112`; those will map to the same hierarchy when GraphQL ships.
 
 ## Catch SDK failures
 
