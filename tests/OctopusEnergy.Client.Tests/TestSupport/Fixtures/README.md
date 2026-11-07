@@ -27,6 +27,12 @@ autumn-back local hour.
 `agile-rates-short-day-46-slots.json` models a short Agile day (46 half-hours
 before the 16:00 Europe/London day-ahead publish window).
 
+## GraphQL fixtures
+
+`graphql-obtain-token.json`, `graphql-obtain-refresh.json`, `graphql-error-kt-ct-1112.json`,
+and `graphql-rate-limit-info.json` support Kraken token obtain, refresh, and `KT-CT-1112`
+retry tests. Tokens are obvious placeholders, not real JWTs.
+
 ## Live checks
 
 Live API smoke tests live under `tests/OctopusEnergy.Client.Tests/Live/` and are

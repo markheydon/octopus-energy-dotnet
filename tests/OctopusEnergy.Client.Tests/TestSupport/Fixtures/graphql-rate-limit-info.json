@@ -1,0 +1,7 @@
+{
+  "data": {
+    "rateLimitInfo": {
+      "__typename": "RateLimitInfoType"
+    }
+  }
+}

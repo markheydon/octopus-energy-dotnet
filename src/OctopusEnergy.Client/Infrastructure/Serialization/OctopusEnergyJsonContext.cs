@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
+using OctopusEnergy.Client.Infrastructure.GraphQL;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
@@ -37,4 +38,12 @@ namespace OctopusEnergy.Client.Infrastructure.Serialization;
 [JsonSerializable(typeof(GridSupplyPointLookup))]
 [JsonSerializable(typeof(ElectricityMeterPointLookup))]
 [JsonSerializable(typeof(GridSupplyPoint))]
+[JsonSerializable(typeof(GraphQlRequestEnvelope))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<ObtainKrakenTokenResponseData>))]
+[JsonSerializable(typeof(ObtainKrakenTokenResponseData))]
+[JsonSerializable(typeof(ObtainKrakenTokenResult))]
+[JsonSerializable(typeof(ObtainKrakenTokenVariables))]
+[JsonSerializable(typeof(ObtainKrakenTokenInput))]
+[JsonSerializable(typeof(GraphQlError))]
+[JsonSerializable(typeof(GraphQlErrorExtensions))]
 internal partial class OctopusEnergyJsonContext : JsonSerializerContext;

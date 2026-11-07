@@ -37,6 +37,10 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 - `OctopusEnergyTime.AssumeEuropeLondon` now throws for spring-forward gap times and resolves ambiguous autumn-back hours to standard time (GMT). Previously, gap times were accepted with an incorrect offset.
 - `ConsumptionPricePeriodMatching` now matches by rate period containing the interval start (`[ValidFrom, ValidTo)`), not exact `ValidFrom == IntervalStart`. This avoids silently dropping overlapping consumption intervals; the matched rate may use a different offset representation from `IntervalStart`. Matching uses interval start only (not full interval overlap). When multiple rates contain the start, the latest `ValidFrom` wins; equal `ValidFrom` ties prefer the first rate in the supplied list (previously duplicate keys in the internal dictionary kept the last rate).
 
+### Unreleased (v1.2 groundwork)
+
+- **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. No new public constructors or service methods; `OctopusEnergyClient.GraphQl` is `internal` until customer GraphQL stories land.
+
 ### Additive changes
 
 - **HTTP 429/503 retry (enabled by default).** REST calls retry transient `429 Too Many Requests` and `503 Service Unavailable` responses up to three times after the first failure, honouring `Retry-After` when present (capped at 60 seconds) or using exponential backoff otherwise. Pass `OctopusEnergyRetryOptions.Disabled` to any `OctopusEnergyClient` constructor for fail-fast behaviour. Disable retries when timing or custom Polly policies matter.

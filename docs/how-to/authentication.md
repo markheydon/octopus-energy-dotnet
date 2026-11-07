@@ -125,6 +125,6 @@ See also [pagination](pagination.md#supplying-your-own-httpclient).
 - Store keys in environment variables, user secrets, or your host's secret manager.
 - Custom `HttpClient` handlers, logging middleware, or diagnostic tools may capture the `Authorization` header. Review anything that logs outbound HTTP requests before enabling it in production.
 
-GraphQL JWT exchange is planned for milestone **v1.2** (internal to the SDK). Today's REST surface uses HTTP Basic only.
+From milestone **v1.2**, an authenticated `OctopusEnergyClient` exchanges your dashboard API key for a Kraken JWT internally (`obtainKrakenToken` with `APIKey` only). Callers still construct the client with HTTP Basic semantics only; you do not obtain or attach GraphQL tokens yourself. See [coding notes §3](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) for the verified `Authorization` header scheme. Today's public service methods remain REST; GraphQL resources ship in later v1.2 stories.
 
 See [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 3, REST).

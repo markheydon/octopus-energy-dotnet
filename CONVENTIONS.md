@@ -26,7 +26,7 @@ src/
     │   ├── Authentication/
     │   ├── Configuration/
     │   ├── Http/                        # REST transport and pagination internals
-    │   ├── GraphQL/                     # milestone v1.2 planned — not present yet
+    │   ├── GraphQL/                     # Kraken token obtain/refresh and GraphQL transport (v1.2)
     │   └── Serialization/                 # JSON converters (for example GridSupplyPointJsonConverter)
     ├── Models/                          # Resource-grouped models
     │   ├── Accounts/                    # Account, property, meter models

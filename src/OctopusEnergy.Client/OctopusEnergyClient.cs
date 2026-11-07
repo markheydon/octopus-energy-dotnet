@@ -1,4 +1,5 @@
 using OctopusEnergy.Client.Infrastructure.Configuration;
+using OctopusEnergy.Client.Infrastructure.GraphQL;
 using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
@@ -23,6 +24,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
 
     private readonly HttpClient _httpClient;
     private readonly bool _ownsHttpClient;
+    private readonly GraphQlClient? _graphQl;
 
     /// <summary>
     /// Creates a client with the default UK API base URL.
@@ -154,6 +156,15 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         Uri baseAddress = ResolveBaseAddress(httpClient.BaseAddress);
 
         Rest = new RestClient(_httpClient, baseAddress, apiKey, retryOptions: retryOptions);
+
+        if (apiKey is not null)
+        {
+            Uri graphQlEndpoint = GraphQlEndpoint.FromRestBaseAddress(baseAddress);
+            GraphQlHttpTransport graphQlTransport = new(_httpClient, graphQlEndpoint);
+            KrakenTokenProvider tokenProvider = new(graphQlTransport, apiKey);
+            _graphQl = new GraphQlClient(graphQlTransport, tokenProvider);
+        }
+
         Accounts = new AccountService(Rest);
         Consumption = new ConsumptionService(Rest);
         Industry = new IndustryService(Rest);
@@ -188,9 +199,16 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
 
     internal RestClient Rest { get; }
 
+    /// <summary>
+    /// GraphQL transport and Kraken token handling for milestone v1.2. Internal until customer GraphQL services ship.
+    /// </summary>
+    internal GraphQlClient? GraphQl => _graphQl;
+
     /// <inheritdoc />
     public void Dispose()
     {
+        _graphQl?.Dispose();
+
         if (_ownsHttpClient)
         {
             _httpClient.Dispose();
