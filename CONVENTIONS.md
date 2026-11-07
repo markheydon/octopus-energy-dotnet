@@ -26,7 +26,7 @@ src/
     │   ├── Authentication/
     │   ├── Configuration/
     │   ├── Http/                        # REST transport and pagination internals
-    │   ├── GraphQL/                     # v2: token, documents, GraphQL errors
+    │   ├── GraphQL/                     # milestone v1.2 planned — not present yet
     │   └── Serialization/                 # JSON converters (for example GridSupplyPointJsonConverter)
     ├── Models/                          # Resource-grouped models
     │   ├── Accounts/                    # Account, property, meter models
@@ -108,6 +108,7 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 
 | Date | Change | Reason |
 |---|---|---|
+| 7 November 2026 | GraphQL folder note uses milestone v1.2 | Release-label doc tidy |
 | 18 September 2026 | Add Account service and models to tree | Issue #13 |
 | 18 September 2026 | Add Products service and models to tree | Issue #10 |
 | 18 September 2026 | Note GridSupplyPointJsonConverter under Serialization | Review follow-up #33 |

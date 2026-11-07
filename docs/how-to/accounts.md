@@ -4,7 +4,7 @@ Fetch properties, electricity and gas meter points, meters, registers, and tarif
 
 ## When to use this guide
 
-You already have an account number (for example from a bill or your own records) and a dashboard API key. Discovering the account number without a bill is a v2 GraphQL `viewer` story; v1 REST requires you to supply `A-XXXXXXXX`.
+You already have an account number (for example from a bill or your own records) and a dashboard API key. Discovering the account number without a bill is planned for milestone **v1.2** GraphQL (`viewer`); REST requires you to supply `A-XXXXXXXX`.
 
 ## Prerequisites
 

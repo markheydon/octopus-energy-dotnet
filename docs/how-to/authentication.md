@@ -125,6 +125,6 @@ See also [pagination](pagination.md#supplying-your-own-httpclient).
 - Store keys in environment variables, user secrets, or your host's secret manager.
 - Custom `HttpClient` handlers, logging middleware, or diagnostic tools may capture the `Authorization` header. Review anything that logs outbound HTTP requests before enabling it in production.
 
-GraphQL JWT exchange is a v2 implementation detail. v1 REST uses Basic only.
+GraphQL JWT exchange is planned for milestone **v1.2** (internal to the SDK). Today's REST surface uses HTTP Basic only.
 
 See [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 3, REST).

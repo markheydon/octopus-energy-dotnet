@@ -17,11 +17,11 @@ Typed, discoverable SDK so callers do not reconstruct REST URLs or GraphQL docum
 
 Stable. `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, the products catalogue, tariff rates, grid supply points, account detail, electricity/gas consumption, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`).
 
-Roadmap:
+Roadmap (GitHub milestone → NuGet version; all stay on package **1.x** — see [release labels](VERSIONING.md#release-labels-quick-reference)):
 
-- **v1 REST core** — shipped in `1.0.0`: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
-- **v1.1 REST developer experience** — shipped in `1.1.0`: HttpClientFactory, interfaces, workflow helpers, safer consumption listing, 429 retry, trim-safe REST JSON, consumer how-tos
-- **v2 GraphQL extras** — planned (milestone v1.2; not in the package today): viewer, bills, devices, Home Mini telemetry, Octoplus, meter readings, product switch
+- **v1.0** REST core — shipped **`1.0.0`**: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
+- **v1.1** REST developer experience — shipped **`1.1.0`**: HttpClientFactory, interfaces, workflow helpers, safer consumption listing, 429 retry, trim-safe REST JSON, consumer how-tos
+- **v1.2** GraphQL extras — planned (**`1.2.x`**, not `2.0.0`; not in the package today): viewer, bills, devices, Home Mini telemetry, Octoplus, meter readings, product switch
 
 ## Installation
 

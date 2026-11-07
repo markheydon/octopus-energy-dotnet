@@ -4,7 +4,7 @@
 **Audience:** implementers of this SDK, not package consumers.  
 **Status:** planning. Runtime allow-list for GraphQL is **unverified** until a customer token spike lands.
 
-These notes are the findings that should shape v1/v2 code. Official docs: [docs.octopus.energy](https://docs.octopus.energy/), [developer.octopus.energy](https://developer.octopus.energy/), GraphQL IDE at [api.octopus.energy/v1/graphql/](https://api.octopus.energy/v1/graphql/), deprecations at [announcements.kraken.tech](https://announcements.kraken.tech/announcements/public/).
+These notes are the findings that should shape milestones **v1.0**–**v1.2** code ([release labels](../../VERSIONING.md#release-labels-quick-reference)). Official docs: [docs.octopus.energy](https://docs.octopus.energy/), [developer.octopus.energy](https://developer.octopus.energy/), GraphQL IDE at [api.octopus.energy/v1/graphql/](https://api.octopus.energy/v1/graphql/), deprecations at [announcements.kraken.tech](https://announcements.kraken.tech/announcements/public/).
 
 ---
 
@@ -56,7 +56,7 @@ Docs also mention passing a GraphQL token on REST. Prefer Basic with the API key
 
 Key location: [dashboard API access](https://octopus.energy/dashboard/new/accounts/personal-details/api-access). Treat as a secret.
 
-### GraphQL (v2)
+### GraphQL (milestone v1.2)
 
 Mutation `obtainKrakenToken(input: ObtainJSONWebTokenInput!)`.
 
@@ -107,7 +107,7 @@ Rate limits on the mutation include `email_from_graphql_input_fields` 5/m, `fail
 
 ---
 
-## 5. GraphQL (v2) - candidate customer operations
+## 5. GraphQL (milestone v1.2) — candidate customer operations
 
 Verify each with a real key before adding a service method.
 
@@ -181,7 +181,7 @@ Variable tariffs auto-extend. Fixed products fall back to variable at end of ter
 - Agile “day” follows CET market index (roughly 23:00–23:00 UK).
 - Go: long `valid_from`/`valid_to` windows, not 48 slots.
 - Economy 7: separate day/night rate URLs (`E-2R-…`).
-- Tracker: GraphQL daily pricing (`trackerTariffDailyPricing`) is v2.
+- Tracker: GraphQL daily pricing (`trackerTariffDailyPricing`) is milestone **v1.2**.
 - Price vs consumption period matching: price endpoint returns exact requested periods; consumption returns overlapping intervals. Off-by-one around clock changes is a test fixture candidate.
 
 ---
@@ -190,7 +190,7 @@ Variable tariffs auto-extend. Fixed products fall back to variable at end of ter
 
 `viewer` → portfolios → accounts → properties → electricity/gas meter points → meters (old and new serials) → agreements.
 
-REST account is enough for v1 if the caller supplies `account_number`. Discovering it without a bill is a v2 `viewer` story.
+REST account is enough for v1 if the caller supplies `account_number`. Discovering it without a bill is a v1.2 GraphQL `viewer` story.
 
 ---
 

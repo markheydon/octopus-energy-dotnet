@@ -5,7 +5,7 @@ Work is tracked as GitHub Issues using **feature → story** (no epic unless a t
 **Features** (what we are building):
 
 - [#6 REST customer core](https://github.com/markheydon/octopus-energy-dotnet/issues/6) - SCOPE.md v1.0
-- [#7 GraphQL customer extras](https://github.com/markheydon/octopus-energy-dotnet/issues/7) - SCOPE.md v2
+- [#7 GraphQL customer extras](https://github.com/markheydon/octopus-energy-dotnet/issues/7) - milestone **v1.2** ([SCOPE.md](../SCOPE.md) GraphQL section; legacy alias “SCOPE v2”)
 
 **Milestones** (when it is meant to ship - version timeboxes, not copies of the feature titles):
 

@@ -2,7 +2,7 @@
 
 **Project:** OctopusEnergy.Client
 **Owner:** Mark Heydon
-**Last updated:** 13 September 2026
+**Last updated:** 7 November 2026
 
 ---
 
@@ -28,9 +28,10 @@ This project should be the same kind of library as FreeAgent.NET: strongly typed
 ## Success Looks Like
 
 - Used in at least one application owned by the author.
-- Pagination, timezones, units, and errors work without consumer workarounds.
-- Package published to NuGet with documentation that states units, VAT, and BST behaviour.
+- Pagination, timezones, units, and errors work without consumer workarounds on the shipped REST customer surface (`1.0.0` core, `1.1.0` developer experience).
+- Package on NuGet at stable `1.x` (`1.1.0` latest) with consumer documentation that states units, VAT, and BST behaviour (see [plan/RELEASE.md](plan/RELEASE.md)).
 - Partner-only operations are not in the public surface.
+- GraphQL customer extras (milestone **v1.2**, NuGet **1.2.x**) remain planned; the public package is REST-only until then ([release labels](VERSIONING.md#release-labels-quick-reference)).
 
 ---
 
@@ -59,4 +60,5 @@ This project should be the same kind of library as FreeAgent.NET: strongly typed
 
 | Date | Change | Reason |
 |---|---|---|
+| 7 November 2026 | Refresh maintainer status for NuGet `1.1.0`; v1.2 roadmap wording | Goals review and release-label doc tidy |
 | 13 September 2026 | Initial draft | Project kickoff |
