@@ -26,7 +26,7 @@ Determine scope from user context:
 | PR number or branch | Changes against `main`, plus relevant docs and sample checks |
 | `@`-mentioned paths | Those paths against relevant goals |
 
-This repository's implemented SDK is the customer REST surface. GraphQL extras are planned, not current functionality; do not treat planned work as implemented. Run the Release build and tests when reviewing code changes, using [contributor setup](../../../docs/contributing-setup.md), and report pass/fail.
+On `main`, the implemented customer SDK includes REST resources plus curated GraphQL-backed services (milestone **v1.2**). For a whole-repository review, inventory **all** services under `src/OctopusEnergy.Client/Services/` and classify GraphQL list methods per [ADR-0002](../../../adr/adr-0002-graphql-public-list-patterns.md) (Relay page methods, bounded `IReadOnlyList<T>`, not only `IAsyncEnumerable<T>` for REST). Latest NuGet (**1.1.0**) does not yet expose GraphQL public accessors; flag drift when docs imply otherwise. Run the Release build and tests when reviewing code changes, using [contributor setup](../../../docs/contributing-setup.md), and report pass/fail.
 
 ## Checklist - map findings to goal IDs
 
@@ -109,7 +109,7 @@ Include a **Service list-method inventory** table in every goals review:
 
 - [ ] Callers use one client and do not have to choose REST or GraphQL transport for supported resources
 - [ ] Authentication and transport implementation details remain internal where applicable
-- [ ] **When the first public GraphQL resource service ships:** re-run the full service list-method inventory (REST plus GraphQL), confirm no caller-visible REST vs GraphQL choice, and update [API coverage](../../../docs/reference/api-coverage.md) and the allow-list together
+- [ ] Whole-repository reviews include GraphQL services: classify list patterns per ADR-0002, confirm no caller-visible REST vs GraphQL choice, and keep [API coverage](../../../docs/reference/api-coverage.md) and the [allow-list](../../../docs/planning/graphql-customer-allow-list.md) aligned (probe **status**, not only public SDK rows)
 
 ### Scope boundaries
 

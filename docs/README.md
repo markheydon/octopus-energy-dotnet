@@ -1,6 +1,6 @@
 # OctopusEnergy.Client documentation
 
-Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help you install the package, authenticate with a dashboard API key, and call products, tariffs, rates, account, and consumption endpoints.
+Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help you install the package, authenticate with a dashboard API key, and call REST catalogue, account, and consumption endpoints, plus curated GraphQL-backed operations (viewer, billing, devices, and similar) where [API coverage](reference/api-coverage.md) says they are implemented.
 
 **New here?** Start with [Getting started](tutorial/getting-started.md).
 
@@ -32,7 +32,7 @@ Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help y
 | [API coverage](reference/api-coverage.md) | What the SDK implements today |
 | [Units, VAT, and time](explanation/units-vat-and-time.md) | kWh, pence, VAT fields, BST, Agile 16:00 |
 | [Customer vs partner](explanation/customer-vs-partner.md) | Why the public surface is small |
-| [REST and GraphQL](explanation/rest-and-graphql.md) | Dual transport (v1 is REST) |
+| [REST and GraphQL](explanation/rest-and-graphql.md) | One client; NuGet **1.1.0** is REST-first; GraphQL extras on `main` until **1.2.x** |
 
 ## Related links
 

@@ -50,7 +50,7 @@ Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md
 | `GraphQlRelayLimits` and `ValidateFirst` | Implemented (public) |
 | `OctopusEnergyClient.GraphQl` accessor | Implemented (`internal`) |
 
-### Customer operations (planned public)
+### Customer operations (implemented on `main`; NuGet **1.2.x** when tagged)
 
 Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planning/graphql-customer-allow-list.md).
 

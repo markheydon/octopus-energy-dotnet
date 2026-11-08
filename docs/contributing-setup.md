@@ -75,6 +75,6 @@ To smoke-test the SDK against the live UK API without xUnit, run the [products c
 dotnet run --project samples/ProductsConsole
 ```
 
-Set `OCTOPUS_ENERGY_API_KEY` and `OCTOPUS_ENERGY_ACCOUNT_NUMBER` to exercise authenticated account detail and consumption in the [products console sample](../samples/README.md). Public catalogue, tariff rates, and industry lookups run without a key.
+Set `OCTOPUS_ENERGY_API_KEY` and `OCTOPUS_ENERGY_ACCOUNT_NUMBER` for authenticated smoke (account, consumption, viewer, rate limits, meter readings, account billing, devices, telemetry, and Octoplus when the account has the right data). Public catalogue, tariff rates, and industry lookups run without a key. See [samples/README.md](../samples/README.md) for the full checklist and environment variables.
 
 Read [CONTRIBUTING.md](../CONTRIBUTING.md), [CONVENTIONS.md](../CONVENTIONS.md), and [AGENTS.md](../AGENTS.md).

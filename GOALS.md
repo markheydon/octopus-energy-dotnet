@@ -2,7 +2,7 @@
 
 **Project:** OctopusEnergy.Client
 **Owner:** Mark Heydon
-**Last updated:** 7 November 2026
+**Last updated:** 8 November 2026
 
 ---
 
@@ -31,7 +31,7 @@ This project should be the same kind of library as FreeAgent.NET: strongly typed
 - Pagination, timezones, units, and errors work without consumer workarounds on the shipped REST customer surface (`1.0.0` core, `1.1.0` developer experience).
 - Package on NuGet at stable `1.x` (`1.1.0` latest) with consumer documentation that states units, VAT, and BST behaviour (see [plan/RELEASE.md](plan/RELEASE.md)).
 - Partner-only operations are not in the public surface.
-- GraphQL customer extras (milestone **v1.2**, NuGet **1.2.x**): `Viewer`, `RateLimits`, and electricity `MeterReadings` are implemented in source; additional curated operations remain planned until **1.2.x** ships ([release labels](VERSIONING.md#release-labels-quick-reference)).
+- GraphQL customer extras (milestone **v1.2**, NuGet **1.2.x** when tagged): curated customer GraphQL on `main` — `Viewer`, `RateLimits`, `MeterReadings` (electricity, gas, and consent), `AccountBilling`, `Devices`, `SmartMeterTelemetry`, `Octoplus`, and `ProductSwitch`. Latest NuGet remains **1.1.0** until the **1.2.x** tag; optional GraphQL account projection (#23) and `savingSessions` stay out of scope ([release labels](VERSIONING.md#release-labels-quick-reference)).
 
 ---
 
@@ -60,5 +60,6 @@ This project should be the same kind of library as FreeAgent.NET: strongly typed
 
 | Date | Change | Reason |
 |---|---|---|
+| 8 November 2026 | Success bullet lists v1.2 GraphQL surface on `main` vs NuGet `1.1.0` | Goals review doc drift (F2) |
 | 7 November 2026 | Refresh maintainer status for NuGet `1.1.0`; v1.2 roadmap wording | Goals review and release-label doc tidy |
 | 13 September 2026 | Initial draft | Project kickoff |
