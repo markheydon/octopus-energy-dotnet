@@ -221,7 +221,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
 
     /// <summary>
     /// GraphQL transport and Kraken token handling. Internal; callers use resource services such as
-    /// <see cref="RateLimits"/> instead of choosing REST or GraphQL per call.
+    /// <see cref="Viewer"/> and <see cref="RateLimits"/> instead of choosing REST or GraphQL per call.
     /// </summary>
     internal GraphQlClient? GraphQl => _graphQl;
 
