@@ -72,6 +72,60 @@ internal static class AllowListProbeQueries
         }
         """;
 
+    internal const string AccountBills = """
+        query AccountBillsAllowListProbe($accountNumber: String!) {
+          account(accountNumber: $accountNumber) {
+            bills(first: 1, includeBillsWithoutPDF: true) {
+              edges {
+                node {
+                  id
+                  billType
+                  issuedDate
+                  temporaryUrl
+                }
+              }
+            }
+          }
+        }
+        """;
+
+    internal const string AccountTransactions = """
+        query AccountTransactionsAllowListProbe($accountNumber: String!) {
+          account(accountNumber: $accountNumber) {
+            transactions(first: 1) {
+              edges {
+                node {
+                  id
+                  postedDate
+                  __typename
+                  amounts {
+                    net
+                    tax
+                    gross
+                  }
+                }
+              }
+            }
+          }
+        }
+        """;
+
+    internal const string AccountPayments = """
+        query AccountPaymentsAllowListProbe($accountNumber: String!) {
+          account(accountNumber: $accountNumber) {
+            payments(first: 1) {
+              edges {
+                node {
+                  id
+                  amount
+                  paymentDate
+                }
+              }
+            }
+          }
+        }
+        """;
+
     internal const string FlexPlannedDispatches = """
         query FlexPlannedDispatchesAllowListProbe {
           flexPlannedDispatches(deviceId: "0000000000000000") {

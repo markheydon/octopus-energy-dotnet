@@ -1,0 +1,16 @@
+{
+  "data": {
+    "account": {
+      "payments": {
+        "edges": [],
+        "pageInfo": {
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "endCursor": null,
+          "startCursor": null
+        }
+      }
+    }
+  },
+  "errors": null
+}

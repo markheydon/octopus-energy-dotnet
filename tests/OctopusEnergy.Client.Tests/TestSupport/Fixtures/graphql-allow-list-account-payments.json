@@ -1,0 +1,18 @@
+{
+  "data": {
+    "account": {
+      "payments": {
+        "edges": [
+          {
+            "node": {
+              "id": "payment-id-redacted",
+              "amount": 4000,
+              "paymentDate": "2026-11-06"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "errors": null
+}

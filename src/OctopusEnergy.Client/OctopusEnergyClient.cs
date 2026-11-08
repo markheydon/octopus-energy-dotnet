@@ -1,6 +1,7 @@
 using OctopusEnergy.Client.Infrastructure.Configuration;
 using OctopusEnergy.Client.Infrastructure.GraphQL;
 using OctopusEnergy.Client.Infrastructure.Http;
+using OctopusEnergy.Client.Services.AccountBilling;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
@@ -176,6 +177,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         RateLimits = new RateLimitService(_graphQl);
         MeterReadings = new MeterReadingService(_graphQl);
         Viewer = new ViewerService(_graphQl);
+        AccountBilling = new AccountBillingService(_graphQl);
     }
 
     /// <summary>
@@ -227,6 +229,15 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
     /// </remarks>
     public IViewerService Viewer { get; }
+
+    /// <summary>
+    /// GraphQL account bills, ledger transactions, and payments for the authenticated dashboard API key.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
+    /// Each list uses a separate query to stay under the complexity cap (200).
+    /// </remarks>
+    public IAccountBillingService AccountBilling { get; }
 
     internal RestClient Rest { get; }
 

@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.GraphQL;
+using OctopusEnergy.Client.Models.AccountBilling;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
@@ -67,4 +68,34 @@ namespace OctopusEnergy.Client.Infrastructure.Serialization;
 [JsonSerializable(typeof(ElectricityRegisterReading))]
 [JsonSerializable(typeof(ElectricityMeterReadingResult))]
 [JsonSerializable(typeof(MeterReadingFieldError))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<AccountBillsQueryData>))]
+[JsonSerializable(typeof(AccountBillsQueryData))]
+[JsonSerializable(typeof(AccountBillsAccountWire))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<AccountTransactionsQueryData>))]
+[JsonSerializable(typeof(AccountTransactionsQueryData))]
+[JsonSerializable(typeof(AccountTransactionsAccountWire))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<AccountPaymentsQueryData>))]
+[JsonSerializable(typeof(AccountPaymentsQueryData))]
+[JsonSerializable(typeof(AccountPaymentsAccountWire))]
+[JsonSerializable(typeof(RelayConnectionWire<AccountBillWire>))]
+[JsonSerializable(typeof(RelayConnectionWire<AccountTransactionWire>))]
+[JsonSerializable(typeof(RelayConnectionWire<AccountPaymentWire>))]
+[JsonSerializable(typeof(RelayEdgeWire<AccountBillWire>))]
+[JsonSerializable(typeof(RelayEdgeWire<AccountTransactionWire>))]
+[JsonSerializable(typeof(RelayEdgeWire<AccountPaymentWire>))]
+[JsonSerializable(typeof(RelayPageInfoWire))]
+[JsonSerializable(typeof(AccountBillWire))]
+[JsonSerializable(typeof(AccountTransactionWire))]
+[JsonSerializable(typeof(TransactionAmountsWire))]
+[JsonSerializable(typeof(AccountPaymentWire))]
+[JsonSerializable(typeof(AccountBillsQueryVariables))]
+[JsonSerializable(typeof(AccountTransactionsQueryVariables))]
+[JsonSerializable(typeof(AccountPaymentsQueryVariables))]
+[JsonSerializable(typeof(AccountBill))]
+[JsonSerializable(typeof(AccountTransaction))]
+[JsonSerializable(typeof(TransactionAmounts))]
+[JsonSerializable(typeof(AccountPayment))]
+[JsonSerializable(typeof(GraphQlRelayPage<AccountBill>))]
+[JsonSerializable(typeof(GraphQlRelayPage<AccountTransaction>))]
+[JsonSerializable(typeof(GraphQlRelayPage<AccountPayment>))]
 internal partial class OctopusEnergyJsonContext : JsonSerializerContext;
