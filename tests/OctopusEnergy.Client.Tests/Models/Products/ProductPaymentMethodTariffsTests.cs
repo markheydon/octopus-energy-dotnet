@@ -17,4 +17,12 @@ public sealed class ProductPaymentMethodTariffsTests
         Assert.Same(monthly, tariffs.GetTariff(ProductPaymentMethod.DirectDebitMonthly));
         Assert.Null(tariffs.GetTariff(ProductPaymentMethod.DirectDebitQuarterly));
     }
+
+    [Fact]
+    public void GetTariff_WhenUnknown_ReturnsNull()
+    {
+        ProductPaymentMethodTariffs tariffs = new();
+
+        Assert.Null(tariffs.GetTariff(ProductPaymentMethod.Unknown));
+    }
 }

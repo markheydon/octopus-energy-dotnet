@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using OctopusEnergy.Client.Infrastructure.Serialization;
 
 namespace OctopusEnergy.Client.Models.Products;
 
@@ -17,7 +18,8 @@ public class Product
     /// Import or export direction.
     /// </summary>
     [JsonPropertyName("direction")]
-    public string? Direction { get; init; }
+    [JsonConverter(typeof(NullableWireFieldJsonConverter<ProductEnergyDirection>))]
+    public WireField<ProductEnergyDirection>? Direction { get; init; }
 
     /// <summary>
     /// Full product name.

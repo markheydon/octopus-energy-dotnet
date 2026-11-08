@@ -18,6 +18,8 @@ await foreach (Product product in client.Products.ListAsync(cancellationToken: c
 
 Pagination is automatic. The SDK follows REST `next` links until all pages are returned.
 
+Each `Product` exposes import/export direction as `WireField<ProductEnergyDirection>?` (`IMPORT` / `EXPORT` on the wire). Switch on `product.Direction!.Value.Value` or inspect `UnparsedValue` when the API adds a new token.
+
 ## Filter the catalogue
 
 Pass a `ProductListRequest` to apply documented filters. Unset properties are omitted from the query string. Do not assume `OCTOPUS_ENERGY` is the only brand on the UK host.

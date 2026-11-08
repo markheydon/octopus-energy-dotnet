@@ -41,6 +41,11 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 
 Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` stays on the latest **1.1.x** release while GraphQL customer APIs land on `main`. Consumers installing from NuGet see **1.1.0** only; GraphQL-backed public accessors require **`main`** or a future **1.2.x** tag (documented in [API coverage](../docs/reference/api-coverage.md)).
 
+#### Source-breaking changes
+
+- `Product.Direction`, `MeterRegister.Rate`, and `TariffCharge.PaymentMethod` are now `WireField<T>` (or nullable) instead of `string`. Use `.Value` for the enum (`ProductEnergyDirection`, `MeterRegisterRate`, `ProductPaymentMethod`) and `.UnparsedValue` when the API returns an unknown token.
+- `ProductPaymentMethod` adds `Unknown` (additive enum member; existing numeric values unchanged).
+
 #### 1.2.0 tag checklist
 
 Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL release):
