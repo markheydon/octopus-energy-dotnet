@@ -209,6 +209,8 @@ REST account is enough for v1 if the caller supplies `account_number`. Discoveri
 
 No public sandbox. CI must use **recorded fixtures**. Optional live checks behind explicit env vars, never default-on, never commit keys. The [products console sample](../../samples/README.md) is the current local live smoke; it is not run in CI.
 
+The maintainer probe account has no gas meter, so `createGasMeterReading` allow-list verification is deferred. Gas SDK behaviour is covered by schema-aligned unit fixtures (#99). Re-probe when a gas-capable dashboard key or Octopus sandbox account is available — see [graphql-customer-allow-list.md](graphql-customer-allow-list.md) **Future testing**.
+
 Home Assistant’s client ([BottlecapDave/HomeAssistant-OctopusEnergy](https://github.com/BottlecapDave/HomeAssistant-OctopusEnergy)) is the best map of what customer tokens actually do. ImpSoft.OctopusEnergy and aiooctopusenergy cover REST only.
 
 ---

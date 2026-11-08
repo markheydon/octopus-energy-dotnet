@@ -1,7 +1,7 @@
 {
   "data": {
     "readingConsentGranularity": {
-      "__typename": "ReadingConsentGranularityType"
+      "granularityValue": "HALF_HOURLY"
     }
   },
   "errors": null

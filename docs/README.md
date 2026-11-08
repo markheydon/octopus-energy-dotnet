@@ -14,7 +14,7 @@ Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help y
 | [Products catalogue](how-to/products.md) | List products and load product detail |
 | [Account detail](how-to/accounts.md) | Fetch properties, meters, and agreements |
 | [Consumption](how-to/consumption.md) | Electricity and gas smart-meter intervals |
-| [Meter readings](how-to/meter-readings.md) | Submit electricity meter readings (GraphQL) |
+| [Meter readings](how-to/meter-readings.md) | Submit electricity and gas readings; query consent granularity (GraphQL) |
 | [Account billing](how-to/account-billing.md) | Bills, transactions, and payments (GraphQL) |
 | [SmartFlex devices](how-to/devices.md) | Device discovery and planned dispatches (GraphQL) |
 | [Smart-meter telemetry](how-to/smart-meter-telemetry.md) | Home Mini EUI64 discovery and telemetry (GraphQL) |

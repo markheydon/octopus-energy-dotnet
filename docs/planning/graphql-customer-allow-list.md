@@ -20,6 +20,10 @@ This artefact is the gate for milestone **v1.2** GraphQL stories ([#22](https://
 
 `KT-CT-11334` (API access not enabled on the account) prevents token obtain entirely; that is an account setting, not an SDK defect.
 
+## Deferred live verification
+
+Usually do not add a public SDK method unless the matrix row is **Allowed**, **Allowed (mutation)**, or equivalent. **`createGasMeterReading`** is the documented exception while no gas-capable dashboard key is available: the mutation ships as `MeterReadings.CreateGasAsync` (#99) from the public Kraken schema and recorded unit fixtures, with matrix status **Not probed** until someone re-runs `LiveGraphQlAllowListProbeTests` on an account with gas. Do not mark the row **Allowed (mutation)** without a successful live probe on real gas meter context (not a fake MPRN). See [Future testing](#future-testing).
+
 ## Customer operations (probe matrix)
 
 | Operation | Status | Runtime code(s) | Notes | Redacted fixture |
@@ -33,10 +37,10 @@ This artefact is the gate for milestone **v1.2** GraphQL stories ([#22](https://
 | Account meter discovery | Allowed | — | `account.properties.electricityMeterPoints` / `gasMeterPoints` for MPAN/MPRN. | [graphql-allow-list-account-meter-points.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-account-meter-points.json) |
 | Account EUI64 discovery (`smartDevices`) | Allowed | — | `account → electricityAgreements \| gasAgreements → meterPoint → meters → smartDevices`. Empty on probe account (no CAD/Home Mini path). | [graphql-allow-list-account-smart-meter-devices.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-account-smart-meter-devices.json) |
 | `rateLimitInfo` | Allowed | — | | [graphql-rate-limit-info.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-rate-limit-info.json) |
-| `readingConsentGranularity(mpan:)` | Allowed | — | Requires MPAN argument. | [graphql-allow-list-reading-consent.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-reading-consent.json) |
+| `readingConsentGranularity(mpan:)` | Allowed | — | Requires MPAN argument; public SDK: `MeterReadings.GetReadingConsentGranularityAsync`. | [graphql-allow-list-reading-consent.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-reading-consent.json) |
 | `devices(accountNumber:)` | Allowed | — | Returned an empty list on the probe account (no SmartFlex devices enrolled). | [graphql-allow-list-devices-empty.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-devices-empty.json) |
 | `createElectricityMeterReading` | Allowed (mutation) | `KT-GB-11007` | Mutation executed; historic `readAt` and probe inputs yielded “meter not found”, not a disabled-field code. | [graphql-allow-list-create-electricity-reading.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-create-electricity-reading.json) |
-| `createGasMeterReading` | Not probed | `KT-CT-1111` (fake MPRN probe) | Probe account had no gas meters; fake MPRN returned unauthorised. Re-probe on an account with gas before wrapping. | — |
+| `createGasMeterReading` | Not probed | `KT-CT-1111` (fake MPRN probe) | **Deferred live verification:** maintainer has no gas-capable dashboard key. Probe account had no gas meters; fake MPRN returned unauthorised. Public SDK: `MeterReadings.CreateGasAsync` (#99) from schema and fixtures — flip to **Allowed (mutation)** only after a gas-capable re-probe. | — |
 | `initiateProductSwitch` | Allowed (mutation) | `KT-CT-7899` | Nil `quotedProductId` probe; confirms customer mutation path, not a successful switch. Public SDK: `ProductSwitch.InitiateAsync`. | [graphql-allow-list-initiate-product-switch.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-initiate-product-switch.json) |
 | `flexPlannedDispatches(deviceId:)` | Allowed (when entitled) | `KT-CT-1111` (unentitled probe) | Customer field per [developer docs](https://developer.octopus.energy/graphql/reference/queries/flexplanneddispatches/). Probe account has no enrolled devices — placeholder or foreign `deviceId` returns `KT-CT-1111`, not `KT-CT-1113`/`4177`. Re-probe with a real id from `devices` when hardware is present. | [graphql-flex-planned-dispatches.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-flex-planned-dispatches.json), [graphql-allow-list-flex-dispatches-denied.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-flex-dispatches-denied.json) |
 | `smartMeterTelemetry(deviceId:)` | Allowed (when entitled) | `KT-CT-1111` (unentitled probe) | Customer field per [developer docs](https://developer.octopus.energy/graphql/reference/queries/smartmetertelemetry/). Probe account has no Home Mini EUI64 — placeholder `deviceId` returns `KT-CT-1111`, not `KT-CT-1113`/`4177`. Field limit 125/h; back off on `KT-CT-1199`. Re-probe with EUI64 from `smartDevices` when hardware is present. | [graphql-smart-meter-telemetry.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-smart-meter-telemetry.json), [graphql-allow-list-smart-meter-telemetry-denied.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-smart-meter-telemetry-denied.json), [graphql-error-kt-ct-1199.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-error-kt-ct-1199.json) |
@@ -68,9 +72,13 @@ Fixtures: [graphql-allow-list-partner-viewer-denied.json](../../tests/OctopusEne
 Results reflect one domestic dashboard key with API access enabled:
 
 - **Multi-account** `viewer.accounts` returned two account numbers.
-- **No gas** on the primary property — gas reading mutation not fully verified.
+- **No gas** on the primary property — gas reading mutation not fully verified. The public SDK wraps `createGasMeterReading` from schema and unit fixtures (#99); runtime status stays **Not probed** until a gas-capable dashboard key or Octopus sandbox account is available (see **Future testing** below).
 - **No SmartFlex / Home Mini / Octoplus** enrolment on this account — `devices` returns an empty list; `smartDevices` under agreements is empty; `flexPlannedDispatches`, `smartMeterTelemetry`, `loyaltyPointsBalance`, and related Octoplus fields return `KT-CT-1111` when the account user is not entitled. Treat as “not entitled on this account”, not as permission to wrap partner APIs. Customer-reachable telemetry and Octoplus helpers are still wrapped (#26, #27) with documented rate limits. `savingSessions` is absent from the public schema (see matrix above).
 - Field rate limits (`KT-CT-1199`) were not hit; back off if reprobing telemetry.
+
+## Future testing
+
+The maintainer probe account is electricity-only. Gas mutation allow-list verification and optional live sample smoke depend on a dashboard API key tied to a property with gas, or a future Octopus-provided sandbox account for SDK development. When that exists, re-run `LiveGraphQlAllowListProbeTests`, refresh the `createGasMeterReading` row and redacted fixtures here, and update the gas **Allow-list status** column in [API coverage](../reference/api-coverage.md).
 
 ## Regenerating
 
@@ -87,7 +95,7 @@ Copy redacted envelopes from test output into this document and into `tests/.../
 
 ## Related
 
-When re-probing or shipping public SDK methods for operations that are **Allowed** here but not yet wrapped (for example `createGasMeterReading`, `readingConsentGranularity`), update this probe matrix and the **Allow-list status** column in [API coverage](../reference/api-coverage.md) in the same change.
+When re-probing or shipping public SDK methods for operations that are **Allowed** here but not yet wrapped, update this probe matrix and the **Allow-list status** column in [API coverage](../reference/api-coverage.md) in the same change. Gas mutation SDK is wrapped (#99) while runtime status remains **Not probed** until a gas-capable account re-probe.
 
 - [API coverage](../reference/api-coverage.md) — consumer-facing summary table (must match probe statuses here)  
 - [coding notes §5](coding-notes.md) — candidate list and complexity notes  
