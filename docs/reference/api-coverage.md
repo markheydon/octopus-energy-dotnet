@@ -53,7 +53,8 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | Area | Allow-list status | Public SDK |
 |---|---|---|
 | `viewer` / multi-account | Allowed | Planned (#22) |
-| `account` projections (bills, transactions, payments) | Not probed in spike | Planned (#23) |
+| `account` (minimal projection, meter discovery) | Allowed | Planned (#23) |
+| `account` (bills, transactions, payments) | Not probed | Planned (#23) |
 | Electricity meter reading mutation | Allowed (mutation) | Planned (#24) |
 | Gas meter reading mutation | Not probed on spike account | Planned (#24) |
 | `devices(accountNumber)` | Allowed (empty on probe account) | Planned (#25) |
@@ -63,7 +64,7 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `initiateProductSwitch` | Allowed (mutation) | Planned (#28) |
 | `rateLimitInfo`, `readingConsentGranularity` | Allowed | Planned |
 
-Keep this table aligned with [SCOPE.md](../../SCOPE.md), [plan/RELEASE.md](../../plan/RELEASE.md), and the allow-list doc as groundwork merges and public services ship.
+Keep this table aligned with [SCOPE.md](../../SCOPE.md), [plan/RELEASE.md](../../plan/RELEASE.md), and the [GraphQL customer allow-list](../planning/graphql-customer-allow-list.md) (probe matrix is authoritative for **Allow-list status**). Update both documents in the same change when re-probing or shipping public GraphQL methods.
 
 ## Explicitly not covered
 
