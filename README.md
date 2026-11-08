@@ -44,7 +44,7 @@ await foreach (var product in client.Products.ListAsync())
 
 For account and consumption calls, pass your API key from the [Octopus dashboard](https://octopus.energy/dashboard/new/accounts/personal-details/api-access). Treat it as a secret.
 
-See [getting started](https://markheydon.me.uk/octopus-energy-dotnet/tutorial/getting-started/), [authentication](https://markheydon.me.uk/octopus-energy-dotnet/how-to/authentication/), [consumption](https://markheydon.me.uk/octopus-energy-dotnet/how-to/consumption/), [tariff rates](https://markheydon.me.uk/octopus-energy-dotnet/how-to/tariff-rates/), [industry lookups](https://markheydon.me.uk/octopus-energy-dotnet/how-to/industry/), [meter readings](https://markheydon.me.uk/octopus-energy-dotnet/how-to/meter-readings/), and [units, VAT, and time](https://markheydon.me.uk/octopus-energy-dotnet/explanation/units-vat-and-time/) for kWh, VAT fields, BST, and Agile 16:00 behaviour.
+See [getting started](https://markheydon.me.uk/octopus-energy-dotnet/tutorial/getting-started/), [authentication](https://markheydon.me.uk/octopus-energy-dotnet/how-to/authentication/), [consumption](https://markheydon.me.uk/octopus-energy-dotnet/how-to/consumption/), [tariff rates](https://markheydon.me.uk/octopus-energy-dotnet/how-to/tariff-rates/), [industry lookups](https://markheydon.me.uk/octopus-energy-dotnet/how-to/industry/), [meter readings](https://markheydon.me.uk/octopus-energy-dotnet/how-to/meter-readings/), [account billing](https://markheydon.me.uk/octopus-energy-dotnet/how-to/account-billing/), and [units, VAT, and time](https://markheydon.me.uk/octopus-energy-dotnet/explanation/units-vat-and-time/) for kWh, VAT fields, BST, and Agile 16:00 behaviour.
 
 ## Compatibility
 

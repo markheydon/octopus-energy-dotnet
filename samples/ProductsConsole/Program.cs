@@ -1,6 +1,8 @@
 using System.Net.Http;
 using OctopusEnergy.Client;
+using OctopusEnergy.Client.Models.AccountBilling;
 using OctopusEnergy.Client.Models.Accounts;
+using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.MeterReadings;
@@ -83,6 +85,7 @@ try
         recorder.Skip("rate limits", "requires authenticated client");
         recorder.Skip("viewer", "requires authenticated client");
         recorder.Skip("meter readings", "requires authenticated client");
+        recorder.Skip("account billing", "requires authenticated client");
     }
 
     if (await TryRunSectionAsync(
@@ -255,6 +258,10 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
 
         await RunViewerSmokeAsync(authenticatedClient, recorder, cancellationToken);
         await RunRateLimitsSmokeAsync(authenticatedClient, recorder, cancellationToken);
+        string billingSkipReason =
+            $"Set {AccountNumberEnvironmentVariable} to exercise GraphQL account billing lists.";
+        WriteAccountBillingSkipped(billingSkipReason);
+        recorder.Skip("account billing", billingSkipReason);
         recorder.Pass("authenticated client");
         return null;
     }
@@ -318,6 +325,11 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
 
     await RunViewerSmokeAsync(authenticatedClient, recorder, cancellationToken);
     await RunRateLimitsSmokeAsync(authenticatedClient, recorder, cancellationToken);
+    await RunAccountBillingSmokeAsync(
+        authenticatedClient,
+        recorder,
+        accountNumber,
+        cancellationToken);
     recorder.Pass("authenticated client");
     return account;
 }
@@ -334,6 +346,50 @@ static async Task RunViewerSmokeAsync(
     Console.WriteLine("  Linked accounts: {0}", viewer.AccountNumbers.Count);
 
     recorder.Pass("viewer");
+}
+
+static async Task RunAccountBillingSmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    string accountNumber,
+    CancellationToken cancellationToken)
+{
+    const int first = 1;
+
+    Console.WriteLine();
+    Console.WriteLine("Account billing (GraphQL-backed, API key; first page only):");
+
+    AccountBillListRequest billsRequest = new()
+    {
+        First = first,
+        IncludeBillsWithoutPdf = true,
+    };
+
+    GraphQlRelayPage<AccountBill> bills = await client.AccountBilling.ListBillsPageAsync(
+        accountNumber,
+        billsRequest,
+        cancellationToken);
+    Console.WriteLine("  Bills: {0} on this page (has next: {1})", bills.Results.Count, bills.HasNextPage);
+
+    GraphQlRelayPage<AccountTransaction> transactions = await client.AccountBilling.ListTransactionsPageAsync(
+        accountNumber,
+        new AccountTransactionListRequest { First = first },
+        cancellationToken);
+    Console.WriteLine(
+        "  Transactions: {0} on this page (has next: {1})",
+        transactions.Results.Count,
+        transactions.HasNextPage);
+
+    GraphQlRelayPage<AccountPayment> payments = await client.AccountBilling.ListPaymentsPageAsync(
+        accountNumber,
+        new AccountPaymentListRequest { First = first },
+        cancellationToken);
+    Console.WriteLine(
+        "  Payments: {0} on this page (has next: {1})",
+        payments.Results.Count,
+        payments.HasNextPage);
+
+    recorder.Pass("account billing");
 }
 
 static async Task RunRateLimitsSmokeAsync(
@@ -858,6 +914,12 @@ static void WriteConsumptionSkipped(string fuel, string reason)
 {
     Console.WriteLine();
     Console.WriteLine("{0} consumption (skipped): {1}", Capitalize(fuel), reason);
+}
+
+static void WriteAccountBillingSkipped(string reason)
+{
+    Console.WriteLine();
+    Console.WriteLine("Account billing (skipped): {0}", reason);
 }
 
 static void WriteAccountSummary(Account account)
