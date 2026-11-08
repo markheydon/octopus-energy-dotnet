@@ -100,7 +100,7 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
             results.Add(new GraphQlAllowListProbeResult
             {
                 Operation = "readingConsentGranularity",
-                Outcome = GraphQlProbeOutcome.GraphQlError,
+                Outcome = GraphQlProbeOutcome.Skipped,
                 Note = "Skipped: no import MPAN discovered from accountMeterPoints.",
             });
         }
@@ -143,7 +143,7 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
             results.Add(new GraphQlAllowListProbeResult
             {
                 Operation = "createElectricityMeterReading",
-                Outcome = GraphQlProbeOutcome.GraphQlError,
+                Outcome = GraphQlProbeOutcome.Skipped,
                 Note = "Skipped: no MPAN or electricity serial discovered.",
             });
         }
@@ -157,14 +157,14 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
                 CancellationToken.None,
                 note: "Historic readAt date; expects validation or permission error."));
         }
-        else
+        else if (accountNumber is not null)
         {
-            results.Add(new GraphQlAllowListProbeResult
-            {
-                Operation = "createGasMeterReading",
-                Outcome = GraphQlProbeOutcome.GraphQlError,
-                Note = "Skipped: no MPRN or gas serial discovered.",
-            });
+            results.Add(await probe.ProbeAsync(
+                "createGasMeterReading",
+                AllowListProbeQueries.CreateGasMeterReading,
+                new { mprn = "1234567890123", serialNumber = "FAKE-GAS-SERIAL" },
+                CancellationToken.None,
+                note: "Fake MPRN when no gas meter on account; documents unauthorised path for matrix regeneration."));
         }
 
         results.Add(await probe.ProbeAsync(
@@ -184,13 +184,15 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
 
     private static string? ResolveAccountNumber(GraphQlAllowListProbeResult viewerResult)
     {
-        if (!string.IsNullOrWhiteSpace(viewerResult.DiscoveredAccountNumber))
+        string? fromEnvironment = Environment.GetEnvironmentVariable(AccountNumberEnvironmentVariable);
+        if (!string.IsNullOrWhiteSpace(fromEnvironment))
         {
-            return viewerResult.DiscoveredAccountNumber;
+            return fromEnvironment.Trim();
         }
 
-        string? fromEnvironment = Environment.GetEnvironmentVariable(AccountNumberEnvironmentVariable);
-        return string.IsNullOrWhiteSpace(fromEnvironment) ? null : fromEnvironment.Trim();
+        return string.IsNullOrWhiteSpace(viewerResult.DiscoveredAccountNumber)
+            ? null
+            : viewerResult.DiscoveredAccountNumber;
     }
 
     private void WriteSummary(IReadOnlyList<GraphQlAllowListProbeResult> results)

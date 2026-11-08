@@ -12,6 +12,7 @@ internal enum GraphQlProbeOutcome
     GraphQlError,
     HttpError,
     TokenObtainFailed,
+    Skipped,
 }
 
 internal sealed class GraphQlAllowListProbeResult
@@ -237,7 +238,7 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
         return match.Success ? match.Value : null;
     }
 
-    [GeneratedRegex(@"KT-CT-\d+", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"KT-[A-Z]{2}-\d+", RegexOptions.CultureInvariant)]
     private static partial Regex ErrorCodePattern();
 
     public async ValueTask DisposeAsync()

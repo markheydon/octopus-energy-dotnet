@@ -9,6 +9,11 @@ internal static class AllowListProbeQueries
             accounts {
               number
             }
+            portfolios {
+              accounts {
+                number
+              }
+            }
           }
         }
         """;
