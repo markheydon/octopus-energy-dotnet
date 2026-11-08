@@ -40,6 +40,7 @@ src/
     │   ├── Devices/                     # SmartFlex device and dispatch models
     │   ├── SmartMeterTelemetry/         # Home Mini telemetry and EUI64 models
     │   ├── Octoplus/                    # Loyalty points, enrolment, wheel-of-fortune models
+    │   ├── ProductSwitch/               # GraphQL initiate product switch models
     │   └── Viewer/                      # GraphQL viewer discovery models
     └── Services/                        # Resource-oriented services
         ├── Accounts/                    # AccountService
@@ -52,6 +53,7 @@ src/
         ├── Devices/                     # DeviceService (GraphQL-backed)
         ├── SmartMeterTelemetry/         # SmartMeterTelemetryService (GraphQL-backed)
         ├── Octoplus/                    # OctoplusService (GraphQL-backed, optional module)
+        ├── ProductSwitch/               # ProductSwitchService (GraphQL-backed)
         └── Viewer/                      # ViewerService (GraphQL-backed)
 
 tests/

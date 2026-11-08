@@ -1,0 +1,13 @@
+{
+  "data": {
+    "initiateProductSwitch": null
+  },
+  "errors": [
+    {
+      "message": "Requested product switch is not valid.",
+      "extensions": {
+        "errorCode": "KT-CT-1516"
+      }
+    }
+  ]
+}

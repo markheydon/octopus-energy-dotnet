@@ -23,6 +23,8 @@ Smoke-tests every implemented public SDK surface against `https://api.octopus.en
 | Tariff rates | `TariffRates` | None | Reads one standing charge and one standard unit rate for an example tariff from the product detail. |
 | Industry lookups | `Industry` | None | Resolves GSP for a postcode. Fetches MPAN metadata using the import electricity MPAN from account detail when authenticated, or `OCTOPUS_ENERGY_MPAN` as an optional override. |
 
+`ProductSwitch.InitiateAsync` is implemented in the SDK but is not called from Products console: a live switch changes tariffs and is not suitable for automated smoke checks. See [product switch](../docs/how-to/product-switch.md).
+
 When `OCTOPUS_ENERGY_API_KEY` is set, authenticated sections run first so an invalid key fails fast. Public sections always run.
 
 At the end, a **smoke summary** lists each check with ✓ (pass), `-` (skip), or ✗ (fail), plus counts. Skips are expected when optional data is missing (no gas meter, no MPAN override, and so on). Exit code `0` when nothing failed.

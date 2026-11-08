@@ -72,7 +72,7 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `joinOctoplusCampaign` | Allowed (mutation) | Implemented (#27 — `Octoplus.JoinCampaignAsync`) |
 | `redeemLoyaltyPointsForAccountCredit` | Allowed (mutation) | Implemented (#27 — `Octoplus.RedeemPointsForAccountCreditAsync`) |
 | `savingSessions` / join (backend host) | Not on public GraphQL schema | Out of scope — see allow-list |
-| `initiateProductSwitch` | Allowed (mutation) | Planned (#28) |
+| `initiateProductSwitch` | Allowed (mutation) | Implemented (#28 — `ProductSwitch.InitiateAsync`) |
 | `rateLimitInfo` | Allowed | Implemented (`client.RateLimits`) |
 | `readingConsentGranularity` | Allowed | Planned |
 
