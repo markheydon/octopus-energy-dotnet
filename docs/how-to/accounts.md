@@ -4,12 +4,43 @@ Fetch properties, electricity and gas meter points, meters, registers, and tarif
 
 ## When to use this guide
 
-You already have an account number (for example from a bill or your own records) and a dashboard API key. Discovering the account number without a bill is planned for milestone **v1.2** GraphQL (`viewer`); REST requires you to supply `A-XXXXXXXX`.
+You have a dashboard API key. Use GraphQL viewer discovery when you do not yet have an account number (for example from a bill); use REST account detail when you already know `A-XXXXXXXX`.
 
 ## Prerequisites
 
 - Dashboard API key - see [authentication](authentication.md)
-- Account number in the form `A-12345678`
+- Account number in the form `A-12345678` (for REST fetch below)
+
+## Discover account numbers
+
+```csharp
+using OctopusEnergy.Client;
+using OctopusEnergy.Client.Models.Viewer;
+
+const string apiKey = "sk_test_not_a_real_key";
+CancellationToken cancellationToken = default;
+
+using var client = new OctopusEnergyClient(apiKey);
+
+ViewerDetail viewer = await client.Viewer.GetViewerAsync(cancellationToken);
+
+if (viewer.AccountNumbers.Count == 0)
+{
+    Console.WriteLine("No accounts linked to this API key.");
+}
+else if (viewer.AccountNumbers.Count > 1)
+{
+    foreach (string number in viewer.AccountNumbers)
+    {
+        Console.WriteLine(number);
+    }
+    // Choose the account you need; the SDK does not pick a default.
+}
+else
+{
+    Console.WriteLine(viewer.AccountNumbers[0]);
+}
+```
 
 ## Fetch account detail
 

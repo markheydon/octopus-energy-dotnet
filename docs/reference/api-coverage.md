@@ -35,7 +35,7 @@ How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to
 
 Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). NuGet **1.2.x** when the public surface ships — see [release labels](../../VERSIONING.md#release-labels-quick-reference). Unreleased groundwork is documented in [plan/RELEASE.md](../../plan/RELEASE.md) (section *Unreleased (v1.2 groundwork)*).
 
-**Public SDK surface:** REST for catalogue, account, and consumption; one GraphQL-backed operation (`RateLimits.GetRateLimitInfoAsync`) for operational limits. Additional curated GraphQL stories are in progress.
+**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`) and operational limits (`RateLimits.GetRateLimitInfoAsync`). Additional curated GraphQL stories are in progress.
 
 ### Infrastructure (unreleased, internal)
 
@@ -54,7 +54,7 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 
 | Area | Allow-list status | Public SDK |
 |---|---|---|
-| `viewer` / multi-account | Allowed | Planned (#22) |
+| `viewer` / multi-account | Allowed | Implemented (`ViewerService`) |
 | `account` (minimal projection, meter discovery) | Allowed | Planned (#23) |
 | `account` (bills, transactions, payments) | Not probed | Planned (#23) |
 | Electricity meter reading mutation | Allowed (mutation) | Planned (#24) |

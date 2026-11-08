@@ -34,13 +34,15 @@ src/
     │   ├── Consumption/                 # Consumption interval and list request models
     │   ├── Industry/                    # GSP and MPAN lookup models
     │   ├── Products/                    # Product catalogue and tariff charge models
-    │   └── RateLimits/                  # GraphQL rate-limit query models
+    │   ├── RateLimits/                  # GraphQL rate-limit query models
+    │   └── Viewer/                      # GraphQL viewer discovery models
     └── Services/                        # Resource-oriented services
         ├── Accounts/                    # AccountService
         ├── Consumption/                 # ConsumptionService
         ├── Industry/                    # IndustryService
         ├── Products/                    # ProductService, TariffRatesService
-        └── RateLimits/                  # RateLimitService (GraphQL-backed)
+        ├── RateLimits/                  # RateLimitService (GraphQL-backed)
+        └── Viewer/                      # ViewerService (GraphQL-backed)
 
 tests/
 └── OctopusEnergy.Client.Tests/

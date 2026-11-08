@@ -6,6 +6,7 @@ using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
+using OctopusEnergy.Client.Services.Viewer;
 
 namespace OctopusEnergy.Client;
 
@@ -172,6 +173,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         Products = new ProductService(Rest);
         TariffRates = new TariffRatesService(Rest);
         RateLimits = new RateLimitService(_graphQl);
+        Viewer = new ViewerService(_graphQl);
     }
 
     /// <summary>
@@ -206,6 +208,14 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
     /// </remarks>
     public IRateLimitService RateLimits { get; }
+
+    /// <summary>
+    /// GraphQL viewer discovery for account numbers linked to the dashboard API key.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
+    /// </remarks>
+    public IViewerService Viewer { get; }
 
     internal RestClient Rest { get; }
 

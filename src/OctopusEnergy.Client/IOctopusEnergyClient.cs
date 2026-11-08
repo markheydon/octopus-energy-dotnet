@@ -3,6 +3,7 @@ using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
+using OctopusEnergy.Client.Services.Viewer;
 
 namespace OctopusEnergy.Client;
 
@@ -46,4 +47,9 @@ public interface IOctopusEnergyClient : IDisposable
     /// Kraken hourly points allowance and related rate-limit information.
     /// </summary>
     IRateLimitService RateLimits { get; }
+
+    /// <summary>
+    /// GraphQL viewer discovery for account numbers linked to the API key.
+    /// </summary>
+    IViewerService Viewer { get; }
 }
