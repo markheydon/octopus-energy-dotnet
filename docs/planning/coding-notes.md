@@ -78,7 +78,7 @@ Rate limits on the mutation include `email_from_graphql_input_fields` 5/m, `fail
 - `GET /v1/products/{product_code}/` - `tariffs_active_at`
 - Unit rates / standing charges:
   - `/v1/products/{product}/electricity-tariffs/{tariff}/standing-charges/`
-  - `.../standard-unit-rates/`, `day-unit-rates/`, `night-unit-rates/`
+  - `.../standard-unit-rates/`, `day-unit-rates/`, `night-unit-rates/`, `ev-device-off-peak-unit-rates/`, `ev-device-peak-unit-rates/`
   - `/v1/products/{product}/gas-tariffs/{tariff}/standing-charges/`
   - `.../standard-unit-rates/`
   - Query: `period_from`, `period_to`, `page_size` (default 100, **max 1,500**)

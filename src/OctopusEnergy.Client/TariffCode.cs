@@ -135,6 +135,7 @@ public readonly record struct TariffCode
     /// </returns>
     /// <exception cref="OctopusEnergyRequestException">
     /// Day or night unit-rate paths are not available for gas tariffs or single-register electricity tariffs.
+    /// EV device peak and off-peak paths are not available for gas tariffs.
     /// </exception>
     [Obsolete("Use TariffRatesService to list standing charges and unit rates instead of building REST paths manually.")]
     public string GetRelativeChargePath(TariffChargeKind chargeKind)
@@ -152,6 +153,7 @@ public readonly record struct TariffCode
     /// </returns>
     /// <exception cref="OctopusEnergyRequestException">
     /// Day or night unit-rate paths are not available for gas tariffs or single-register electricity tariffs.
+    /// EV device peak and off-peak paths are not available for gas tariffs.
     /// </exception>
     internal string BuildRelativeChargePath(TariffChargeKind chargeKind)
     {
@@ -168,6 +170,13 @@ public readonly record struct TariffCode
                 throw new OctopusEnergyRequestException(
                     "Day and night unit-rate paths apply to dual-register electricity tariffs only.");
             }
+        }
+
+        if (chargeKind is TariffChargeKind.EvDeviceOffPeakUnitRates or TariffChargeKind.EvDevicePeakUnitRates
+            && Fuel == EnergyFuel.Gas)
+        {
+            throw new OctopusEnergyRequestException(
+                "EV device peak and off-peak unit-rate paths are not available for gas tariffs.");
         }
 
         string tariffSegment = Fuel == EnergyFuel.Electricity ? "electricity-tariffs" : "gas-tariffs";
@@ -228,6 +237,8 @@ public readonly record struct TariffCode
             TariffChargeKind.StandardUnitRates => "standard-unit-rates",
             TariffChargeKind.DayUnitRates => "day-unit-rates",
             TariffChargeKind.NightUnitRates => "night-unit-rates",
+            TariffChargeKind.EvDeviceOffPeakUnitRates => "ev-device-off-peak-unit-rates",
+            TariffChargeKind.EvDevicePeakUnitRates => "ev-device-peak-unit-rates",
             _ => throw new ArgumentOutOfRangeException(nameof(chargeKind), chargeKind, "Unknown charge kind."),
         };
     }

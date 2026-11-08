@@ -84,6 +84,41 @@ public sealed class TariffCodeTests
     }
 
     [Fact]
+    public void BuildRelativeChargePath_WhenElectricityEvDeviceOffPeak_ReturnsOffPeakPath()
+    {
+        TariffCode tariffCode = TariffCode.Parse(AgileElectricity);
+
+        string path = tariffCode.BuildRelativeChargePath(TariffChargeKind.EvDeviceOffPeakUnitRates);
+
+        Assert.Equal(
+            "products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/ev-device-off-peak-unit-rates/",
+            path);
+    }
+
+    [Fact]
+    public void BuildRelativeChargePath_WhenElectricityEvDevicePeak_ReturnsPeakPath()
+    {
+        TariffCode tariffCode = TariffCode.Parse(AgileElectricity);
+
+        string path = tariffCode.BuildRelativeChargePath(TariffChargeKind.EvDevicePeakUnitRates);
+
+        Assert.Equal(
+            "products/AGILE-FLEX-22-11-25/electricity-tariffs/E-1R-AGILE-FLEX-22-11-25-C/ev-device-peak-unit-rates/",
+            path);
+    }
+
+    [Fact]
+    public void BuildRelativeChargePath_WhenGasEvDeviceOffPeakUnitRates_ThrowsOctopusEnergyRequestException()
+    {
+        TariffCode tariffCode = TariffCode.Parse(GasTariff);
+
+        OctopusEnergyRequestException exception = Assert.Throws<OctopusEnergyRequestException>(
+            () => tariffCode.BuildRelativeChargePath(TariffChargeKind.EvDeviceOffPeakUnitRates));
+
+        Assert.Contains("gas", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void BuildRelativeChargePath_WhenGasDayUnitRates_ThrowsOctopusEnergyRequestException()
     {
         TariffCode tariffCode = TariffCode.Parse(GasTariff);

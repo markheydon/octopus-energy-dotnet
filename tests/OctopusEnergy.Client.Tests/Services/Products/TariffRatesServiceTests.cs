@@ -144,6 +144,76 @@ public sealed class TariffRatesServiceTests
     }
 
     [Fact]
+    public async Task ListEvDeviceOffPeakUnitRatesAsync_WhenSingleRegisterElectricity_UsesOffPeakPath()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("tariff-rates-ev-device-off-peak.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        await CollectAsync(client.TariffRates.ListEvDeviceOffPeakUnitRatesAsync(
+            TariffCode.Parse(AgileTariff),
+            cancellationToken: CancellationToken.None));
+
+        Assert.EndsWith(
+            "/ev-device-off-peak-unit-rates/",
+            handler.SentRequests[0].RequestUri?.AbsolutePath,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ListEvDevicePeakUnitRatesAsync_WhenSingleRegisterElectricity_UsesPeakPath()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("tariff-rates-ev-device-peak.json"));
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        await CollectAsync(client.TariffRates.ListEvDevicePeakUnitRatesAsync(
+            TariffCode.Parse(AgileTariff),
+            cancellationToken: CancellationToken.None));
+
+        Assert.EndsWith(
+            "/ev-device-peak-unit-rates/",
+            handler.SentRequests[0].RequestUri?.AbsolutePath,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ListEvDeviceOffPeakUnitRatesAsync_WhenGasTariff_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        await Assert.ThrowsAsync<OctopusEnergyRequestException>(
+            () => CollectAsync(client.TariffRates.ListEvDeviceOffPeakUnitRatesAsync(
+                TariffCode.Parse(GasTariff),
+                cancellationToken: CancellationToken.None)));
+
+        Assert.Empty(handler.SentRequests);
+    }
+
+    [Fact]
+    public async Task ListEvDevicePeakUnitRatesAsync_WhenGasTariff_ThrowsBeforeHttp()
+    {
+        QueuedHttpMessageHandler handler = new();
+
+        using HttpClient httpClient = CreateHttpClient(handler);
+        using OctopusEnergyClient client = new(httpClient);
+
+        await Assert.ThrowsAsync<OctopusEnergyRequestException>(
+            () => CollectAsync(client.TariffRates.ListEvDevicePeakUnitRatesAsync(
+                TariffCode.Parse(GasTariff),
+                cancellationToken: CancellationToken.None)));
+
+        Assert.Empty(handler.SentRequests);
+    }
+
+    [Fact]
     public async Task ListDayUnitRatesAsync_WhenGasTariff_ThrowsBeforeHttp()
     {
         QueuedHttpMessageHandler handler = new();

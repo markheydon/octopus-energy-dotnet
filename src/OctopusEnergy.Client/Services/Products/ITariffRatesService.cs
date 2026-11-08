@@ -58,6 +58,34 @@ public interface ITariffRatesService
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Lists EV device off-peak unit rates for an electricity tariff.
+    /// </summary>
+    /// <param name="tariffCode">Parsed electricity tariff code.</param>
+    /// <param name="request">Optional period and page-size filters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="tariffCode"/> is gas.
+    /// </exception>
+    IAsyncEnumerable<TariffCharge> ListEvDeviceOffPeakUnitRatesAsync(
+        TariffCode tariffCode,
+        TariffChargeListRequest? request = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Lists EV device peak unit rates for an electricity tariff.
+    /// </summary>
+    /// <param name="tariffCode">Parsed electricity tariff code.</param>
+    /// <param name="request">Optional period and page-size filters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="tariffCode"/> is gas.
+    /// </exception>
+    IAsyncEnumerable<TariffCharge> ListEvDevicePeakUnitRatesAsync(
+        TariffCode tariffCode,
+        TariffChargeListRequest? request = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Lists charge periods for a tariff charge endpoint.
     /// </summary>
     /// <param name="tariffCode">Parsed tariff code.</param>
