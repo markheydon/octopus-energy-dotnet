@@ -22,7 +22,7 @@ public interface IAccountBillingService
     /// Thrown when the GraphQL API returns <c>errors.extensions.errorCode</c>.
     /// </exception>
     /// <exception cref="OctopusEnergyParseException">
-    /// Thrown when the response cannot be deserialised, the account is missing from the payload, or a connection is absent.
+    /// Thrown when the response cannot be deserialised or the account is missing from the payload.
     /// </exception>
     Task<GraphQlRelayPage<AccountBill>> ListBillsPageAsync(
         string accountNumber,
@@ -43,7 +43,7 @@ public interface IAccountBillingService
     /// Thrown when the GraphQL API returns <c>errors.extensions.errorCode</c>.
     /// </exception>
     /// <exception cref="OctopusEnergyParseException">
-    /// Thrown when the response cannot be deserialised, the account is missing from the payload, or a connection is absent.
+    /// Thrown when the response cannot be deserialised or the account is missing from the payload.
     /// </exception>
     Task<GraphQlRelayPage<AccountTransaction>> ListTransactionsPageAsync(
         string accountNumber,
@@ -64,7 +64,7 @@ public interface IAccountBillingService
     /// Thrown when the GraphQL API returns <c>errors.extensions.errorCode</c>.
     /// </exception>
     /// <exception cref="OctopusEnergyParseException">
-    /// Thrown when the response cannot be deserialised, the account is missing from the payload, or a connection is absent.
+    /// Thrown when the response cannot be deserialised or the account is missing from the payload.
     /// </exception>
     Task<GraphQlRelayPage<AccountPayment>> ListPaymentsPageAsync(
         string accountNumber,
