@@ -104,6 +104,26 @@ public sealed class DeviceServiceTests
     }
 
     [Fact]
+    public async Task ListFlexPlannedDispatchesAsync_WhenResponseUnordered_ReturnsSortedByStart()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("graphql-obtain-token.json"));
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("graphql-flex-planned-dispatches-unordered.json"));
+
+        using HttpClient httpClient = new(handler) { BaseAddress = new Uri("https://api.example.test/v1/") };
+        using OctopusEnergyClient client = new("test-api-key", httpClient);
+
+        IReadOnlyList<FlexPlannedDispatch> dispatches = await client.Devices.ListFlexPlannedDispatchesAsync(
+            DeviceId,
+            CancellationToken.None);
+
+        Assert.Equal(2, dispatches.Count);
+        Assert.Equal("SMART", dispatches[0].Type);
+        Assert.Equal("BOOST", dispatches[1].Type);
+        Assert.True(dispatches[0].Start <= dispatches[1].Start);
+    }
+
+    [Fact]
     public async Task ListFlexPlannedDispatchesAsync_WhenEmpty_ReturnsEmptyList()
     {
         QueuedHttpMessageHandler handler = new();
