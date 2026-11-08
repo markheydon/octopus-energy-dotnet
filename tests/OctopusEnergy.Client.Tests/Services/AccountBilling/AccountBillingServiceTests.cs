@@ -33,6 +33,9 @@ public sealed class AccountBillingServiceTests
         Assert.True(page.HasNextPage);
         Assert.Equal("cursor-bills-end", page.EndCursor);
         Assert.Equal(2, handler.SentRequests.Count);
+        string requestBody = handler.SentRequestBodies[1];
+        Assert.Contains("\"accountNumber\":\"A-TEST0001\"", requestBody, StringComparison.Ordinal);
+        Assert.Contains("\"includeBillsWithoutPDF\":", requestBody, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -54,6 +57,7 @@ public sealed class AccountBillingServiceTests
         Assert.Equal("Payment", transaction.KrakenType);
         Assert.Equal(4000, transaction.Amounts?.Gross);
         Assert.False(page.HasNextPage);
+        Assert.Contains("\"accountNumber\":\"A-TEST0001\"", handler.SentRequestBodies[1], StringComparison.Ordinal);
     }
 
     [Fact]
@@ -102,6 +106,39 @@ public sealed class AccountBillingServiceTests
 
         await Assert.ThrowsAsync<OctopusEnergyRequestException>(
           () => client.AccountBilling.ListBillsPageAsync(AccountNumber, cancellationToken: CancellationToken.None));
+    }
+
+    [Theory]
+    [InlineData("ListBillsPageAsync")]
+    [InlineData("ListTransactionsPageAsync")]
+    [InlineData("ListPaymentsPageAsync")]
+    public async Task List_WhenAccountNull_ThrowsParseException(string operation)
+    {
+        const string body = """
+      {
+        "data": {
+          "account": null
+        },
+        "errors": null
+      }
+      """;
+
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("graphql-obtain-token.json"));
+        handler.Enqueue(HttpStatusCode.OK, body);
+
+        using HttpClient httpClient = new(handler) { BaseAddress = new Uri("https://api.example.test/v1/") };
+        using OctopusEnergyClient client = new("test-api-key", httpClient);
+
+        Task task = operation switch
+        {
+            "ListBillsPageAsync" => client.AccountBilling.ListBillsPageAsync(AccountNumber, cancellationToken: CancellationToken.None),
+            "ListTransactionsPageAsync" => client.AccountBilling.ListTransactionsPageAsync(AccountNumber, cancellationToken: CancellationToken.None),
+            "ListPaymentsPageAsync" => client.AccountBilling.ListPaymentsPageAsync(AccountNumber, cancellationToken: CancellationToken.None),
+            _ => throw new ArgumentOutOfRangeException(nameof(operation)),
+        };
+
+        await Assert.ThrowsAsync<OctopusEnergyParseException>(() => task);
     }
 
     [Fact]

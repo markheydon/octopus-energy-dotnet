@@ -15,6 +15,15 @@ public interface IAccountBillingService
     /// <param name="request">Paging and filters.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A Relay page of bills.</returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when the client was created without a dashboard API key or the account number is missing.
+    /// </exception>
+    /// <exception cref="OctopusEnergyKrakenException">
+    /// Thrown when the GraphQL API returns <c>errors.extensions.errorCode</c>.
+    /// </exception>
+    /// <exception cref="OctopusEnergyParseException">
+    /// Thrown when the response cannot be deserialised, the account is missing from the payload, or a connection is absent.
+    /// </exception>
     Task<GraphQlRelayPage<AccountBill>> ListBillsPageAsync(
         string accountNumber,
         AccountBillListRequest? request = null,
@@ -27,6 +36,15 @@ public interface IAccountBillingService
     /// <param name="request">Paging and optional date filters.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A Relay page of transactions.</returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when the client was created without a dashboard API key or the account number is missing.
+    /// </exception>
+    /// <exception cref="OctopusEnergyKrakenException">
+    /// Thrown when the GraphQL API returns <c>errors.extensions.errorCode</c>.
+    /// </exception>
+    /// <exception cref="OctopusEnergyParseException">
+    /// Thrown when the response cannot be deserialised, the account is missing from the payload, or a connection is absent.
+    /// </exception>
     Task<GraphQlRelayPage<AccountTransaction>> ListTransactionsPageAsync(
         string accountNumber,
         AccountTransactionListRequest? request = null,
@@ -39,6 +57,15 @@ public interface IAccountBillingService
     /// <param name="request">Paging options.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A Relay page of payments.</returns>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when the client was created without a dashboard API key or the account number is missing.
+    /// </exception>
+    /// <exception cref="OctopusEnergyKrakenException">
+    /// Thrown when the GraphQL API returns <c>errors.extensions.errorCode</c>.
+    /// </exception>
+    /// <exception cref="OctopusEnergyParseException">
+    /// Thrown when the response cannot be deserialised, the account is missing from the payload, or a connection is absent.
+    /// </exception>
     Task<GraphQlRelayPage<AccountPayment>> ListPaymentsPageAsync(
         string accountNumber,
         AccountPaymentListRequest? request = null,

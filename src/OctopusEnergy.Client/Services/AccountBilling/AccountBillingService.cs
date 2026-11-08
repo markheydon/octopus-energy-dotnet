@@ -42,8 +42,12 @@ public sealed class AccountBillingService : IAccountBillingService
             variables,
             cancellationToken).ConfigureAwait(false);
 
+        AccountBillsAccountWire account = data.Account
+            ?? throw new OctopusEnergyParseException(
+                "The account billing query returned no account data for the supplied account number.");
+
         return AccountBillingRelayMapper.MapBills(
-            data.Account?.Bills,
+            account.Bills,
             pagingWithAfter);
     }
 
@@ -74,8 +78,12 @@ public sealed class AccountBillingService : IAccountBillingService
             variables,
             cancellationToken).ConfigureAwait(false);
 
+        AccountTransactionsAccountWire account = data.Account
+            ?? throw new OctopusEnergyParseException(
+                "The account billing query returned no account data for the supplied account number.");
+
         return AccountBillingRelayMapper.MapTransactions(
-            data.Account?.Transactions,
+            account.Transactions,
             pagingWithAfter);
     }
 
@@ -104,8 +112,12 @@ public sealed class AccountBillingService : IAccountBillingService
             variables,
             cancellationToken).ConfigureAwait(false);
 
+        AccountPaymentsAccountWire account = data.Account
+            ?? throw new OctopusEnergyParseException(
+                "The account billing query returned no account data for the supplied account number.");
+
         return AccountBillingRelayMapper.MapPayments(
-            data.Account?.Payments,
+            account.Payments,
             pagingWithAfter);
     }
 

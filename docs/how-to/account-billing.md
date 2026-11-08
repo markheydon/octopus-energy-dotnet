@@ -63,3 +63,5 @@ Pass `After` on the list request with `page.EndCursor` from the previous page. V
 ## Errors
 
 GraphQL failures throw `OctopusEnergyKrakenException` subtypes (for example complexity `KT-CT-1188`). See [error handling](error-handling.md).
+
+When Kraken returns HTTP 200 but `account` is null (unknown account number or no access for this API key), the SDK throws `OctopusEnergyParseException` instead of an empty page.
