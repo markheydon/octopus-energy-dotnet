@@ -17,8 +17,12 @@ namespace OctopusEnergy.Client;
 /// Customer-facing client for the public Octopus Energy (Kraken) APIs.
 /// </summary>
 /// <remarks>
-/// Resource services use the shared REST transport, pagination, and error handling
-/// implemented by this client.
+/// Catalogue, account, consumption, industry, and tariff operations use REST
+/// (<see cref="DefaultBaseUrl"/> by default) with shared pagination and error handling.
+/// When constructed with a dashboard API key, GraphQL-backed resource services
+/// (<see cref="Viewer"/>, <see cref="RateLimits"/>, <see cref="MeterReadings"/>,
+/// <see cref="AccountBilling"/>, <see cref="Devices"/>) exchange the key for a Kraken JWT
+/// internally on first use — callers do not choose transport per call or attach tokens.
 /// </remarks>
 public sealed class OctopusEnergyClient : IOctopusEnergyClient
 {

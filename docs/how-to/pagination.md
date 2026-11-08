@@ -44,7 +44,9 @@ GraphQL list operations use Relay cursors. Official limits are on `GraphQlRelayL
 | `GraphQlRelayLimits.DefaultHourlyPointsAllowance` | `50,000` | Default hourly points for dashboard account users |
 | `GraphQlRelayLimits.MaxNodesPerRequest` | `10,000` | Node cap per request (`KT-CT-1189`) |
 
-Calling `GraphQlRelayLimits.ValidateFirst` with `first` less than 1 or above `MaxFirst` throws `OctopusEnergyRequestException` before any HTTP call. Future GraphQL list services will call this when you pass a page size.
+Calling `GraphQlRelayLimits.ValidateFirst` with `first` less than 1 or above `MaxFirst` throws `OctopusEnergyRequestException` before any HTTP call. `client.AccountBilling` applies this on `ListBillsPageAsync`, `ListTransactionsPageAsync`, and `ListPaymentsPageAsync` via each request's `First` value.
+
+Relay lists return one page at a time (`GraphQlRelayPage<T>` with `PageInfo.HasNextPage` and `EndCursor`). Loop with the `after` cursor until `HasNextPage` is false. See [account billing](account-billing.md).
 
 When you page forward with an `after` cursor, Kraken reports `hasPreviousPage` as always false. Use `GraphQlRelayPageInfo.ApplyForwardPagingRules` so you do not trust a `true` value while forward-paging.
 

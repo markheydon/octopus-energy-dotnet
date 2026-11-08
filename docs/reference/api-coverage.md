@@ -29,13 +29,13 @@
 | Account | REST `/v1/accounts/{number}/` | Implemented |
 | Consumption | REST electricity/gas consumption | Implemented (`ConsumptionService`) |
 
-How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md), [meter readings](../how-to/meter-readings.md). See also [getting started](../tutorial/getting-started.md) and [units, VAT, and time](../explanation/units-vat-and-time.md).
+How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md), [meter readings](../how-to/meter-readings.md), [account billing](../how-to/account-billing.md), [SmartFlex devices](../how-to/devices.md). See also [getting started](../tutorial/getting-started.md), [REST and GraphQL](../explanation/rest-and-graphql.md), and [units, VAT, and time](../explanation/units-vat-and-time.md).
 
 ## v1.2 GraphQL (in progress)
 
 Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). NuGet **1.2.x** when the public surface ships — see [release labels](../../VERSIONING.md#release-labels-quick-reference). Unreleased groundwork is documented in [plan/RELEASE.md](../../plan/RELEASE.md) (section *Unreleased (v1.2 groundwork)*).
 
-**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), and electricity meter reading submission (`MeterReadings.CreateElectricityAsync`). Additional curated GraphQL stories are in progress.
+**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), electricity meter reading submission (`MeterReadings.CreateElectricityAsync`), account billing lists (`AccountBilling.ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`), and SmartFlex devices (`Devices.ListDevicesAsync`, `Devices.ListFlexPlannedDispatchesAsync`). Additional curated GraphQL stories are in progress.
 
 ### Infrastructure (unreleased, internal)
 

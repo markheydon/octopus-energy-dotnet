@@ -1,6 +1,6 @@
 # Getting started
 
-`OctopusEnergy.Client` is an **unofficial**, stable .NET SDK for the Octopus Energy **customer** APIs. Most operations use REST; a small set (account discovery on `client.Viewer`, operational rate limits on `client.RateLimits`, and electricity meter readings on `client.MeterReadings`) uses GraphQL internally while you keep a single `OctopusEnergyClient`. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
+`OctopusEnergy.Client` is an **unofficial**, stable .NET SDK for the Octopus Energy **customer** APIs. Most operations use REST; a growing set (account discovery on `client.Viewer`, operational rate limits on `client.RateLimits`, electricity meter readings on `client.MeterReadings`, billing lists on `client.AccountBilling`, and SmartFlex devices on `client.Devices`) uses GraphQL internally while you keep a single `OctopusEnergyClient`. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
 
 A dashboard API key exposes your account structure and smart-meter consumption. Treat it as a secret and do not share it with third-party services you do not trust. Partner enrolment, quoting, and operations APIs are out of scope - see [customer vs partner](../explanation/customer-vs-partner.md).
 
