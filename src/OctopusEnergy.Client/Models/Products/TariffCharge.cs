@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using OctopusEnergy.Client.Infrastructure.Serialization;
 
 namespace OctopusEnergy.Client.Models.Products;
 
@@ -35,5 +36,6 @@ public sealed class TariffCharge
     /// Payment method when returned by the API, otherwise <see langword="null"/>.
     /// </summary>
     [JsonPropertyName("payment_method")]
-    public string? PaymentMethod { get; init; }
+    [JsonConverter(typeof(NullableWireFieldJsonConverter<ProductPaymentMethod>))]
+    public WireField<ProductPaymentMethod>? PaymentMethod { get; init; }
 }

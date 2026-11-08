@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using OctopusEnergy.Client.Infrastructure.Serialization;
 
 namespace OctopusEnergy.Client.Models.Accounts;
 
@@ -17,7 +18,8 @@ public sealed class MeterRegister
     /// Rate type (for example <c>STANDARD</c>, <c>DAY</c>, or <c>NIGHT</c>).
     /// </summary>
     [JsonPropertyName("rate")]
-    public string Rate { get; init; } = string.Empty;
+    [JsonConverter(typeof(WireFieldJsonConverter<MeterRegisterRate>))]
+    public WireField<MeterRegisterRate> Rate { get; init; }
 
     /// <summary>
     /// Whether this is the settlement register.

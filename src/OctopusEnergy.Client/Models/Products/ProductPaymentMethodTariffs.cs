@@ -41,6 +41,7 @@ public sealed class ProductPaymentMethodTariffs
             ProductPaymentMethod.DirectDebitMonthly => DirectDebitMonthly,
             ProductPaymentMethod.DirectDebitQuarterly => DirectDebitQuarterly,
             ProductPaymentMethod.NonDirectDebit => NonDirectDebit,
+            ProductPaymentMethod.Unknown => null,
             _ => throw new ArgumentOutOfRangeException(nameof(paymentMethod), paymentMethod, "Unknown payment method."),
         };
     }

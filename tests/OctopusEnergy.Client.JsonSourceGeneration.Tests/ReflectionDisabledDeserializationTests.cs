@@ -1,4 +1,5 @@
 using System.Text.Json;
+using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.Serialization;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
@@ -18,6 +19,7 @@ public sealed class ReflectionDisabledDeserializationTests
         Assert.True(page.Count > 0);
         Assert.NotEmpty(page.Results);
         Assert.False(string.IsNullOrWhiteSpace(page.Results[0].Code));
+        Assert.Equal(ProductEnergyDirection.Import, page.Results[0].Direction!.Value.Value);
     }
 
     [Fact]
@@ -36,6 +38,9 @@ public sealed class ReflectionDisabledDeserializationTests
 
         Assert.False(string.IsNullOrWhiteSpace(account.Number));
         Assert.NotEmpty(account.Properties);
+        Assert.Equal(
+            MeterRegisterRate.Standard,
+            account.Properties[0].ElectricityMeterPoints[0].Meters[0].Registers[0].Rate.Value);
     }
 
     [Fact]

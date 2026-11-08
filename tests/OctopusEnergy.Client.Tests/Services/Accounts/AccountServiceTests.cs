@@ -33,7 +33,7 @@ public sealed class AccountServiceTests
         Assert.Equal(2, importPoint.Meters.Count);
         Assert.Equal("1111111111", importPoint.Meters[0].SerialNumber);
         Assert.Equal("2222222222", importPoint.Meters[1].SerialNumber);
-        Assert.Equal("STANDARD", importPoint.Meters[0].Registers[0].Rate);
+        Assert.Equal(MeterRegisterRate.Standard, importPoint.Meters[0].Registers[0].Rate.Value);
         Assert.Equal(2, importPoint.Agreements.Count);
         Assert.Null(importPoint.Agreements[1].ValidTo);
         Assert.Equal(new DateTimeOffset(2023, 4, 1, 0, 0, 0, TimeSpan.FromHours(1)), importPoint.Agreements[1].ValidFrom);

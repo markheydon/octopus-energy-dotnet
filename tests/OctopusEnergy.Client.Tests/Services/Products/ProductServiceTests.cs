@@ -20,6 +20,13 @@ public sealed class ProductServiceTests
         List<Product> products = await CollectAsync(client.Products.ListAsync(cancellationToken: CancellationToken.None));
 
         Assert.Equal(["AGILE-FLEX-22-11-25", "OTHER-BRAND-PRODUCT", "VAR-22-11-01"], products.Select(product => product.Code));
+        Assert.All(
+            products,
+            product =>
+            {
+                Assert.NotNull(product.Direction);
+                Assert.Equal(ProductEnergyDirection.Import, product.Direction.Value.Value);
+            });
         Assert.EndsWith("/products/", handler.SentRequests[0].RequestUri?.AbsolutePath, StringComparison.Ordinal);
     }
 

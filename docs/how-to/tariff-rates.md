@@ -125,7 +125,7 @@ Each `TariffCharge` row has:
 
 - `ValidFrom` and `ValidTo` — the rate period; `ValidTo == null` means open-ended
 - `ValueExcVat` and `ValueIncVat` — use the field that matches your display or reconciliation need
-- `PaymentMethod` — when the API returns it
+- `PaymentMethod` — when the API returns it (`WireField<ProductPaymentMethod>?`; known wire tokens `direct_debit_monthly`, `direct_debit_quarterly`, `non_direct_debit`; unknown tokens deserialize without throwing)
 
 Agile unit rates are in **UTC**. When joining rates to consumption intervals, match on `DateTimeOffset` instants, not wall-clock hour. See [units, VAT, and time](../explanation/units-vat-and-time.md).
 
