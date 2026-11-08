@@ -31,6 +31,25 @@ public sealed class MeterReadingServiceTests
 
         Assert.Empty(result.ReadingErrors);
         Assert.Equal(2, handler.SentRequests.Count);
+        Assert.Contains("\"readAt\":\"2024-06-15\"", handler.SentRequestBodies[1], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task CreateElectricityAsync_WhenMutationPayloadNull_ThrowsParseException()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("graphql-obtain-token.json"));
+        handler.Enqueue(
+            HttpStatusCode.OK,
+            FixtureFile.Read("graphql-create-electricity-meter-reading-null.json"));
+
+        using HttpClient httpClient = new(handler) { BaseAddress = new Uri("https://api.example.test/v1/") };
+        using OctopusEnergyClient client = new("test-api-key", httpClient);
+
+        await Assert.ThrowsAsync<OctopusEnergyParseException>(
+            () => client.MeterReadings.CreateElectricityAsync(SampleRequest, CancellationToken.None));
+
+        Assert.Equal(2, handler.SentRequests.Count);
     }
 
     [Fact]

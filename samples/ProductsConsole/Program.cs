@@ -371,7 +371,7 @@ static async Task RunMeterReadingsSmokeAsync(
 {
     Console.WriteLine();
     Console.WriteLine(
-        "Meter readings (GraphQL-backed, API key; historic probe date — does not update your meter):");
+        "Meter readings (GraphQL-backed, API key; historic probe — Kraken may persist if the mutation succeeds):");
 
     ElectricityMeterReadingCreate request = new()
     {
@@ -395,7 +395,8 @@ static async Task RunMeterReadingsSmokeAsync(
         }
         else
         {
-            Console.WriteLine("  Mutation completed without field validation errors.");
+            Console.WriteLine(
+                "  Mutation completed without field validation errors (Kraken may have stored the probe reading).");
         }
 
         recorder.Pass("meter readings");
