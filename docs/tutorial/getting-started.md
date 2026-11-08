@@ -1,6 +1,6 @@
 # Getting started
 
-`OctopusEnergy.Client` is an **unofficial**, stable customer REST client for the Octopus Energy **customer** APIs. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
+`OctopusEnergy.Client` is an **unofficial**, stable .NET SDK for the Octopus Energy **customer** APIs. Most operations use REST; a small set (starting with operational rate limits on `client.RateLimits`) uses GraphQL internally while you keep a single `OctopusEnergyClient`. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
 
 A dashboard API key exposes your account structure and smart-meter consumption. Treat it as a secret and do not share it with third-party services you do not trust. Partner enrolment, quoting, and operations APIs are out of scope - see [customer vs partner](../explanation/customer-vs-partner.md).
 
@@ -35,7 +35,7 @@ See [authentication](../how-to/authentication.md) for custom base URLs and suppl
 
 ### Testability with interfaces
 
-Depend on `IOctopusEnergyClient` and the resource service interfaces (`IAccountService`, `IConsumptionService`, and so on) in application code so unit tests can substitute behaviour. Construct `OctopusEnergyClient` at the composition root; the concrete client implements `IOctopusEnergyClient` and exposes interface-typed resource properties.
+Depend on `IOctopusEnergyClient` and the resource service interfaces (`IAccountService`, `IConsumptionService`, `IRateLimitService`, and so on) in application code so unit tests can substitute behaviour. Construct `OctopusEnergyClient` at the composition root; the concrete client implements `IOctopusEnergyClient` and exposes interface-typed resource properties.
 
 ```csharp
 public sealed class AccountSummaryService(IOctopusEnergyClient client)
@@ -73,6 +73,18 @@ Console.WriteLine($"{account.Number}: {account.Properties.Count} properties");
 
 See [account detail](../how-to/accounts.md). Electricity and gas consumption are on `client.Consumption` — see [consumption](../how-to/consumption.md).
 
+## 6. Inspect GraphQL points allowance (optional)
+
+With a dashboard API key, `client.RateLimits` returns your Kraken hourly complexity points limit and remaining balance. The SDK obtains a JWT from your key; you do not pass GraphQL queries or tokens yourself. See [REST and GraphQL](../explanation/rest-and-graphql.md) and [pagination](../how-to/pagination.md).
+
+```csharp
+using OctopusEnergy.Client.Models.RateLimits;
+
+RateLimitInfo limits = await client.RateLimits.GetRateLimitInfoAsync();
+PointsAllowanceRateLimit? allowance = limits.PointsAllowanceRateLimit;
+Console.WriteLine($"Remaining: {allowance?.Remaining} of {allowance?.Limit}");
+```
+
 ## File-based apps (.NET 10+)
 
 You can run the quick start from a single `.cs` file with `#:package` (no `.csproj`). The client uses source-generated JSON metadata, so you do not need `JsonSerializerIsReflectionEnabledByDefault=true`.
@@ -107,5 +119,6 @@ See [samples/FileBasedProducts](https://github.com/markheydon/octopus-energy-dot
 - [Industry lookups](../how-to/industry.md)
 - [Authentication](../how-to/authentication.md)
 - [Pagination](../how-to/pagination.md)
+- [REST and GraphQL](../explanation/rest-and-graphql.md)
 - [Error handling](../how-to/error-handling.md)
 - [API coverage](../reference/api-coverage.md)

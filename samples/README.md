@@ -18,7 +18,7 @@ Smoke-tests every implemented public SDK surface against `https://api.octopus.en
 
 | Section | SDK surface | Auth | What it does |
 |---|---|---|---|
-| Authenticated client | `Accounts`, `Consumption`, `Products` | API key | Account detail when an account number is set; otherwise lists one product to prove HTTP Basic auth. Electricity and gas consumption fetch the latest interval (or report empty for non-smart meters). |
+| Authenticated client | `Accounts`, `Consumption`, `Products`, `RateLimits` | API key | Account detail when an account number is set; otherwise lists one product to prove HTTP Basic auth. Electricity and gas consumption fetch the latest interval (or report empty for non-smart meters). Fetches hourly GraphQL points allowance via `RateLimits`. |
 | Public catalogue | `Products` | None | Lists five products and fetches detail for the first. |
 | Tariff rates | `TariffRates` | None | Reads one standing charge and one standard unit rate for an example tariff from the product detail. |
 | Industry lookups | `Industry` | None | Resolves GSP for a postcode. Fetches MPAN metadata using the import electricity MPAN from account detail when authenticated, or `OCTOPUS_ENERGY_MPAN` as an optional override. |
