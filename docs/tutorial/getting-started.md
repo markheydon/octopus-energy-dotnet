@@ -1,8 +1,10 @@
 # Getting started
 
-`OctopusEnergy.Client` is an **unofficial**, stable .NET SDK for the Octopus Energy **customer** APIs. Most operations use REST; a growing set (account discovery on `client.Viewer`, operational rate limits on `client.RateLimits`, meter readings and consent lookup on `client.MeterReadings`, billing lists on `client.AccountBilling`, SmartFlex devices on `client.Devices`, and Home Mini telemetry on `client.SmartMeterTelemetry`) uses GraphQL internally while you keep a single `OctopusEnergyClient`. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
+`OctopusEnergy.Client` is an **unofficial**, stable .NET SDK for the Octopus Energy **customer** APIs. Most operations use REST; curated GraphQL-backed resources (viewer, rate limits, meter readings, billing, devices, telemetry, Octoplus, and product switch) share one `OctopusEnergyClient` — see [REST and GraphQL](../explanation/rest-and-graphql.md). It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
 
-A dashboard API key exposes your account structure and smart-meter consumption. Treat it as a secret and do not share it with third-party services you do not trust. Partner enrolment, quoting, and operations APIs are out of scope - see [customer vs partner](../explanation/customer-vs-partner.md).
+**Package version:** NuGet **1.1.0** is REST-only (milestones **v1.0** and **v1.1**). GraphQL-backed properties are on repository `main` and ship in NuGet **1.2.x** after release. Pin `OctopusEnergy.Client@1.1.0` when you do not need those APIs yet, or build from source until **1.2.0** is tagged — [API coverage](../reference/api-coverage.md).
+
+A dashboard API key exposes your account structure and smart-meter consumption. Treat it as a secret and do not share it with third-party services you do not trust. Partner enrolment, quoting, and operations APIs are out of scope — see [customer vs partner](../explanation/customer-vs-partner.md).
 
 ## 1. Create an API key
 
@@ -74,6 +76,8 @@ Console.WriteLine($"{account.Number}: {account.Properties.Count} properties");
 See [account detail](../how-to/accounts.md). Electricity and gas consumption are on `client.Consumption` — see [consumption](../how-to/consumption.md).
 
 ## 6. Inspect GraphQL points allowance (optional)
+
+Requires NuGet **1.2.x** or a build from `main` (not **1.1.0** on nuget.org).
 
 With a dashboard API key, `client.RateLimits` returns your Kraken hourly complexity points limit and remaining balance. The SDK obtains a JWT from your key; you do not pass GraphQL queries or tokens yourself. See [REST and GraphQL](../explanation/rest-and-graphql.md) and [pagination](../how-to/pagination.md).
 

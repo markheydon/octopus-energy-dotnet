@@ -1,7 +1,7 @@
 # Versioning Policy
 
 **Project:** OctopusEnergy.Client
-**Last updated:** 7 November 2026
+**Last updated:** 8 November 2026
 
 ---
 
@@ -34,6 +34,17 @@ Tag format: `1.x.y` (for example `1.0.0`).
 - v1.0 REST customer core is complete (see [SCOPE.md](SCOPE.md)).
 - Public API changes follow SemVer.
 - Suitable for production use; pin to an exact version if you need reproducible builds.
+
+### Latest on NuGet
+
+| Package version | Git tag | Milestone | What you get |
+|---|---|---|---|
+| **1.1.0** (published) | `v1.1.0` | v1.1 | REST customer core plus developer experience (hosting, interfaces, retries, trim-safe REST JSON) |
+| **1.2.0** (upcoming) | `v1.2.0` | v1.2 | Adds curated GraphQL-backed services and typed wire enums (`WireField<T>` on selected REST models) |
+
+The newest stable package on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) is **1.1.0**. Milestone **v1.2** code is on repository `main` until maintainers complete the [1.2.0 tag checklist](plan/RELEASE.md#120-tag-checklist). Pin `1.1.0` when you only need REST; use a project reference or wait for **1.2.x** for GraphQL accessors.
+
+**Upgrading 1.1.0 → 1.2.0:** expect source-breaking changes on a few REST model properties (`Product.Direction`, `MeterRegister.Rate`, `TariffCharge.PaymentMethod` become `WireField<T>`). See [plan/RELEASE.md](plan/RELEASE.md) (*Unreleased (v1.2 groundwork)* → *Source-breaking changes*) and [products](docs/how-to/products.md), [accounts](docs/how-to/accounts.md), and [tariff rates](docs/how-to/tariff-rates.md).
 
 ---
 
@@ -89,6 +100,7 @@ The workflow builds, tests, packs `OctopusEnergy.Client`, publishes to NuGet.org
 
 | Date | Change | Reason |
 |---|---|---|
+| 8 November 2026 | Add *Latest on NuGet* and 1.1.0 → 1.2.0 upgrade pointer | Pre–1.2.0 consumer clarity |
 | 7 November 2026 | Add release labels quick reference; clarify v1.2 vs SCOPE v2 | Reduce doc scanning confusion |
 | 21 October 2026 | Release `1.1.0` | REST developer-experience milestone v1.1 (NuGet publish) |
 | 19 September 2026 | Retarget GraphQL extras milestone v1.1 → v1.2; v1.1 is REST DX | Align VERSIONING.md with GitHub milestone reorganisation (#61) |

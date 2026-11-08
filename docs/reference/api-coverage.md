@@ -29,6 +29,8 @@
 | Account | REST `/v1/accounts/{number}/` | Implemented |
 | Consumption | REST electricity/gas consumption | Implemented (`ConsumptionService`) |
 
+**Typed wire enums (NuGet 1.2.0, on `main` before tag):** `Product.Direction` (`WireField<ProductEnergyDirection>?`), `MeterRegister.Rate` (`WireField<MeterRegisterRate>`), and `TariffCharge.PaymentMethod` (`WireField<ProductPaymentMethod>?`) replace raw `string` properties from **1.1.0**. Unknown wire tokens deserialize without throwing; read `UnparsedValue` when `Value` is `Unknown`. See [products](../how-to/products.md), [accounts](../how-to/accounts.md), [tariff rates](../how-to/tariff-rates.md), and [plan/RELEASE.md](../../plan/RELEASE.md).
+
 How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md), [meter readings](../how-to/meter-readings.md), [account billing](../how-to/account-billing.md), [SmartFlex devices](../how-to/devices.md), [smart-meter telemetry](../how-to/smart-meter-telemetry.md), [Octoplus](../how-to/octoplus.md). See also [getting started](../tutorial/getting-started.md), [REST and GraphQL](../explanation/rest-and-graphql.md), and [units, VAT, and time](../explanation/units-vat-and-time.md).
 
 ## v1.2 GraphQL (in progress)

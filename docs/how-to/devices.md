@@ -8,6 +8,7 @@ You need device ids and planned charge or discharge slots without authoring Grap
 
 ## Prerequisites
 
+- NuGet **1.2.x** or a build from `main` (not package **1.1.0**) — [API coverage](../reference/api-coverage.md)
 - Dashboard API key — see [authentication](authentication.md)
 - Account number — see [accounts](accounts.md) or `client.Viewer` when you do not have one yet
 - Enrolled SmartFlex hardware on the account (otherwise `devices` returns an empty list)

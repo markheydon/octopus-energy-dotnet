@@ -10,6 +10,7 @@ The gas mutation is implemented from the public Kraken schema and unit-test fixt
 
 ## Prerequisites
 
+- NuGet **1.2.x** or a build from `main` (not package **1.1.0**) — [API coverage](../reference/api-coverage.md)
 - Dashboard API key — see [authentication](authentication.md)
 - MPAN / MPRN and meter serial numbers — for example from [account detail](accounts.md)
 - Reading date as `DateTimeOffset` (the SDK sends the UK civil date to Kraken)

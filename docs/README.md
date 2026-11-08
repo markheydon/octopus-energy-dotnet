@@ -1,6 +1,8 @@
 # OctopusEnergy.Client documentation
 
-Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help you install the package, authenticate with a dashboard API key, and call REST catalogue, account, and consumption endpoints, plus curated GraphQL-backed operations (viewer, billing, devices, and similar) where [API coverage](reference/api-coverage.md) says they are implemented.
+Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help you install the package, authenticate with a dashboard API key, and call REST catalogue, account, and consumption endpoints.
+
+**NuGet vs source:** The latest package on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) is **1.1.0** (REST through milestone **v1.1**). Curated GraphQL-backed operations (viewer, billing, devices, telemetry, Octoplus, product switch, and similar) are implemented on repository `main` for milestone **v1.2** and ship as NuGet **1.2.x** after the [1.2.0 release checklist](https://github.com/markheydon/octopus-energy-dotnet/blob/main/plan/RELEASE.md#120-tag-checklist). Pin `OctopusEnergy.Client@1.1.0` when you only need REST; see [API coverage](reference/api-coverage.md) for the split.
 
 **New here?** Start with [Getting started](tutorial/getting-started.md).
 

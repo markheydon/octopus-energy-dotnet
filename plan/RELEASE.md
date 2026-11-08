@@ -55,6 +55,7 @@ Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL re
 - [x] README *Status* and *Roadmap* state NuGet **1.1.0** vs GraphQL on `main`.
 - [x] [API coverage](../docs/reference/api-coverage.md) explains NuGet vs source and clarifies REST account vs optional GraphQL account projection (#23).
 - [x] Gas mutation: public SDK with allow-list **Not probed** documented ([allow-list](../docs/planning/graphql-customer-allow-list.md) *Deferred live verification*).
+- [x] Consumer docs for `WireField<T>` and NuGet **1.1.0** vs **1.2.x** ([VERSIONING.md](../VERSIONING.md), [API coverage](../docs/reference/api-coverage.md), [NuGet package README](../src/OctopusEnergy.Client/README.md)).
 
 **Release gate (do at tag time):**
 
@@ -66,7 +67,7 @@ Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL re
    dotnet test OctopusEnergy.slnx -c Release --no-build
    ```
 
-2. [ ] Bump `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` to **1.2.0** (or the intended **1.2.x** patch).
+2. [ ] Bump `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` to **1.2.0** (or the intended **1.2.x** patch). Update `<Description>` to state REST plus curated GraphQL (remove the *in 1.2.x* qualifier).
 3. [ ] Add a **1.2.0 — GraphQL customer extras** section below; move every bullet out of *Unreleased* into that section with the release date.
 4. [ ] Retitle [API coverage](../docs/reference/api-coverage.md): change *v1.2 GraphQL (in progress)* to shipped wording; update [README.md](../README.md) *Status* and *Roadmap* so NuGet **1.2.x** matches the package.
 5. [ ] Confirm [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) and the [API coverage](../docs/reference/api-coverage.md) customer-operations table agree on every **Public SDK** row (method names, probe status, planned vs implemented).

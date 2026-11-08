@@ -8,8 +8,9 @@ You have a dashboard API key. Use GraphQL viewer discovery when you do not yet h
 
 ## Prerequisites
 
-- Dashboard API key - see [authentication](authentication.md)
+- Dashboard API key — see [authentication](authentication.md)
 - Account number in the form `A-12345678` (for REST fetch below)
+- **Viewer discovery** needs NuGet **1.2.x** or a build from `main` — not package **1.1.0** ([API coverage](../reference/api-coverage.md))
 
 ## Discover account numbers
 
@@ -69,6 +70,8 @@ foreach (AccountProperty property in account.Properties)
 ## What the response contains
 
 Each `AccountProperty` includes address fields, `ElectricityMeterPoints`, and `GasMeterPoints`. Meter points carry MPAN/MPRN, GSP, agreements (tariff codes and date ranges), and nested meters with registers.
+
+From NuGet **1.2.0** (and `main` before the tag), each `MeterRegister` exposes `Rate` as `WireField<MeterRegisterRate>` (`STANDARD`, `DAY`, `NIGHT` on the wire). Use `register.Rate.Value` for the enum and `register.Rate.UnparsedValue` when the API returns an unknown token. Package **1.1.0** still surfaces `Rate` as a string — see [plan/RELEASE.md](../../plan/RELEASE.md) (*Unreleased* source-breaking changes).
 
 Use tariff codes from agreements with [tariff codes and GSP](tariff-codes.md) and [tariff rates](tariff-rates.md) for standing charges and unit-rate history. Consumption intervals are on `client.Consumption` — see [consumption](consumption.md).
 

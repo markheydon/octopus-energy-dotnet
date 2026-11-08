@@ -31,6 +31,8 @@ Roadmap (GitHub milestone → NuGet version; all stay on package **1.x** — see
 dotnet add package OctopusEnergy.Client
 ```
 
+Latest on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) is **1.1.0** (REST). Pin that version when you do not need v1.2 GraphQL accessors yet (`dotnet add package OctopusEnergy.Client --version 1.1.0`). GraphQL-backed resources ship in **1.2.x** after the [1.2.0 release checklist](plan/RELEASE.md#120-tag-checklist).
+
 ## Quick start
 
 ```csharp

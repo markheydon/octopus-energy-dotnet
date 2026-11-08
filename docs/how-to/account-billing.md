@@ -8,6 +8,7 @@ You need PDF bill links, ledger history, or payment dates without authoring Grap
 
 ## Prerequisites
 
+- NuGet **1.2.x** or a build from `main` (not package **1.1.0**) — [API coverage](../reference/api-coverage.md)
 - Dashboard API key — see [authentication](authentication.md)
 - Account number — see [accounts](accounts.md) or `client.Viewer` when you do not have one yet
 

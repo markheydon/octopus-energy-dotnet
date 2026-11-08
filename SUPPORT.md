@@ -32,7 +32,7 @@ Support is best-effort.
 
 Please provide:
 
-- SDK version.
+- SDK version (NuGet package version or Git commit when built from source).
 - Runtime and OS details.
 - Minimal reproduction.
 - Relevant errors with secrets removed.

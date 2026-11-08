@@ -8,6 +8,7 @@ You want Octoplus status or points without hand-authoring GraphQL. Saving-sessio
 
 ## Prerequisites
 
+- NuGet **1.2.x** or a build from `main` (not package **1.1.0**) — [API coverage](../reference/api-coverage.md)
 - Dashboard API key — see [authentication](authentication.md)
 - Account number — see [accounts](accounts.md) or `client.Viewer`
 - Octoplus enrolment for balance and spin queries (otherwise expect `KT-CT-1111` unauthorised errors)

@@ -8,6 +8,7 @@ You want Home Mini / CAD telemetry without authoring GraphQL documents or walkin
 
 ## Prerequisites
 
+- NuGet **1.2.x** or a build from `main` (not package **1.1.0**) — [API coverage](../reference/api-coverage.md)
 - Dashboard API key — see [authentication](authentication.md)
 - Account number — see [accounts](accounts.md) or `client.Viewer` when you do not have one yet
 - SMETS hardware with telemetry entitlement (otherwise discovery returns empty lists or telemetry calls return `KT-CT-1111`)

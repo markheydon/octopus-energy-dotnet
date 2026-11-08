@@ -10,6 +10,7 @@ This is a high-impact account change. Confirm dates, product choice, and permiss
 
 ## Prerequisites
 
+- NuGet **1.2.x** or a build from `main` (not package **1.1.0**) — [API coverage](../reference/api-coverage.md)
 - Dashboard API key with **Can switch product** or **Can manage account renewals** — see [authentication](authentication.md)
 - Account number — see [accounts](accounts.md) or `client.Viewer`
 - Exactly one of:
