@@ -4,6 +4,7 @@ using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Services.AccountBilling;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
+using OctopusEnergy.Client.Services.Devices;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Products;
@@ -16,8 +17,12 @@ namespace OctopusEnergy.Client;
 /// Customer-facing client for the public Octopus Energy (Kraken) APIs.
 /// </summary>
 /// <remarks>
-/// Resource services use the shared REST transport, pagination, and error handling
-/// implemented by this client.
+/// Catalogue, account, consumption, industry, and tariff operations use REST
+/// (<see cref="DefaultBaseUrl"/> by default) with shared pagination and error handling.
+/// When constructed with a dashboard API key, GraphQL-backed resource services
+/// (<see cref="Viewer"/>, <see cref="RateLimits"/>, <see cref="MeterReadings"/>,
+/// <see cref="AccountBilling"/>, <see cref="Devices"/>) exchange the key for a Kraken JWT
+/// internally on first use — callers do not choose transport per call or attach tokens.
 /// </remarks>
 public sealed class OctopusEnergyClient : IOctopusEnergyClient
 {
@@ -178,6 +183,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         MeterReadings = new MeterReadingService(_graphQl);
         Viewer = new ViewerService(_graphQl);
         AccountBilling = new AccountBillingService(_graphQl);
+        Devices = new DeviceService(_graphQl);
     }
 
     /// <summary>
@@ -238,6 +244,15 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Each list uses a separate query to stay under the complexity cap (200).
     /// </remarks>
     public IAccountBillingService AccountBilling { get; }
+
+    /// <summary>
+    /// GraphQL SmartFlex devices and <c>flexPlannedDispatches</c> for the authenticated dashboard API key.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
+    /// Uses <c>flexPlannedDispatches</c> only (not deprecated <c>plannedDispatches</c>).
+    /// </remarks>
+    public IDeviceService Devices { get; }
 
     internal RestClient Rest { get; }
 

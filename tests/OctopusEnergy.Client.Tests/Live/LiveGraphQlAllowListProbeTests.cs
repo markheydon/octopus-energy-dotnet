@@ -63,11 +63,32 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
             results.Add(meterPointsResult);
             meters = meterPointsResult.DiscoveredMeterContext;
 
-            results.Add(await probe.ProbeAsync(
+            GraphQlAllowListProbeResult devicesResult = await probe.ProbeAsync(
                 "devices",
                 AllowListProbeQueries.Devices,
                 new { accountNumber },
-                CancellationToken.None));
+                CancellationToken.None);
+            results.Add(devicesResult);
+
+            if (devicesResult.Outcome == GraphQlProbeOutcome.Success
+                && !string.IsNullOrWhiteSpace(devicesResult.DiscoveredDeviceId))
+            {
+                results.Add(await probe.ProbeAsync(
+                    "flexPlannedDispatches",
+                    AllowListProbeQueries.FlexPlannedDispatchesForDevice,
+                    new { deviceId = devicesResult.DiscoveredDeviceId },
+                    CancellationToken.None,
+                    note: "Uses first device id from devices probe."));
+            }
+            else
+            {
+                results.Add(await probe.ProbeAsync(
+                    "flexPlannedDispatches",
+                    AllowListProbeQueries.FlexPlannedDispatches,
+                    variables: null,
+                    CancellationToken.None,
+                    note: "No device id from devices; placeholder device id."));
+            }
 
             results.Add(await probe.ProbeAsync(
                 "accountBills",
@@ -123,12 +144,15 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
             });
         }
 
-        results.Add(await probe.ProbeAsync(
-            "flexPlannedDispatches",
-            AllowListProbeQueries.FlexPlannedDispatches,
-            variables: null,
-            CancellationToken.None,
-            note: "Placeholder device id."));
+        if (accountNumber is null)
+        {
+            results.Add(await probe.ProbeAsync(
+                "flexPlannedDispatches",
+                AllowListProbeQueries.FlexPlannedDispatches,
+                variables: null,
+                CancellationToken.None,
+                note: "Placeholder device id."));
+        }
 
         await Task.Delay(TelemetryDelay, CancellationToken.None);
 

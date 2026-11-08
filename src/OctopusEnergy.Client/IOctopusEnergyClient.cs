@@ -1,6 +1,7 @@
 using OctopusEnergy.Client.Services.AccountBilling;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
+using OctopusEnergy.Client.Services.Devices;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Products;
@@ -16,8 +17,8 @@ namespace OctopusEnergy.Client;
 /// Resource services share transport, pagination, and error handling implemented by
 /// <see cref="OctopusEnergyClient"/>. Catalogue, account, consumption, and industry
 /// calls use REST. Curated customer GraphQL (for example
-/// <see cref="Viewer"/>, <see cref="RateLimits"/>, <see cref="MeterReadings"/>, and
-/// <see cref="AccountBilling"/>)
+/// <see cref="Viewer"/>, <see cref="RateLimits"/>, <see cref="MeterReadings"/>,
+/// <see cref="AccountBilling"/>, and <see cref="Devices"/>)
 /// uses the same client and dashboard API key; JWT exchange is internal. Construct an
 /// <see cref="OctopusEnergyClient"/> to call the live API; depend on this interface
 /// in application code so unit tests can substitute behaviour.
@@ -68,4 +69,9 @@ public interface IOctopusEnergyClient : IDisposable
     /// GraphQL account bills, ledger transactions, and payments for the authenticated API key.
     /// </summary>
     IAccountBillingService AccountBilling { get; }
+
+    /// <summary>
+    /// GraphQL SmartFlex device discovery and planned dispatch windows for the authenticated API key.
+    /// </summary>
+    IDeviceService Devices { get; }
 }

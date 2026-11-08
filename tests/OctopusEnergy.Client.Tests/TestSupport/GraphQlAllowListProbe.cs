@@ -30,6 +30,8 @@ internal sealed class GraphQlAllowListProbeResult
     internal string? DiscoveredAccountNumber { get; init; }
 
     internal GraphQlAllowListMeterContext? DiscoveredMeterContext { get; init; }
+
+    internal string? DiscoveredDeviceId { get; init; }
 }
 
 /// <summary>
@@ -137,6 +139,10 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
                 ? GraphQlAllowListMeterContext.TryReadFromAccountMeterPoints(meterData)
                 : null;
 
+            string? deviceId = response.Data is { ValueKind: JsonValueKind.Object } deviceData
+                ? TryReadFirstDeviceId(deviceData)
+                : null;
+
             string rawJson = GraphQlProbeJsonRedactor.SerializeEnvelope(response);
             string redacted = GraphQlProbeJsonRedactor.RedactAndTruncate(rawJson);
 
@@ -151,6 +157,7 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
                     Note = note,
                     DiscoveredAccountNumber = accountNumber,
                     DiscoveredMeterContext = meterContext,
+                    DiscoveredDeviceId = deviceId,
                 };
             }
 
@@ -162,6 +169,7 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
                 Note = note,
                 DiscoveredAccountNumber = accountNumber,
                 DiscoveredMeterContext = meterContext,
+                DiscoveredDeviceId = deviceId,
             };
         }
         catch (OctopusEnergyApiException ex)
@@ -226,6 +234,27 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
                 {
                     return number.GetString();
                 }
+            }
+        }
+
+        return null;
+    }
+
+    internal static string? TryReadFirstDeviceId(JsonElement dataRoot)
+    {
+        if (!dataRoot.TryGetProperty("devices", out JsonElement devices)
+            || devices.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        foreach (JsonElement device in devices.EnumerateArray())
+        {
+            if (device.TryGetProperty("id", out JsonElement id)
+                && id.ValueKind == JsonValueKind.String
+                && !string.IsNullOrWhiteSpace(id.GetString()))
+            {
+                return id.GetString();
             }
         }
 

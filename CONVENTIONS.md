@@ -37,6 +37,7 @@ src/
     │   ├── AccountBilling/              # GraphQL bills, transactions, payments
     │   ├── MeterReadings/               # GraphQL meter reading models
     │   ├── RateLimits/                  # GraphQL rate-limit query models
+    │   ├── Devices/                     # SmartFlex device and dispatch models
     │   └── Viewer/                      # GraphQL viewer discovery models
     └── Services/                        # Resource-oriented services
         ├── Accounts/                    # AccountService
@@ -46,6 +47,7 @@ src/
         ├── AccountBilling/              # AccountBillingService (GraphQL-backed)
         ├── MeterReadings/               # MeterReadingService (GraphQL-backed)
         ├── RateLimits/                  # RateLimitService (GraphQL-backed)
+        ├── Devices/                     # DeviceService (GraphQL-backed)
         └── Viewer/                      # ViewerService (GraphQL-backed)
 
 tests/

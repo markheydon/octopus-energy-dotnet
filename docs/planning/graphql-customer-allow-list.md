@@ -37,7 +37,7 @@ This artefact is the gate for milestone **v1.2** GraphQL stories ([#22](https://
 | `createElectricityMeterReading` | Allowed (mutation) | `KT-GB-11007` | Mutation executed; historic `readAt` and probe inputs yielded “meter not found”, not a disabled-field code. | [graphql-allow-list-create-electricity-reading.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-create-electricity-reading.json) |
 | `createGasMeterReading` | Not probed | `KT-CT-1111` (fake MPRN probe) | Probe account had no gas meters; fake MPRN returned unauthorised. Re-probe on an account with gas before wrapping. | — |
 | `initiateProductSwitch` | Allowed (mutation) | `KT-CT-7899` | Nil `quotedProductId` probe; confirms customer mutation path, not a successful switch. | [graphql-allow-list-initiate-product-switch.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-initiate-product-switch.json) |
-| `flexPlannedDispatches(deviceId:)` | Denied | `KT-CT-1111` | Placeholder device id; likely no enrolled Flex device on probe account. Re-test with a real `deviceId` from `devices` before #25. | [graphql-allow-list-flex-dispatches-denied.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-flex-dispatches-denied.json) |
+| `flexPlannedDispatches(deviceId:)` | Allowed (when entitled) | `KT-CT-1111` (unentitled probe) | Customer field per [developer docs](https://developer.octopus.energy/graphql/reference/queries/flexplanneddispatches/). Probe account has no enrolled devices — placeholder or foreign `deviceId` returns `KT-CT-1111`, not `KT-CT-1113`/`4177`. Re-probe with a real id from `devices` when hardware is present. | [graphql-flex-planned-dispatches.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-flex-planned-dispatches.json), [graphql-allow-list-flex-dispatches-denied.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-flex-dispatches-denied.json) |
 | `smartMeterTelemetry(deviceId:)` | Denied | `KT-CT-1111` | Placeholder device id; re-test with Home Mini / CAD EUI64 when present (#26). | [graphql-allow-list-smart-meter-telemetry-denied.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-smart-meter-telemetry-denied.json) |
 | `loyaltyPointsBalance` | Denied | `KT-CT-1111` | Used as Octoplus/loyalty proxy; probe account not authorised. Re-test when enrolled (#27). | [graphql-allow-list-loyalty-points-denied.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-loyalty-points-denied.json) |
 
@@ -62,7 +62,7 @@ Results reflect one domestic dashboard key with API access enabled:
 
 - **Multi-account** `viewer.accounts` returned two account numbers.
 - **No gas** on the primary property — gas reading mutation not fully verified.
-- **No SmartFlex / Home Mini / Octoplus** enrolment on this account — `flexPlannedDispatches`, `smartMeterTelemetry`, and `loyaltyPointsBalance` returned `KT-CT-1111` with placeholder or root-level probes. Treat as “not entitled on this account”, not as permission to wrap partner APIs.
+- **No SmartFlex / Home Mini / Octoplus** enrolment on this account — `devices` returns an empty list; `flexPlannedDispatches`, `smartMeterTelemetry`, and `loyaltyPointsBalance` return `KT-CT-1111` when probed without a valid enrolled device id. Treat as “not entitled on this account”, not as permission to wrap partner APIs.
 - Field rate limits (`KT-CT-1199`) were not hit; back off if reprobing telemetry.
 
 ## Regenerating

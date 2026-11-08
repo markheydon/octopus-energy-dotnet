@@ -5,6 +5,7 @@ using OctopusEnergy.Client.Models.AccountBilling;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
+using OctopusEnergy.Client.Models.Devices;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Products;
@@ -98,4 +99,15 @@ namespace OctopusEnergy.Client.Infrastructure.Serialization;
 [JsonSerializable(typeof(GraphQlRelayPage<AccountBill>))]
 [JsonSerializable(typeof(GraphQlRelayPage<AccountTransaction>))]
 [JsonSerializable(typeof(GraphQlRelayPage<AccountPayment>))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<ListDevicesQueryData>))]
+[JsonSerializable(typeof(ListDevicesQueryData))]
+[JsonSerializable(typeof(DeviceWire))]
+[JsonSerializable(typeof(DeviceStatusWire))]
+[JsonSerializable(typeof(ListDevicesQueryVariables))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<FlexPlannedDispatchesQueryData>))]
+[JsonSerializable(typeof(FlexPlannedDispatchesQueryData))]
+[JsonSerializable(typeof(FlexPlannedDispatchWire))]
+[JsonSerializable(typeof(FlexPlannedDispatchesQueryVariables))]
+[JsonSerializable(typeof(SmartFlexDevice))]
+[JsonSerializable(typeof(FlexPlannedDispatch))]
 internal partial class OctopusEnergyJsonContext : JsonSerializerContext;

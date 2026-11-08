@@ -3,6 +3,7 @@ using OctopusEnergy.Client.Models.AccountBilling;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
+using OctopusEnergy.Client.Models.Devices;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Products;
@@ -11,6 +12,7 @@ using OctopusEnergy.Client.Models.Viewer;
 using OctopusEnergy.Client.Services.AccountBilling;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
+using OctopusEnergy.Client.Services.Devices;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Products;
@@ -36,6 +38,7 @@ public sealed class ClientInterfaceTests
         Assert.IsAssignableFrom<IMeterReadingService>(client.MeterReadings);
         Assert.IsAssignableFrom<IViewerService>(client.Viewer);
         Assert.IsAssignableFrom<IAccountBillingService>(client.AccountBilling);
+        Assert.IsAssignableFrom<IDeviceService>(client.Devices);
     }
 
     [Fact]
@@ -52,6 +55,7 @@ public sealed class ClientInterfaceTests
         Assert.IsType<MeterReadingService>(client.MeterReadings);
         Assert.IsType<ViewerService>(client.Viewer);
         Assert.IsType<AccountBillingService>(client.AccountBilling);
+        Assert.IsType<DeviceService>(client.Devices);
     }
 
     [Fact]
@@ -82,6 +86,7 @@ public sealed class ClientInterfaceTests
             MeterReadings = new StubMeterReadingService();
             Viewer = new StubViewerService();
             AccountBilling = new StubAccountBillingService();
+            Devices = new StubDeviceService();
         }
 
         public string? LastRequestedAccountNumber { get; private set; }
@@ -103,6 +108,8 @@ public sealed class ClientInterfaceTests
         public IViewerService Viewer { get; }
 
         public IAccountBillingService AccountBilling { get; }
+
+        public IDeviceService Devices { get; }
 
         public void Dispose()
         {
@@ -255,6 +262,19 @@ public sealed class ClientInterfaceTests
     {
         public Task<ViewerDetail> GetViewerAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult(new ViewerDetail());
+    }
+
+    private sealed class StubDeviceService : IDeviceService
+    {
+        public Task<IReadOnlyList<SmartFlexDevice>> ListDevicesAsync(
+            string accountNumber,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<SmartFlexDevice>>([]);
+
+        public Task<IReadOnlyList<FlexPlannedDispatch>> ListFlexPlannedDispatchesAsync(
+            string deviceId,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<FlexPlannedDispatch>>([]);
     }
 
     private sealed class StubAccountBillingService : IAccountBillingService

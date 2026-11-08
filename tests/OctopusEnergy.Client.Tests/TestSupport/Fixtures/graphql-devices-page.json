@@ -1,0 +1,31 @@
+{
+  "data": {
+    "devices": [
+      {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "Home charger",
+        "provider": "MYENERGI",
+        "deviceType": "CHARGE_POINTS",
+        "status": {
+          "currentState": "IDLE"
+        },
+        "__typename": "SmartFlexChargePoint",
+        "make": "Zappi",
+        "model": "2"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000002",
+        "name": "Family EV",
+        "provider": "TESLA",
+        "deviceType": "VEHICLES",
+        "status": {
+          "currentState": "CHARGING"
+        },
+        "__typename": "SmartFlexVehicle",
+        "make": "Tesla",
+        "model": "Model 3"
+      }
+    ]
+  },
+  "errors": null
+}

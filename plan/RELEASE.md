@@ -39,11 +39,18 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 
 ### Unreleased (v1.2 groundwork)
 
+Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` stays on the latest **1.1.x** release while GraphQL customer APIs land on `main`. When you tag **1.2.0** (or the first **1.2.x** public GraphQL release):
+
+1. Bump `<Version>` and add a **1.2.0** section here; move the bullets below out of *Unreleased*.
+2. Retitle [API coverage](../docs/reference/api-coverage.md) *v1.2 GraphQL (in progress)* and related consumer wording to match the shipped package.
+3. Confirm [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) and the coverage table still agree.
+
 - **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. `OctopusEnergyClient.GraphQl` remains `internal`. Status tables: [API coverage](../docs/reference/api-coverage.md#v12-graphql-in-progress).
 - **GraphQL operational limits (issue #29).** `GraphQlRelayLimits`, Kraken exception types, `GraphQlRelayPageInfo`, and `client.RateLimits.GetRateLimitInfoAsync` (hourly points allowance). No automatic retry on `KT-CT-1199`.
 - **Public GraphQL surface (v1.2).** `IOctopusEnergyClient.RateLimits` (`IRateLimitService`, `RateLimitInfo`, `PointsAllowanceRateLimit`) and `IOctopusEnergyClient.Viewer` (`IViewerService`, `ViewerDetail` with deduplicated `AccountNumbers` from `viewer` and portfolios). GraphQL failures with Kraken `extensions.errorCode` throw `OctopusEnergyKrakenException` (a subtype of `OctopusEnergyApiException`). `OctopusEnergyApiException` is no longer `sealed` so Kraken subtypes can be introduced; existing `catch (OctopusEnergyApiException)` handlers still catch GraphQL errors.
 - **Electricity meter readings (issue #24, partial).** `IOctopusEnergyClient.MeterReadings` (`IMeterReadingService`, `ElectricityMeterReadingCreate`, `ElectricityMeterReadingResult`) wraps `createElectricityMeterReading` for dashboard API keys. Gas remains on the same story (#24) and is unshipped pending allow-list re-probe on an account with gas.
 - **Account billing (issue #23).** `IOctopusEnergyClient.AccountBilling` (`IAccountBillingService`, `GraphQlRelayPage<T>`) lists bills, ledger transactions, and payments via separate GraphQL queries (`ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`). Default page size `AccountBillingListDefaults.DefaultFirst` (25).
+- **SmartFlex devices (issue #25).** `IOctopusEnergyClient.Devices` (`IDeviceService`, `SmartFlexDevice`, `FlexPlannedDispatch`) lists enrolled hardware via `devices(accountNumber:)` and planned windows via `flexPlannedDispatches(deviceId:)` only (not deprecated `plannedDispatches`). Empty device lists are returned without exception; unauthorised device ids surface as `OctopusEnergyKrakenException`.
 
 ### Additive changes
 
