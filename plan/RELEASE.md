@@ -53,7 +53,7 @@ Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEne
 - **SmartFlex devices (issue #25).** `IOctopusEnergyClient.Devices` (`IDeviceService`, `SmartFlexDevice`, `FlexPlannedDispatch`) lists enrolled hardware via `devices(accountNumber:)` and planned windows via `flexPlannedDispatches(deviceId:)` only (not deprecated `plannedDispatches`). Empty device lists are returned without exception; unauthorised device ids surface as `OctopusEnergyKrakenException`.
 - **Home Mini telemetry (issue #26).** `IOctopusEnergyClient.SmartMeterTelemetry` (`ISmartMeterTelemetryService`, `SmartMeterDevice`, `SmartMeterTelemetryReading`, `SmartMeterTelemetryRange`) discovers EUI64 ids via agreement `smartDevices` and reads `smartMeterTelemetry(deviceId:)`. Field rate limits (`KT-CT-1199`, documented 125/h) are not retried automatically.
 - **Octoplus (issue #27).** `IOctopusEnergyClient.Octoplus` (`IOctoplusService`) wraps public-host `octoplusAccountInfo`, `loyaltyPointLedgers`, `loyaltyPointsBalance`, deprecated `wheelOfFortuneSpins`, `joinOctoplusCampaign`, and `redeemLoyaltyPointsForAccountCredit`. `savingSessions` is not on the public GraphQL schema (backend host is out of scope).
-- **ProductsConsole sample.** Authenticated smoke exercises `Devices` and `SmartMeterTelemetry` when `OCTOPUS_ENERGY_ACCOUNT_NUMBER` is set (device counts only; empty lists and `KT-CT-1111` are treated as successful probe paths).
+- **ProductsConsole sample.** Authenticated smoke exercises `Devices`, `SmartMeterTelemetry`, and `Octoplus` when `OCTOPUS_ENERGY_ACCOUNT_NUMBER` is set (device counts only; empty lists and `KT-CT-1111` are treated as successful probe paths).
 
 ### Additive changes
 

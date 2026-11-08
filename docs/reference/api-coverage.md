@@ -29,7 +29,7 @@
 | Account | REST `/v1/accounts/{number}/` | Implemented |
 | Consumption | REST electricity/gas consumption | Implemented (`ConsumptionService`) |
 
-How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md), [meter readings](../how-to/meter-readings.md), [account billing](../how-to/account-billing.md), [SmartFlex devices](../how-to/devices.md), [smart-meter telemetry](../how-to/smart-meter-telemetry.md). See also [getting started](../tutorial/getting-started.md), [REST and GraphQL](../explanation/rest-and-graphql.md), and [units, VAT, and time](../explanation/units-vat-and-time.md).
+How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md), [meter readings](../how-to/meter-readings.md), [account billing](../how-to/account-billing.md), [SmartFlex devices](../how-to/devices.md), [smart-meter telemetry](../how-to/smart-meter-telemetry.md), [Octoplus](../how-to/octoplus.md). See also [getting started](../tutorial/getting-started.md), [REST and GraphQL](../explanation/rest-and-graphql.md), and [units, VAT, and time](../explanation/units-vat-and-time.md).
 
 ## v1.2 GraphQL (in progress)
 

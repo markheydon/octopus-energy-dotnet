@@ -141,11 +141,13 @@ public sealed class OctoplusService : IOctoplusService
             variables,
             cancellationToken).ConfigureAwait(false);
 
-        bool? hasEnrolled = data.JoinOctoplusCampaign?.Outcome?.Octoplus?.HasEnrolled;
+        JoinOctoplusCampaignWire payload = data.JoinOctoplusCampaign
+            ?? throw new OctopusEnergyParseException(
+                "The join Octoplus campaign mutation returned no data.");
 
         return new JoinOctoplusCampaignResult
         {
-            HasEnrolled = hasEnrolled,
+            HasEnrolled = payload.Outcome?.Octoplus?.HasEnrolled,
         };
     }
 
@@ -176,9 +178,13 @@ public sealed class OctoplusService : IOctoplusService
             variables,
             cancellationToken).ConfigureAwait(false);
 
+        RedeemLoyaltyPointsWire payload = data.RedeemLoyaltyPointsForAccountCredit
+            ?? throw new OctopusEnergyParseException(
+                "The redeem loyalty points mutation returned no data.");
+
         return new RedeemLoyaltyPointsResult
         {
-            PointsRedeemed = data.RedeemLoyaltyPointsForAccountCredit?.PointsRedeemed,
+            PointsRedeemed = payload.PointsRedeemed,
         };
     }
 
