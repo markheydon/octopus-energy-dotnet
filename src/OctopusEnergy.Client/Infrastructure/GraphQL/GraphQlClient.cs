@@ -52,7 +52,7 @@ internal sealed class GraphQlClient : IDisposable
 
         if (response.Errors is { Count: > 0 })
         {
-            throw CreateGraphQlErrorException(response.Errors);
+            throw GraphQlKrakenErrors.Map(response.Errors);
         }
 
         return response.Data ?? throw new OctopusEnergyParseException("The GraphQL API returned JSON null where a response model was expected.");
@@ -64,16 +64,4 @@ internal sealed class GraphQlClient : IDisposable
             string.Equals(error.Extensions?.ErrorCode, errorCode, StringComparison.Ordinal)) == true;
     }
 
-    private static OctopusEnergyApiException CreateGraphQlErrorException(IReadOnlyList<GraphQlError> errors)
-    {
-        GraphQlError first = errors[0];
-        string? code = first.Extensions?.ErrorCode;
-        string? message = first.Message;
-
-        string detail = code is not null
-            ? $"{code}: {message ?? "The GraphQL API returned an error."}"
-            : message ?? "The GraphQL API returned an error.";
-
-        return new OctopusEnergyApiException(HttpStatusCode.OK, detail);
-    }
 }

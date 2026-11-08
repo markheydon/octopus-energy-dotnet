@@ -6,7 +6,7 @@ namespace OctopusEnergy.Client;
 /// Thrown when the Octopus API returns a documented error payload
 /// (for example REST <c>detail</c> or future GraphQL <c>extensions.errorCode</c>).
 /// </summary>
-public sealed class OctopusEnergyApiException : OctopusEnergyHttpException
+public class OctopusEnergyApiException : OctopusEnergyHttpException
 {
     /// <summary>
     /// Creates an exception from a documented API error payload.

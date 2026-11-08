@@ -33,9 +33,24 @@ Passing `page_size` less than 1 or above the documented maximum throws `OctopusE
 
 Implementer source: [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 6).
 
-## GraphQL (milestone v1.2, planned)
+## GraphQL Relay limits (milestone v1.2)
 
-Planned GraphQL list operations will use Relay cursors with `first` ≤ 100. REST callers today do not configure this.
+GraphQL list operations use Relay cursors. Official limits are on `GraphQlRelayLimits`:
+
+| Constant | Value | Meaning |
+|---|---|---|
+| `GraphQlRelayLimits.MaxFirst` | `100` | Maximum `first` on a connection |
+| `GraphQlRelayLimits.MaxComplexityPerRequest` | `200` | Per-request complexity cap (`KT-CT-1188`) |
+| `GraphQlRelayLimits.DefaultHourlyPointsAllowance` | `50,000` | Default hourly points for dashboard account users |
+| `GraphQlRelayLimits.MaxNodesPerRequest` | `10,000` | Node cap per request (`KT-CT-1189`) |
+
+Calling `GraphQlRelayLimits.ValidateFirst` with `first` less than 1 or above `MaxFirst` throws `OctopusEnergyRequestException` before any HTTP call. Future GraphQL list services will call this when you pass a page size.
+
+When you page forward with an `after` cursor, Kraken reports `hasPreviousPage` as always false. Use `GraphQlRelayPageInfo.ApplyForwardPagingRules` so you do not trust a `true` value while forward-paging.
+
+Inspect remaining hourly points with `client.RateLimits.GetRateLimitInfoAsync` (requires a dashboard API key). See [error handling](error-handling.md) for Kraken error codes.
+
+Implementer source: [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 6).
 
 ## Supplying your own `HttpClient`
 

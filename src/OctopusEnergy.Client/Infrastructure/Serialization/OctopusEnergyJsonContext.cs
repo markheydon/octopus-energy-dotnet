@@ -6,6 +6,7 @@ using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.Products;
+using OctopusEnergy.Client.Models.RateLimits;
 
 namespace OctopusEnergy.Client.Infrastructure.Serialization;
 
@@ -46,4 +47,8 @@ namespace OctopusEnergy.Client.Infrastructure.Serialization;
 [JsonSerializable(typeof(ObtainKrakenTokenInput))]
 [JsonSerializable(typeof(GraphQlError))]
 [JsonSerializable(typeof(GraphQlErrorExtensions))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<RateLimitInfoQueryData>))]
+[JsonSerializable(typeof(RateLimitInfoQueryData))]
+[JsonSerializable(typeof(RateLimitInfo))]
+[JsonSerializable(typeof(PointsAllowanceRateLimit))]
 internal partial class OctopusEnergyJsonContext : JsonSerializerContext;

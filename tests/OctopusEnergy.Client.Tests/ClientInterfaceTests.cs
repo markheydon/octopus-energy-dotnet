@@ -4,10 +4,12 @@ using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.Products;
+using OctopusEnergy.Client.Models.RateLimits;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.Products;
+using OctopusEnergy.Client.Services.RateLimits;
 
 namespace OctopusEnergy.Client.Tests;
 
@@ -24,6 +26,7 @@ public sealed class ClientInterfaceTests
         Assert.IsAssignableFrom<IIndustryService>(client.Industry);
         Assert.IsAssignableFrom<IProductService>(client.Products);
         Assert.IsAssignableFrom<ITariffRatesService>(client.TariffRates);
+        Assert.IsAssignableFrom<IRateLimitService>(client.RateLimits);
     }
 
     [Fact]
@@ -36,6 +39,7 @@ public sealed class ClientInterfaceTests
         Assert.IsType<IndustryService>(client.Industry);
         Assert.IsType<ProductService>(client.Products);
         Assert.IsType<TariffRatesService>(client.TariffRates);
+        Assert.IsType<RateLimitService>(client.RateLimits);
     }
 
     [Fact]
@@ -62,6 +66,7 @@ public sealed class ClientInterfaceTests
             Industry = new StubIndustryService();
             Products = new StubProductService();
             TariffRates = new StubTariffRatesService();
+            RateLimits = new StubRateLimitService();
         }
 
         public string? LastRequestedAccountNumber { get; private set; }
@@ -75,6 +80,8 @@ public sealed class ClientInterfaceTests
         public IProductService Products { get; }
 
         public ITariffRatesService TariffRates { get; }
+
+        public IRateLimitService RateLimits { get; }
 
         public void Dispose()
         {
@@ -207,6 +214,12 @@ public sealed class ClientInterfaceTests
             await Task.CompletedTask;
             yield break;
         }
+    }
+
+    private sealed class StubRateLimitService : IRateLimitService
+    {
+        public Task<RateLimitInfo> GetRateLimitInfoAsync(CancellationToken cancellationToken = default) =>
+            Task.FromResult(new RateLimitInfo());
     }
 
     private sealed class StubTariffRatesService : ITariffRatesService
