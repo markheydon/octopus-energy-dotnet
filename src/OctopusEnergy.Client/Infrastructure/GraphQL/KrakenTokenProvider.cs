@@ -118,7 +118,7 @@ internal sealed class KrakenTokenProvider : IDisposable
     {
         if (response.Errors is { Count: > 0 })
         {
-            throw CreateGraphQlErrorException(response.Errors);
+            throw GraphQlKrakenErrors.Map(response.Errors);
         }
 
         ObtainKrakenTokenResult? result = response.Data?.ObtainKrakenToken
@@ -141,16 +141,4 @@ internal sealed class KrakenTokenProvider : IDisposable
         }
     }
 
-    private static OctopusEnergyApiException CreateGraphQlErrorException(IReadOnlyList<GraphQlError> errors)
-    {
-        GraphQlError first = errors[0];
-        string? code = first.Extensions?.ErrorCode;
-        string? message = first.Message;
-
-        string detail = code is not null
-            ? $"{code}: {message ?? "The GraphQL API returned an error."}"
-            : message ?? "The GraphQL API returned an error.";
-
-        return new OctopusEnergyApiException(System.Net.HttpStatusCode.OK, detail);
-    }
 }

@@ -39,7 +39,9 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 
 ### Unreleased (v1.2 groundwork)
 
-- **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. No new public constructors or service methods; `OctopusEnergyClient.GraphQl` is `internal` until customer GraphQL stories land. Status tables: [API coverage](../docs/reference/api-coverage.md#v12-graphql-in-progress).
+- **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. `OctopusEnergyClient.GraphQl` remains `internal`. Status tables: [API coverage](../docs/reference/api-coverage.md#v12-graphql-in-progress).
+- **GraphQL operational limits (issue #29).** `GraphQlRelayLimits`, Kraken exception types, `GraphQlRelayPageInfo`, and `client.RateLimits.GetRateLimitInfoAsync` (hourly points allowance). No automatic retry on `KT-CT-1199`.
+- **Public GraphQL surface (v1.2).** `IOctopusEnergyClient.RateLimits` (`IRateLimitService`, `RateLimitInfo`, `PointsAllowanceRateLimit`). GraphQL failures with Kraken `extensions.errorCode` throw `OctopusEnergyKrakenException` (a subtype of `OctopusEnergyApiException`). `OctopusEnergyApiException` is no longer `sealed` so Kraken subtypes can be introduced; existing `catch (OctopusEnergyApiException)` handlers still catch GraphQL errors.
 
 ### Additive changes
 

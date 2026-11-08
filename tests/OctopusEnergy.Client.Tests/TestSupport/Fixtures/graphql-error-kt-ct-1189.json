@@ -1,0 +1,11 @@
+{
+  "data": null,
+  "errors": [
+    {
+      "message": "The query exceeds the maximum allowed number of nodes.",
+      "extensions": {
+        "errorCode": "KT-CT-1189"
+      }
+    }
+  ]
+}

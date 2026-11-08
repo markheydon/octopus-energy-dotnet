@@ -52,13 +52,13 @@ public sealed class GraphQlClientTests
         using HttpClient httpClient = new(handler) { BaseAddress = new Uri("https://api.example.test/v1/") };
         (_, _, GraphQlClient graphQlClient) = GraphQlTestSupport.CreateStack(httpClient);
 
-        OctopusEnergyApiException exception = await Assert.ThrowsAsync<OctopusEnergyApiException>(
+        OctopusEnergyKrakenException exception = await Assert.ThrowsAsync<OctopusEnergyKrakenException>(
             () => graphQlClient.ExecuteAsync<RateLimitInfoData>(
                 RateLimitInfoQuery,
                 variables: null,
                 CancellationToken.None));
 
-        Assert.Contains("KT-CT-1112", exception.Detail, StringComparison.Ordinal);
+        Assert.Equal("KT-CT-1112", exception.KrakenErrorCode);
         Assert.Equal(4, handler.SentRequests.Count);
     }
 

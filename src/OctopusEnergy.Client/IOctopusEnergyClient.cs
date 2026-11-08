@@ -2,6 +2,7 @@ using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.Products;
+using OctopusEnergy.Client.Services.RateLimits;
 
 namespace OctopusEnergy.Client;
 
@@ -40,4 +41,9 @@ public interface IOctopusEnergyClient : IDisposable
     /// Standing charges and unit rates for product tariffs.
     /// </summary>
     ITariffRatesService TariffRates { get; }
+
+    /// <summary>
+    /// Kraken hourly points allowance and related rate-limit information.
+    /// </summary>
+    IRateLimitService RateLimits { get; }
 }

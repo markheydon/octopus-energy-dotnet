@@ -9,8 +9,16 @@ Public exception types live in the `OctopusEnergy.Client` namespace:
 | `OctopusEnergyHttpException` | Non-success HTTP status without a documented API error payload |
 | `OctopusEnergyApiException` | Non-success HTTP with a documented REST `detail` message |
 | `OctopusEnergyParseException` | Successful HTTP response that cannot be deserialised (invalid JSON or JSON `null` where a model is expected) |
+| `OctopusEnergyKrakenException` | Kraken GraphQL `errors.extensions.errorCode` (HTTP 200 with `errors[]`) |
+| `OctopusEnergyKrakenComplexityException` | Query complexity exceeded (`KT-CT-1188`) |
+| `OctopusEnergyKrakenNodeLimitException` | Node limit exceeded (`KT-CT-1189`) |
+| `OctopusEnergyKrakenFieldRateLimitException` | Field-specific rate limit (`KT-CT-1199`) |
 
-REST uses HTTP status codes. Milestone **v1.2** GraphQL usually returns HTTP 200 with `errors.extensions.errorCode` values such as `KT-CT-1112`; those will map to the same hierarchy when GraphQL ships.
+REST uses HTTP status codes. GraphQL-backed calls (for example `client.RateLimits`) usually return HTTP 200 with `errors.extensions.errorCode`. Catch `OctopusEnergyKrakenException` and read `KrakenErrorCode` when you need the stable code; catch the specialised subtypes when you handle complexity, node, or field rate limits explicitly.
+
+The SDK does **not** automatically retry `KT-CT-1199`. Back off in application code when you hit field rate limits (common on telemetry-heavy queries).
+
+Kraken token errors (`KT-CT-1112`, `KT-CT-11334`, and others) also throw `OctopusEnergyKrakenException`. The client retries once on `KT-CT-1112` after refreshing the token; a persistent failure still surfaces as `OctopusEnergyKrakenException`.
 
 ## Catch SDK failures
 

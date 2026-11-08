@@ -3,7 +3,7 @@
 # Conventions
 
 **Project:** OctopusEnergy.Client
-**Last updated:** 7 November 2026
+**Last updated:** 8 November 2026
 
 When in doubt, follow this file. To change a convention, update it and add an ADR for significant architecture changes.
 
@@ -33,12 +33,14 @@ src/
     │   ├── Common/                      # Shared wire types (pagination, errors)
     │   ├── Consumption/                 # Consumption interval and list request models
     │   ├── Industry/                    # GSP and MPAN lookup models
-    │   └── Products/                    # Product catalogue and tariff charge models
+    │   ├── Products/                    # Product catalogue and tariff charge models
+    │   └── RateLimits/                  # GraphQL rate-limit query models
     └── Services/                        # Resource-oriented services
         ├── Accounts/                    # AccountService
         ├── Consumption/                 # ConsumptionService
         ├── Industry/                    # IndustryService
-        └── Products/                    # ProductService, TariffRatesService
+        ├── Products/                    # ProductService, TariffRatesService
+        └── RateLimits/                  # RateLimitService (GraphQL-backed)
 
 tests/
 └── OctopusEnergy.Client.Tests/
@@ -113,6 +115,7 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 
 | Date | Change | Reason |
 |---|---|---|
+| 8 November 2026 | Add RateLimits to project tree | Goals review follow-up |
 | 7 November 2026 | Extend project tree (Consumption, Industry, TariffRates, samples) | Goals review doc drift (#20 groundwork) |
 | 7 November 2026 | GraphQL folder note uses milestone v1.2 | Release-label doc tidy |
 | 18 September 2026 | Add Account service and models to tree | Issue #13 |

@@ -35,7 +35,7 @@ How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to
 
 Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). NuGet **1.2.x** when the public surface ships — see [release labels](../../VERSIONING.md#release-labels-quick-reference). Unreleased groundwork is documented in [plan/RELEASE.md](../../plan/RELEASE.md) (section *Unreleased (v1.2 groundwork)*).
 
-**Public SDK surface:** still REST-only. No public GraphQL resource services or operations yet.
+**Public SDK surface:** REST for catalogue, account, and consumption; one GraphQL-backed operation (`RateLimits.GetRateLimitInfoAsync`) for operational limits. Additional curated GraphQL stories are in progress.
 
 ### Infrastructure (unreleased, internal)
 
@@ -44,7 +44,9 @@ Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md
 | GraphQL HTTP transport to the Kraken endpoint | Implemented (`internal`) |
 | `obtainKrakenToken` with dashboard **API key only** (no email/password) | Implemented (`internal`) |
 | JWT cache, refresh via `refreshToken`, `KT-CT-1112` retry | Implemented (`internal`) |
-| `OctopusEnergyClient.GraphQl` accessor | Implemented (`internal`) until customer GraphQL stories land |
+| Kraken `errorCode` mapping (`KT-CT-1188`, `1189`, `1199`, token errors) | Implemented (public exception types) |
+| `GraphQlRelayLimits` and `ValidateFirst` | Implemented (public) |
+| `OctopusEnergyClient.GraphQl` accessor | Implemented (`internal`) |
 
 ### Customer operations (planned public)
 
@@ -62,7 +64,8 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `smartMeterTelemetry` | Denied (`KT-CT-1111` on probe account) | Planned (#26) |
 | `loyaltyPointsBalance` (Octoplus proxy) | Denied (`KT-CT-1111` on probe account) | Planned (#27) |
 | `initiateProductSwitch` | Allowed (mutation) | Planned (#28) |
-| `rateLimitInfo`, `readingConsentGranularity` | Allowed | Planned |
+| `rateLimitInfo` | Allowed | Implemented (`client.RateLimits`) |
+| `readingConsentGranularity` | Allowed | Planned |
 
 Keep this table aligned with [SCOPE.md](../../SCOPE.md), [plan/RELEASE.md](../../plan/RELEASE.md), and the [GraphQL customer allow-list](../planning/graphql-customer-allow-list.md) (probe matrix is authoritative for **Allow-list status**). Update both documents in the same change when re-probing or shipping public GraphQL methods.
 

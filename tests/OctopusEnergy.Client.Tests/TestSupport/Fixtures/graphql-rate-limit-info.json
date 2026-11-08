@@ -1,7 +1,10 @@
 {
   "data": {
     "rateLimitInfo": {
-      "__typename": "RateLimitInfoType"
+      "pointsAllowanceRateLimit": {
+        "limit": 50000,
+        "remaining": 49872
+      }
     }
   }
 }

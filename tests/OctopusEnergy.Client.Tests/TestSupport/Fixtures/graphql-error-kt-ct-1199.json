@@ -1,0 +1,11 @@
+{
+  "data": null,
+  "errors": [
+    {
+      "message": "You have made too many requests.",
+      "extensions": {
+        "errorCode": "KT-CT-1199"
+      }
+    }
+  ]
+}

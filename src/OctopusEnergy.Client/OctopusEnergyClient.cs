@@ -5,6 +5,7 @@ using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.Products;
+using OctopusEnergy.Client.Services.RateLimits;
 
 namespace OctopusEnergy.Client;
 
@@ -170,6 +171,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         Industry = new IndustryService(Rest);
         Products = new ProductService(Rest);
         TariffRates = new TariffRatesService(Rest);
+        RateLimits = new RateLimitService(_graphQl);
     }
 
     /// <summary>
@@ -197,10 +199,19 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// </summary>
     public ITariffRatesService TariffRates { get; }
 
+    /// <summary>
+    /// Kraken hourly points allowance and related rate-limit information.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
+    /// </remarks>
+    public IRateLimitService RateLimits { get; }
+
     internal RestClient Rest { get; }
 
     /// <summary>
-    /// GraphQL transport and Kraken token handling for milestone v1.2. Internal until customer GraphQL services ship.
+    /// GraphQL transport and Kraken token handling. Internal; callers use resource services such as
+    /// <see cref="RateLimits"/> instead of choosing REST or GraphQL per call.
     /// </summary>
     internal GraphQlClient? GraphQl => _graphQl;
 

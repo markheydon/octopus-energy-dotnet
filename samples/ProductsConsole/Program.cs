@@ -4,6 +4,7 @@ using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.Products;
+using OctopusEnergy.Client.Models.RateLimits;
 
 const string ApiKeyEnvironmentVariable = "OCTOPUS_ENERGY_API_KEY";
 const string AccountNumberEnvironmentVariable = "OCTOPUS_ENERGY_ACCOUNT_NUMBER";
@@ -77,6 +78,7 @@ try
         recorder.Skip("authenticated client", $"{ApiKeyEnvironmentVariable} not set");
         recorder.Skip("electricity consumption", "requires authenticated client");
         recorder.Skip("gas consumption", "requires authenticated client");
+        recorder.Skip("rate limits", "requires authenticated client");
     }
 
     if (await TryRunSectionAsync(
@@ -240,6 +242,7 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             recorder.Skip("gas consumption", reason);
         }
 
+        await RunRateLimitsSmokeAsync(authenticatedClient, recorder, cancellationToken);
         recorder.Pass("authenticated client");
         return null;
     }
@@ -294,8 +297,35 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
         recorder.Skip("gas consumption", reason);
     }
 
+    await RunRateLimitsSmokeAsync(authenticatedClient, recorder, cancellationToken);
     recorder.Pass("authenticated client");
     return account;
+}
+
+static async Task RunRateLimitsSmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine();
+    Console.WriteLine("Rate limits (GraphQL-backed, API key):");
+
+    RateLimitInfo info = await client.RateLimits.GetRateLimitInfoAsync(cancellationToken);
+    PointsAllowanceRateLimit? allowance = info.PointsAllowanceRateLimit;
+
+    if (allowance is null)
+    {
+        Console.WriteLine("  pointsAllowanceRateLimit: not returned");
+    }
+    else
+    {
+        Console.WriteLine(
+            "  Hourly points: {0} remaining of {1}",
+            allowance.Remaining,
+            allowance.Limit);
+    }
+
+    recorder.Pass("rate limits");
 }
 
 static async Task<ProductDetail> RunProductsSmokeAsync(
