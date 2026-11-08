@@ -18,7 +18,7 @@ Smoke-tests every implemented public SDK surface against `https://api.octopus.en
 
 | Section | SDK surface | Auth | What it does |
 |---|---|---|---|
-| Authenticated client | `Accounts`, `Consumption`, `Products`, `Viewer`, `RateLimits` | API key | Account detail when an account number is set; otherwise lists one product to prove HTTP Basic auth. Electricity and gas consumption fetch the latest interval (or report empty for non-smart meters). Reports linked account count via `Viewer` (no account numbers printed). Fetches hourly GraphQL points allowance via `RateLimits`. |
+| Authenticated client | `Accounts`, `Consumption`, `Products`, `Viewer`, `RateLimits`, `MeterReadings` | API key | Account detail when an account number is set; otherwise lists one product to prove HTTP Basic auth. Electricity and gas consumption fetch the latest interval (or report empty for non-smart meters). Reports linked account count via `Viewer` (no account numbers printed). Fetches hourly GraphQL points allowance via `RateLimits`. Exercises electricity meter reading mutation with a historic probe-style date (does not update your meter). |
 | Public catalogue | `Products` | None | Lists five products and fetches detail for the first. |
 | Tariff rates | `TariffRates` | None | Reads one standing charge and one standard unit rate for an example tariff from the product detail. |
 | Industry lookups | `Industry` | None | Resolves GSP for a postcode. Fetches MPAN metadata using the import electricity MPAN from account detail when authenticated, or `OCTOPUS_ENERGY_MPAN` as an optional override. |

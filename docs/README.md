@@ -14,6 +14,7 @@ Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help y
 | [Products catalogue](how-to/products.md) | List products and load product detail |
 | [Account detail](how-to/accounts.md) | Fetch properties, meters, and agreements |
 | [Consumption](how-to/consumption.md) | Electricity and gas smart-meter intervals |
+| [Meter readings](how-to/meter-readings.md) | Submit electricity meter readings (GraphQL) |
 | [Tariff rates](how-to/tariff-rates.md) | Standing charges and unit-rate history |
 | [Industry lookups](how-to/industry.md) | GSP by postcode and MPAN lookup |
 | [Tariff codes and GSP](how-to/tariff-codes.md) | Parse tariff codes and build charge paths |

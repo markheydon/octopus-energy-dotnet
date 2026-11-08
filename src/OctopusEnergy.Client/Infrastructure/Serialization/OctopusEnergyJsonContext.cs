@@ -5,6 +5,7 @@ using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
+using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
 
@@ -56,4 +57,14 @@ namespace OctopusEnergy.Client.Infrastructure.Serialization;
 [JsonSerializable(typeof(ViewerWire))]
 [JsonSerializable(typeof(ViewerAccountWire))]
 [JsonSerializable(typeof(ViewerPortfolioWire))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<CreateElectricityMeterReadingMutationData>))]
+[JsonSerializable(typeof(CreateElectricityMeterReadingMutationData))]
+[JsonSerializable(typeof(CreateMeterReadingOutputWire))]
+[JsonSerializable(typeof(MeterReadingFieldErrorWire))]
+[JsonSerializable(typeof(CreateElectricityMeterReadingVariables))]
+[JsonSerializable(typeof(ElectricityReadingInputWire))]
+[JsonSerializable(typeof(ElectricityMeterReadingCreate))]
+[JsonSerializable(typeof(ElectricityRegisterReading))]
+[JsonSerializable(typeof(ElectricityMeterReadingResult))]
+[JsonSerializable(typeof(MeterReadingFieldError))]
 internal partial class OctopusEnergyJsonContext : JsonSerializerContext;

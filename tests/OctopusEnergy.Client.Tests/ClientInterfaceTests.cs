@@ -3,12 +3,14 @@ using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
+using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
 using OctopusEnergy.Client.Models.Viewer;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
+using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
 using OctopusEnergy.Client.Services.Viewer;
@@ -29,6 +31,7 @@ public sealed class ClientInterfaceTests
         Assert.IsAssignableFrom<IProductService>(client.Products);
         Assert.IsAssignableFrom<ITariffRatesService>(client.TariffRates);
         Assert.IsAssignableFrom<IRateLimitService>(client.RateLimits);
+        Assert.IsAssignableFrom<IMeterReadingService>(client.MeterReadings);
         Assert.IsAssignableFrom<IViewerService>(client.Viewer);
     }
 
@@ -43,6 +46,7 @@ public sealed class ClientInterfaceTests
         Assert.IsType<ProductService>(client.Products);
         Assert.IsType<TariffRatesService>(client.TariffRates);
         Assert.IsType<RateLimitService>(client.RateLimits);
+        Assert.IsType<MeterReadingService>(client.MeterReadings);
         Assert.IsType<ViewerService>(client.Viewer);
     }
 
@@ -71,6 +75,7 @@ public sealed class ClientInterfaceTests
             Products = new StubProductService();
             TariffRates = new StubTariffRatesService();
             RateLimits = new StubRateLimitService();
+            MeterReadings = new StubMeterReadingService();
             Viewer = new StubViewerService();
         }
 
@@ -87,6 +92,8 @@ public sealed class ClientInterfaceTests
         public ITariffRatesService TariffRates { get; }
 
         public IRateLimitService RateLimits { get; }
+
+        public IMeterReadingService MeterReadings { get; }
 
         public IViewerService Viewer { get; }
 
@@ -227,6 +234,14 @@ public sealed class ClientInterfaceTests
     {
         public Task<RateLimitInfo> GetRateLimitInfoAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult(new RateLimitInfo());
+    }
+
+    private sealed class StubMeterReadingService : IMeterReadingService
+    {
+        public Task<ElectricityMeterReadingResult> CreateElectricityAsync(
+            ElectricityMeterReadingCreate request,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new ElectricityMeterReadingResult());
     }
 
     private sealed class StubViewerService : IViewerService
