@@ -32,9 +32,13 @@ public sealed class SmartMeterTelemetryService : ISmartMeterTelemetryService
             variables,
             cancellationToken).ConfigureAwait(false);
 
+        SmartMeterAccountWire account = data.Account
+            ?? throw new OctopusEnergyParseException(
+                "The smart meter device query returned no account data for the supplied account number.");
+
         List<SmartMeterDevice> devices = [];
-        CollectElectricityDevices(data.Account, devices);
-        CollectGasDevices(data.Account, devices);
+        CollectElectricityDevices(account, devices);
+        CollectGasDevices(account, devices);
 
         return devices
             .GroupBy(d => d.DeviceId, StringComparer.Ordinal)

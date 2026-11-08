@@ -34,6 +34,29 @@ public sealed class SmartMeterTelemetryServiceTests
     }
 
     [Fact]
+    public async Task ListSmartDevicesAsync_WhenAccountNull_ThrowsParseException()
+    {
+        const string body = """
+      {
+        "data": {
+          "account": null
+        },
+        "errors": null
+      }
+      """;
+
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("graphql-obtain-token.json"));
+        handler.Enqueue(HttpStatusCode.OK, body);
+
+        using HttpClient httpClient = new(handler) { BaseAddress = new Uri("https://api.example.test/v1/") };
+        using OctopusEnergyClient client = new("test-api-key", httpClient);
+
+        await Assert.ThrowsAsync<OctopusEnergyParseException>(
+            () => client.SmartMeterTelemetry.ListSmartDevicesAsync(AccountNumber, CancellationToken.None));
+    }
+
+    [Fact]
     public async Task ListSmartDevicesAsync_WhenEmpty_ReturnsEmptyList()
     {
         QueuedHttpMessageHandler handler = new();
