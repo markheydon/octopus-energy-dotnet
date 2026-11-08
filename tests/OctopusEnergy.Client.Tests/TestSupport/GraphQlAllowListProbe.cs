@@ -32,6 +32,8 @@ internal sealed class GraphQlAllowListProbeResult
     internal GraphQlAllowListMeterContext? DiscoveredMeterContext { get; init; }
 
     internal string? DiscoveredDeviceId { get; init; }
+
+    internal string? DiscoveredSmartMeterDeviceId { get; init; }
 }
 
 /// <summary>
@@ -143,6 +145,10 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
                 ? TryReadFirstDeviceId(deviceData)
                 : null;
 
+            string? smartMeterDeviceId = response.Data is { ValueKind: JsonValueKind.Object } accountData
+                ? TryReadFirstSmartMeterDeviceId(accountData)
+                : null;
+
             string rawJson = GraphQlProbeJsonRedactor.SerializeEnvelope(response);
             string redacted = GraphQlProbeJsonRedactor.RedactAndTruncate(rawJson);
 
@@ -158,6 +164,7 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
                     DiscoveredAccountNumber = accountNumber,
                     DiscoveredMeterContext = meterContext,
                     DiscoveredDeviceId = deviceId,
+                    DiscoveredSmartMeterDeviceId = smartMeterDeviceId,
                 };
             }
 
@@ -170,6 +177,7 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
                 DiscoveredAccountNumber = accountNumber,
                 DiscoveredMeterContext = meterContext,
                 DiscoveredDeviceId = deviceId,
+                DiscoveredSmartMeterDeviceId = smartMeterDeviceId,
             };
         }
         catch (OctopusEnergyApiException ex)
@@ -233,6 +241,68 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
                     && number.ValueKind == JsonValueKind.String)
                 {
                     return number.GetString();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    internal static string? TryReadFirstSmartMeterDeviceId(JsonElement dataRoot)
+    {
+        if (!dataRoot.TryGetProperty("account", out JsonElement account))
+        {
+            return null;
+        }
+
+        string? fromElectricity = TryReadSmartMeterDeviceIdFromAgreements(
+            account,
+            "electricityAgreements");
+        if (fromElectricity is not null)
+        {
+            return fromElectricity;
+        }
+
+        return TryReadSmartMeterDeviceIdFromAgreements(account, "gasAgreements");
+    }
+
+    private static string? TryReadSmartMeterDeviceIdFromAgreements(JsonElement account, string agreementsProperty)
+    {
+        if (!account.TryGetProperty(agreementsProperty, out JsonElement agreements)
+            || agreements.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        foreach (JsonElement agreement in agreements.EnumerateArray())
+        {
+            if (!agreement.TryGetProperty("meterPoint", out JsonElement meterPoint))
+            {
+                continue;
+            }
+
+            if (!meterPoint.TryGetProperty("meters", out JsonElement meters)
+                || meters.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            foreach (JsonElement meter in meters.EnumerateArray())
+            {
+                if (!meter.TryGetProperty("smartDevices", out JsonElement smartDevices)
+                    || smartDevices.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                foreach (JsonElement smartDevice in smartDevices.EnumerateArray())
+                {
+                    if (smartDevice.TryGetProperty("deviceId", out JsonElement deviceId)
+                        && deviceId.ValueKind == JsonValueKind.String
+                        && !string.IsNullOrWhiteSpace(deviceId.GetString()))
+                    {
+                        return deviceId.GetString();
+                    }
                 }
             }
         }

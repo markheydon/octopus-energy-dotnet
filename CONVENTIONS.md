@@ -38,6 +38,7 @@ src/
     │   ├── MeterReadings/               # GraphQL meter reading models
     │   ├── RateLimits/                  # GraphQL rate-limit query models
     │   ├── Devices/                     # SmartFlex device and dispatch models
+    │   ├── SmartMeterTelemetry/         # Home Mini telemetry and EUI64 models
     │   └── Viewer/                      # GraphQL viewer discovery models
     └── Services/                        # Resource-oriented services
         ├── Accounts/                    # AccountService
@@ -48,6 +49,7 @@ src/
         ├── MeterReadings/               # MeterReadingService (GraphQL-backed)
         ├── RateLimits/                  # RateLimitService (GraphQL-backed)
         ├── Devices/                     # DeviceService (GraphQL-backed)
+        ├── SmartMeterTelemetry/         # SmartMeterTelemetryService (GraphQL-backed)
         └── Viewer/                      # ViewerService (GraphQL-backed)
 
 tests/

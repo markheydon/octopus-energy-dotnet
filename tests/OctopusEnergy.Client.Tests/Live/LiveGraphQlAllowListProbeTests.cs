@@ -46,6 +46,7 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
 
         string? accountNumber = ResolveAccountNumber(viewerResult);
         GraphQlAllowListMeterContext? meters = null;
+        string? smartMeterDeviceId = null;
 
         if (accountNumber is not null)
         {
@@ -114,6 +115,14 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
                 new { accountNumber },
                 CancellationToken.None,
                 note: "Uses a nil quoted product id to avoid switching."));
+
+            GraphQlAllowListProbeResult smartMeterDevicesResult = await probe.ProbeAsync(
+                "accountSmartMeterDevices",
+                AllowListProbeQueries.AccountSmartMeterDevices,
+                new { accountNumber },
+                CancellationToken.None);
+            results.Add(smartMeterDevicesResult);
+            smartMeterDeviceId = smartMeterDevicesResult.DiscoveredSmartMeterDeviceId;
         }
         else
         {
@@ -156,12 +165,24 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
 
         await Task.Delay(TelemetryDelay, CancellationToken.None);
 
-        results.Add(await probe.ProbeAsync(
-            "smartMeterTelemetry",
-            AllowListProbeQueries.SmartMeterTelemetry,
-            variables: null,
-            CancellationToken.None,
-            note: "Placeholder device id."));
+        if (!string.IsNullOrWhiteSpace(smartMeterDeviceId))
+        {
+            results.Add(await probe.ProbeAsync(
+                "smartMeterTelemetry",
+                AllowListProbeQueries.SmartMeterTelemetryForDevice,
+                new { deviceId = smartMeterDeviceId },
+                CancellationToken.None,
+                note: "Uses first EUI64 from account smartDevices discovery."));
+        }
+        else
+        {
+            results.Add(await probe.ProbeAsync(
+                "smartMeterTelemetry",
+                AllowListProbeQueries.SmartMeterTelemetry,
+                variables: null,
+                CancellationToken.None,
+                note: "Placeholder device id."));
+        }
 
         results.Add(await probe.ProbeAsync(
             "loyaltyPointsBalance",

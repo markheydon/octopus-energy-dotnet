@@ -1,0 +1,20 @@
+{
+  "data": {
+    "account": {
+      "electricityAgreements": [
+        {
+          "meterPoint": {
+            "mpan": "1234567890123",
+            "meters": [
+              {
+                "serialNumber": "MTR-IMPORT-01",
+                "smartDevices": []
+              }
+            ]
+          }
+        }
+      ],
+      "gasAgreements": []
+    }
+  }
+}

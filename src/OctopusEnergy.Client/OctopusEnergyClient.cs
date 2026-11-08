@@ -9,6 +9,7 @@ using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
+using OctopusEnergy.Client.Services.SmartMeterTelemetry;
 using OctopusEnergy.Client.Services.Viewer;
 
 namespace OctopusEnergy.Client;
@@ -21,7 +22,7 @@ namespace OctopusEnergy.Client;
 /// (<see cref="DefaultBaseUrl"/> by default) with shared pagination and error handling.
 /// When constructed with a dashboard API key, GraphQL-backed resource services
 /// (<see cref="Viewer"/>, <see cref="RateLimits"/>, <see cref="MeterReadings"/>,
-/// <see cref="AccountBilling"/>, <see cref="Devices"/>) exchange the key for a Kraken JWT
+/// <see cref="AccountBilling"/>, <see cref="Devices"/>, <see cref="SmartMeterTelemetry"/>) exchange the key for a Kraken JWT
 /// internally on first use — callers do not choose transport per call or attach tokens.
 /// </remarks>
 public sealed class OctopusEnergyClient : IOctopusEnergyClient
@@ -184,6 +185,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         Viewer = new ViewerService(_graphQl);
         AccountBilling = new AccountBillingService(_graphQl);
         Devices = new DeviceService(_graphQl);
+        SmartMeterTelemetry = new SmartMeterTelemetryService(_graphQl);
     }
 
     /// <summary>
@@ -253,6 +255,15 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Uses <c>flexPlannedDispatches</c> only (not deprecated <c>plannedDispatches</c>).
     /// </remarks>
     public IDeviceService Devices { get; }
+
+    /// <summary>
+    /// GraphQL Home Mini / CAD <c>smartMeterTelemetry</c> and EUI64 discovery for the authenticated dashboard API key.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
+    /// Field rate limits apply; the SDK does not retry <c>KT-CT-1199</c> automatically.
+    /// </remarks>
+    public ISmartMeterTelemetryService SmartMeterTelemetry { get; }
 
     internal RestClient Rest { get; }
 

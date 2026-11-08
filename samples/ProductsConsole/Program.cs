@@ -4,10 +4,12 @@ using OctopusEnergy.Client.Models.AccountBilling;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
+using OctopusEnergy.Client.Models.Devices;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
+using OctopusEnergy.Client.Models.SmartMeterTelemetry;
 using OctopusEnergy.Client.Models.Viewer;
 
 const string ApiKeyEnvironmentVariable = "OCTOPUS_ENERGY_API_KEY";
@@ -86,6 +88,10 @@ try
         recorder.Skip("viewer", "requires authenticated client");
         recorder.Skip("meter readings", "requires authenticated client");
         recorder.Skip("account billing", "requires authenticated client");
+        recorder.Skip("smartflex devices", "requires authenticated client");
+        recorder.Skip("smartflex planned dispatches", "requires authenticated client");
+        recorder.Skip("smart meter telemetry discovery", "requires authenticated client");
+        recorder.Skip("smart meter telemetry read", "requires authenticated client");
     }
 
     if (await TryRunSectionAsync(
@@ -262,6 +268,11 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             $"Set {AccountNumberEnvironmentVariable} to exercise GraphQL account billing lists.";
         WriteAccountBillingSkipped(billingSkipReason);
         recorder.Skip("account billing", billingSkipReason);
+        WriteDevicesAndTelemetrySkipped(billingSkipReason);
+        recorder.Skip("smartflex devices", billingSkipReason);
+        recorder.Skip("smartflex planned dispatches", billingSkipReason);
+        recorder.Skip("smart meter telemetry discovery", billingSkipReason);
+        recorder.Skip("smart meter telemetry read", billingSkipReason);
         recorder.Pass("authenticated client");
         return null;
     }
@@ -326,6 +337,16 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
     await RunViewerSmokeAsync(authenticatedClient, recorder, cancellationToken);
     await RunRateLimitsSmokeAsync(authenticatedClient, recorder, cancellationToken);
     await RunAccountBillingSmokeAsync(
+        authenticatedClient,
+        recorder,
+        accountNumber,
+        cancellationToken);
+    await RunDevicesSmokeAsync(
+        authenticatedClient,
+        recorder,
+        accountNumber,
+        cancellationToken);
+    await RunSmartMeterTelemetrySmokeAsync(
         authenticatedClient,
         recorder,
         accountNumber,
@@ -416,6 +437,97 @@ static async Task RunRateLimitsSmokeAsync(
     }
 
     recorder.Pass("rate limits");
+}
+
+static async Task RunDevicesSmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    string accountNumber,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine();
+    Console.WriteLine("SmartFlex devices (GraphQL-backed, API key):");
+
+    IReadOnlyList<SmartFlexDevice> devices = await client.Devices.ListDevicesAsync(
+        accountNumber,
+        cancellationToken);
+    Console.WriteLine("  Devices: {0}", devices.Count);
+    recorder.Pass("smartflex devices");
+
+    if (devices.Count == 0)
+    {
+        recorder.Skip("smartflex planned dispatches", "No SmartFlex devices on the account.");
+        return;
+    }
+
+    SmartFlexDevice first = devices[0];
+    Console.WriteLine(
+        "  First device: {0} ({1})",
+        string.IsNullOrWhiteSpace(first.Name) ? first.Id : first.Name,
+        first.TypeName);
+
+    if (string.IsNullOrWhiteSpace(first.Id))
+    {
+        recorder.Skip("smartflex planned dispatches", "Device list item had no id.");
+        return;
+    }
+
+    try
+    {
+        IReadOnlyList<FlexPlannedDispatch> dispatches = await client.Devices.ListFlexPlannedDispatchesAsync(
+            first.Id,
+            cancellationToken);
+        Console.WriteLine("  Planned dispatches: {0}", dispatches.Count);
+        recorder.Pass("smartflex planned dispatches");
+    }
+    catch (OctopusEnergyKrakenException ex)
+    {
+        Console.WriteLine(
+            "  Dispatches ({0}); query path responded.",
+            ex.KrakenErrorCode);
+        recorder.Pass("smartflex planned dispatches");
+    }
+}
+
+static async Task RunSmartMeterTelemetrySmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    string accountNumber,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine();
+    Console.WriteLine("Smart meter telemetry (GraphQL-backed, API key):");
+
+    IReadOnlyList<SmartMeterDevice> devices = await client.SmartMeterTelemetry.ListSmartDevicesAsync(
+        accountNumber,
+        cancellationToken);
+    Console.WriteLine("  Smart devices (EUI64): {0}", devices.Count);
+    recorder.Pass("smart meter telemetry discovery");
+
+    if (devices.Count == 0)
+    {
+        recorder.Skip("smart meter telemetry read", "No smart devices returned for telemetry discovery.");
+        return;
+    }
+
+    string deviceId = devices[0].DeviceId;
+    Console.WriteLine("  First EUI64: …{0}", LastFourDigits(deviceId.Replace("-", string.Empty, StringComparison.Ordinal)));
+
+    try
+    {
+        IReadOnlyList<SmartMeterTelemetryReading> readings = await client.SmartMeterTelemetry.GetTelemetryAsync(
+            deviceId,
+            cancellationToken);
+        Console.WriteLine("  Telemetry readings: {0}", readings.Count);
+        recorder.Pass("smart meter telemetry read");
+    }
+    catch (OctopusEnergyKrakenException ex)
+    {
+        Console.WriteLine(
+            "  Telemetry ({0}); query path responded.",
+            ex.KrakenErrorCode);
+        recorder.Pass("smart meter telemetry read");
+    }
 }
 
 static async Task RunMeterReadingsSmokeAsync(
@@ -920,6 +1032,12 @@ static void WriteAccountBillingSkipped(string reason)
 {
     Console.WriteLine();
     Console.WriteLine("Account billing (skipped): {0}", reason);
+}
+
+static void WriteDevicesAndTelemetrySkipped(string reason)
+{
+    Console.WriteLine();
+    Console.WriteLine("SmartFlex devices and smart meter telemetry (skipped): {0}", reason);
 }
 
 static void WriteAccountSummary(Account account)
