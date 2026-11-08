@@ -24,6 +24,8 @@ const string DefaultPostcode = "W1 1AA";
 const int MaxProductsToList = 5;
 const int TariffRatesPageSize = 1;
 const int ConsumptionPageSize = 1;
+const string ProductSwitchSmokeSkipDetail =
+    "InitiateAsync changes tariffs; not exercised in automated smoke (see docs/how-to/product-switch.md).";
 
 using CancellationTokenSource cancellation = new();
 Console.CancelKeyPress += (_, eventArgs) =>
@@ -93,6 +95,7 @@ try
         recorder.Skip("smartflex planned dispatches", "requires authenticated client");
         recorder.Skip("smart meter telemetry discovery", "requires authenticated client");
         recorder.Skip("smart meter telemetry read", "requires authenticated client");
+        recorder.Skip("product switch", "requires authenticated client");
     }
 
     if (await TryRunSectionAsync(
@@ -274,6 +277,7 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
         recorder.Skip("smartflex planned dispatches", billingSkipReason);
         recorder.Skip("smart meter telemetry discovery", billingSkipReason);
         recorder.Skip("smart meter telemetry read", billingSkipReason);
+        recorder.Skip("product switch", ProductSwitchSmokeSkipDetail);
         recorder.Pass("authenticated client");
         return null;
     }
@@ -357,6 +361,7 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
         recorder,
         accountNumber,
         cancellationToken);
+    recorder.Skip("product switch", ProductSwitchSmokeSkipDetail);
     recorder.Pass("authenticated client");
     return account;
 }

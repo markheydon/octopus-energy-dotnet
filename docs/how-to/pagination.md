@@ -52,7 +52,7 @@ When you page forward with an `after` cursor, Kraken reports `hasPreviousPage` a
 
 Inspect remaining hourly points with `client.RateLimits.GetRateLimitInfoAsync` (requires a dashboard API key). See [error handling](error-handling.md) for Kraken error codes.
 
-Implementer source: [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 6).
+Implementer source: [coding notes](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/coding-notes.md) (section 6) and [ADR-0002](https://github.com/markheydon/octopus-energy-dotnet/blob/main/adr/adr-0002-graphql-public-list-patterns.md).
 
 ## Supplying your own `HttpClient`
 

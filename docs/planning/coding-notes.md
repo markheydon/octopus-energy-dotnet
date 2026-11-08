@@ -143,6 +143,17 @@ GraphQL:
 - Max **10,000** nodes (`KT-CT-1189`)
 - Field rate limits `KT-CT-1199`
 
+**Public list shapes (v1.2):** see [ADR-0002](../../adr/adr-0002-graphql-public-list-patterns.md).
+
+| Pattern | When | Public shape | Example |
+|---|---|---|---|
+| REST auto-pagination | REST `next` links | `IAsyncEnumerable<T>` | `ProductService.ListAsync` |
+| REST explicit page | Caller needs `count` / one page | `PaginatedResult<T>` | `ListElectricityPageAsync` |
+| GraphQL Relay | Connection with cursors | `Task<GraphQlRelayPage<T>>` per page | `ListBillsPageAsync` |
+| GraphQL bounded list | Single curated query, no caller paging | `Task<IReadOnlyList<T>>` | `ListDevicesAsync`, `ListLoyaltyPointLedgersAsync` |
+
+Do not add blind `IAsyncEnumerable` auto-follow helpers for Relay billing lists; separate queries keep complexity under the cap.
+
 Public exception types should map REST status codes and GraphQL `extensions.errorCode` without leaking entire GraphQL envelopes as the only API.
 
 ---
