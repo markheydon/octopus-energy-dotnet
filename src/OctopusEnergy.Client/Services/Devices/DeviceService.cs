@@ -64,7 +64,11 @@ public sealed class DeviceService : IDeviceService
             return [];
         }
 
-        return data.FlexPlannedDispatches.Select(MapDispatch).ToList();
+        return data.FlexPlannedDispatches
+            .Select(MapDispatch)
+            .OrderBy(d => d.Start)
+            .ThenBy(d => d.End)
+            .ToList();
     }
 
     private static SmartFlexDevice MapDevice(DeviceWire wire)
