@@ -45,6 +45,11 @@ public interface IMeterReadingService
     /// <exception cref="OctopusEnergyParseException">
     /// Thrown when the response cannot be deserialised or is missing expected data.
     /// </exception>
+    /// <remarks>
+    /// Runtime allow-list status for <c>createGasMeterReading</c> is <strong>Not probed</strong> on the maintainer account
+    /// (no gas meter). Behaviour is covered by schema-aligned fixtures; re-probe with a gas-capable dashboard key before
+    /// treating the allow-list row as <strong>Allowed (mutation)</strong>.
+    /// </remarks>
     Task<GasMeterReadingResult> CreateGasAsync(
         GasMeterReadingCreate request,
         CancellationToken cancellationToken = default);

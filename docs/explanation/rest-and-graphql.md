@@ -1,6 +1,6 @@
 # REST and GraphQL
 
-Most of the shipped package remains **REST** (milestones **v1.0** and **v1.1** on NuGet **1.0.x** and **1.1.x**). **GraphQL customer extras** expand in milestone **v1.2** (NuGet **1.2.x**, not package **2.0.0**). See [release labels](../../VERSIONING.md#release-labels-quick-reference).
+Most of the **published** NuGet package today is **REST** (latest **1.1.0**; milestones **v1.0** and **v1.1**). **GraphQL customer extras** are implemented on `main` for milestone **v1.2** and will ship as NuGet **1.2.x** (not package **2.0.0**). See [release labels](../../VERSIONING.md#release-labels-quick-reference) and [API coverage](../reference/api-coverage.md) (*NuGet vs source*).
 
 Callers should still construct a single `OctopusEnergyClient` with an API key. The SDK exchanges that key for a Kraken JWT internally when a GraphQL-backed call needs it — you do not choose REST versus GraphQL per call, and you do not attach GraphQL tokens yourself.
 

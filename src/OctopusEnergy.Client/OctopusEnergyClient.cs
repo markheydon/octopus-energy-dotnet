@@ -230,7 +230,9 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// </summary>
     /// <remarks>
     /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
-    /// Gas meter readings are not yet exposed pending allow-list verification on a suitable account.
+    /// <see cref="IMeterReadingService.CreateGasAsync"/> is implemented from the public schema and unit fixtures;
+    /// live allow-list verification remains <strong>Not probed</strong> until a gas-capable dashboard key is available.
+    /// See <see href="https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/planning/graphql-customer-allow-list.md">GraphQL customer allow-list</see>.
     /// </remarks>
     public IMeterReadingService MeterReadings { get; }
 

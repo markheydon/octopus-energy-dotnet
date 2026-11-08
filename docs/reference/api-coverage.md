@@ -35,6 +35,8 @@ How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to
 
 Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). NuGet **1.2.x** when the public surface ships — see [release labels](../../VERSIONING.md#release-labels-quick-reference). Unreleased groundwork is documented in [plan/RELEASE.md](../../plan/RELEASE.md) (section *Unreleased (v1.2 groundwork)*).
 
+**NuGet vs source:** The latest published package on NuGet.org is **1.1.0** (REST developer experience). The v1.2 GraphQL-backed accessors below are implemented on `main` and ship in the next **1.2.x** release after the [1.2.0 tag checklist](../../plan/RELEASE.md#120-tag-checklist). Build from source or wait for that tag to consume them from NuGet.
+
 **Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), meter readings (`MeterReadings.CreateElectricityAsync`, `MeterReadings.CreateGasAsync`, `MeterReadings.GetReadingConsentGranularityAsync`), account billing lists (`AccountBilling.ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`), SmartFlex devices (`Devices.ListDevicesAsync`, `Devices.ListFlexPlannedDispatchesAsync`), Home Mini telemetry (`SmartMeterTelemetry.ListSmartDevicesAsync`, `SmartMeterTelemetry.GetTelemetryAsync`), and Octoplus helpers (`Octoplus.GetAccountInfoAsync`, `ListLoyaltyPointLedgersAsync`, `GetLoyaltyPointsBalanceAsync`, `GetWheelOfFortuneSpinsAsync`, `JoinCampaignAsync`, `RedeemPointsForAccountCreditAsync`). Additional curated GraphQL stories are in progress.
 
 ### Infrastructure (unreleased, internal)
@@ -55,13 +57,13 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | Area | Allow-list status | Public SDK |
 |---|---|---|
 | `viewer` / multi-account | Allowed | Implemented (`ViewerService`) |
-| `account` (minimal GraphQL projection) | Allowed | Planned (#23, account GraphQL); REST `Accounts.GetAsync` today |
-| Account meter discovery (GraphQL fields) | Allowed | Planned (#23, account GraphQL); REST account meters today |
+| `account` (minimal GraphQL projection) | Allowed | **Not a separate public service** — use REST `Accounts.GetAsync`. A dedicated GraphQL account projection remains optional future work (#23). |
+| Account meter discovery (GraphQL fields) | Allowed | **Not a separate public service** — MPAN, MPRN, and serials from REST `Accounts.GetAsync` today. GraphQL-only discovery fields are optional future work (#23). |
 | `account` → `bills` | Allowed | Implemented (#23, billing — `AccountBilling.ListBillsPageAsync`) |
 | `account` → `transactions` | Allowed | Implemented (#23, billing — `AccountBilling.ListTransactionsPageAsync`) |
 | `account` → `payments` | Allowed | Implemented (#23, billing — `AccountBilling.ListPaymentsPageAsync`) |
 | Electricity meter reading mutation | Allowed (mutation) | Implemented (`MeterReadings.CreateElectricityAsync`) |
-| Gas meter reading mutation | Not probed (fixture-only SDK; no gas on probe account) | Implemented (`MeterReadings.CreateGasAsync`, #99) |
+| Gas meter reading mutation | Not probed — **deferred** until a gas-capable dashboard key (schema + fixtures only today) | Implemented (`MeterReadings.CreateGasAsync`, #99); allow-list row unchanged until live re-probe |
 | `devices(accountNumber)` | Allowed (empty on probe account) | Implemented (#25 — `Devices.ListDevicesAsync`) |
 | `flexPlannedDispatches` | Allowed when entitled (`KT-CT-1111` without enrolled device) | Implemented (#25 — `Devices.ListFlexPlannedDispatchesAsync`) |
 | `smartMeterTelemetry` | Allowed when entitled (`KT-CT-1111` without EUI64) | Implemented (#26 — `SmartMeterTelemetry.GetTelemetryAsync`, `ListSmartDevicesAsync`) |

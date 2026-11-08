@@ -39,11 +39,19 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 
 ### Unreleased (v1.2 groundwork)
 
-Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` stays on the latest **1.1.x** release while GraphQL customer APIs land on `main`.
+Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` stays on the latest **1.1.x** release while GraphQL customer APIs land on `main`. Consumers installing from NuGet see **1.1.0** only; GraphQL-backed public accessors require **`main`** or a future **1.2.x** tag (documented in [API coverage](../docs/reference/api-coverage.md)).
 
 #### 1.2.0 tag checklist
 
 Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL release):
+
+**Documentation prep (can land before the tag):**
+
+- [x] README *Status* and *Roadmap* state NuGet **1.1.0** vs GraphQL on `main`.
+- [x] [API coverage](../docs/reference/api-coverage.md) explains NuGet vs source and clarifies REST account vs optional GraphQL account projection (#23).
+- [x] Gas mutation: public SDK with allow-list **Not probed** documented ([allow-list](../docs/planning/graphql-customer-allow-list.md) *Deferred live verification*).
+
+**Release gate (do at tag time):**
 
 1. [ ] From the repository root, pass Release checks:
 
@@ -58,7 +66,8 @@ Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL re
 4. [ ] Retitle [API coverage](../docs/reference/api-coverage.md): change *v1.2 GraphQL (in progress)* to shipped wording; update [README.md](../README.md) *Status* and *Roadmap* so NuGet **1.2.x** matches the package.
 5. [ ] Confirm [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) and the [API coverage](../docs/reference/api-coverage.md) customer-operations table agree on every **Public SDK** row (method names, probe status, planned vs implemented).
 6. [ ] Optionally re-run live allow-list probes (`OCTOPUS_ENERGY_ENABLE_LIVE_TESTS=1` and `OCTOPUS_ENERGY_API_KEY`) and refresh fixtures when probe results change.
-7. [ ] Tag and push (`git tag v1.2.0 && git push origin v1.2.0`); complete [Publish steps](#publish-steps).
+7. [ ] **Gas mutation (optional before tag):** re-probe `createGasMeterReading` on a gas-capable dashboard key and flip the allow-list row to **Allowed (mutation)**. **Deferred** when no such key is available (8 November 2026); shipping **1.2.0** without this step is acceptable if docs stay aligned.
+8. [ ] Tag and push (`git tag v1.2.0 && git push origin v1.2.0`); complete [Publish steps](#publish-steps).
 
 - **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. `OctopusEnergyClient.GraphQl` remains `internal`. Status tables: [API coverage](../docs/reference/api-coverage.md#v12-graphql-in-progress).
 - **GraphQL operational limits (issue #29).** `GraphQlRelayLimits`, Kraken exception types, `GraphQlRelayPageInfo`, and `client.RateLimits.GetRateLimitInfoAsync` (hourly points allowance). No automatic retry on `KT-CT-1199`.
