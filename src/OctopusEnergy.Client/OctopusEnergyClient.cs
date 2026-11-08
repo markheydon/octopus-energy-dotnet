@@ -7,6 +7,7 @@ using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Devices;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
+using OctopusEnergy.Client.Services.Octoplus;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
 using OctopusEnergy.Client.Services.SmartMeterTelemetry;
@@ -22,7 +23,7 @@ namespace OctopusEnergy.Client;
 /// (<see cref="DefaultBaseUrl"/> by default) with shared pagination and error handling.
 /// When constructed with a dashboard API key, GraphQL-backed resource services
 /// (<see cref="Viewer"/>, <see cref="RateLimits"/>, <see cref="MeterReadings"/>,
-/// <see cref="AccountBilling"/>, <see cref="Devices"/>, <see cref="SmartMeterTelemetry"/>) exchange the key for a Kraken JWT
+/// <see cref="AccountBilling"/>, <see cref="Devices"/>, <see cref="SmartMeterTelemetry"/>, <see cref="Octoplus"/>) exchange the key for a Kraken JWT
 /// internally on first use — callers do not choose transport per call or attach tokens.
 /// </remarks>
 public sealed class OctopusEnergyClient : IOctopusEnergyClient
@@ -186,6 +187,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         AccountBilling = new AccountBillingService(_graphQl);
         Devices = new DeviceService(_graphQl);
         SmartMeterTelemetry = new SmartMeterTelemetryService(_graphQl);
+        Octoplus = new OctoplusService(_graphQl);
     }
 
     /// <summary>
@@ -264,6 +266,14 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Field rate limits apply; the SDK does not retry <c>KT-CT-1199</c> automatically.
     /// </remarks>
     public ISmartMeterTelemetryService SmartMeterTelemetry { get; }
+
+    /// <summary>
+    /// Optional GraphQL Octoplus enrolment, loyalty points, and wheel-of-fortune helpers.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key. Saving-session joins are not on the public Kraken GraphQL host; see <see cref="Services.Octoplus.IOctoplusService"/> remarks.
+    /// </remarks>
+    public IOctoplusService Octoplus { get; }
 
     internal RestClient Rest { get; }
 

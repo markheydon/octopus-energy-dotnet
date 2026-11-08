@@ -7,6 +7,7 @@ using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Devices;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.MeterReadings;
+using OctopusEnergy.Client.Models.Octoplus;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
 using OctopusEnergy.Client.Models.SmartMeterTelemetry;
@@ -351,6 +352,11 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
         recorder,
         accountNumber,
         cancellationToken);
+    await RunOctoplusSmokeAsync(
+        authenticatedClient,
+        recorder,
+        accountNumber,
+        cancellationToken);
     recorder.Pass("authenticated client");
     return account;
 }
@@ -527,6 +533,45 @@ static async Task RunSmartMeterTelemetrySmokeAsync(
             "  Telemetry ({0}); query path responded.",
             ex.KrakenErrorCode);
         recorder.Pass("smart meter telemetry read");
+    }
+}
+
+static async Task RunOctoplusSmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    string accountNumber,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine();
+    Console.WriteLine("Octoplus (GraphQL-backed, API key):");
+
+    try
+    {
+        OctoplusAccountInfo info = await client.Octoplus.GetAccountInfoAsync(accountNumber, cancellationToken);
+        Console.WriteLine(
+            "  Enrolment: {0} (loyalty user: {1})",
+            info.EnrollmentStatus,
+            info.IsLoyaltyPointsUser);
+        recorder.Pass("octoplus account info");
+    }
+    catch (OctopusEnergyKrakenException ex)
+    {
+        Console.WriteLine("  Account info ({0}); query path responded.", ex.KrakenErrorCode);
+        recorder.Pass("octoplus account info");
+    }
+
+    try
+    {
+        LoyaltyPointsBalance balance = await client.Octoplus.GetLoyaltyPointsBalanceAsync(
+            accountNumber,
+            cancellationToken: cancellationToken);
+        Console.WriteLine("  Points: {0}", balance.Points);
+        recorder.Pass("octoplus points balance");
+    }
+    catch (OctopusEnergyKrakenException ex)
+    {
+        Console.WriteLine("  Points balance ({0}); query path responded.", ex.KrakenErrorCode);
+        recorder.Pass("octoplus points balance");
     }
 }
 

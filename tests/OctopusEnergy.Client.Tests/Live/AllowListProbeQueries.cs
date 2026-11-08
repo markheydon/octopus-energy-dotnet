@@ -195,8 +195,101 @@ internal static class AllowListProbeQueries
         """;
 
     internal const string LoyaltyPointsBalance = """
-        query LoyaltyPointsAllowListProbe {
-          loyaltyPointsBalance {
+        query LoyaltyPointsAllowListProbe($accountNumber: String!) {
+          loyaltyPointsBalance(input: { accountNumber: $accountNumber }) {
+            loyaltyPoints
+            totalMonetaryAmount
+            __typename
+          }
+        }
+        """;
+
+    internal const string LoyaltyPointLedgers = """
+        query LoyaltyPointLedgersAllowListProbe {
+          loyaltyPointLedgers {
+            id
+            balanceCarriedForward
+            postedAt
+            __typename
+          }
+        }
+        """;
+
+    internal const string OctoplusAccountInfo = """
+        query OctoplusAccountInfoAllowListProbe($accountNumber: String!) {
+          octoplusAccountInfo(accountNumber: $accountNumber) {
+            enrollmentStatus
+            __typename
+          }
+        }
+        """;
+
+    internal const string SavingSessions = """
+        query SavingSessionsAllowListProbe($accountNumber: String!) {
+          savingSessions {
+            events(includeDev: false) {
+              id
+              code
+              startAt
+              endAt
+              __typename
+            }
+            account(accountNumber: $accountNumber) {
+              hasJoinedCampaign
+              joinedEvents {
+                eventId
+                __typename
+              }
+              __typename
+            }
+          }
+        }
+        """;
+
+    internal const string JoinSavingSessionsEvent = """
+        mutation JoinSavingSessionsAllowListProbe($accountNumber: String!, $eventCode: String!) {
+          joinSavingSessionsEvent(input: {
+            accountNumber: $accountNumber
+            eventCode: $eventCode
+          }) {
+            joinedEventCodes
+            __typename
+          }
+        }
+        """;
+
+    internal const string WheelOfFortuneSpins = """
+        query WheelOfFortuneSpinsAllowListProbe($accountNumber: String!) {
+          wheelOfFortuneSpins(accountNumber: $accountNumber) {
+            electricity {
+              remainingSpinsThisMonth
+              __typename
+            }
+            gas {
+              remainingSpinsThisMonth
+              __typename
+            }
+            __typename
+          }
+        }
+        """;
+
+    internal const string JoinOctoplusCampaign = """
+        mutation JoinOctoplusCampaignAllowListProbe($accountNumber: String!) {
+          joinOctoplusCampaign(accountNumber: $accountNumber) {
+            outcome
+            __typename
+          }
+        }
+        """;
+
+    internal const string RedeemLoyaltyPointsForAccountCredit = """
+        mutation RedeemLoyaltyPointsAllowListProbe($accountNumber: String!) {
+          redeemLoyaltyPointsForAccountCredit(input: {
+            accountNumber: $accountNumber
+            points: 0
+          }) {
+            pointsRedeemed
             __typename
           }
         }

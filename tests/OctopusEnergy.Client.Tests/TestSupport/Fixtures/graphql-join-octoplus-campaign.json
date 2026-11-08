@@ -1,0 +1,11 @@
+{
+  "data": {
+    "joinOctoplusCampaign": {
+      "outcome": {
+        "octoplus": {
+          "hasEnrolled": true
+        }
+      }
+    }
+  }
+}

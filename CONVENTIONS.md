@@ -39,6 +39,7 @@ src/
     │   ├── RateLimits/                  # GraphQL rate-limit query models
     │   ├── Devices/                     # SmartFlex device and dispatch models
     │   ├── SmartMeterTelemetry/         # Home Mini telemetry and EUI64 models
+    │   ├── Octoplus/                    # Loyalty points, enrolment, wheel-of-fortune models
     │   └── Viewer/                      # GraphQL viewer discovery models
     └── Services/                        # Resource-oriented services
         ├── Accounts/                    # AccountService
@@ -50,6 +51,7 @@ src/
         ├── RateLimits/                  # RateLimitService (GraphQL-backed)
         ├── Devices/                     # DeviceService (GraphQL-backed)
         ├── SmartMeterTelemetry/         # SmartMeterTelemetryService (GraphQL-backed)
+        ├── Octoplus/                    # OctoplusService (GraphQL-backed, optional module)
         └── Viewer/                      # ViewerService (GraphQL-backed)
 
 tests/

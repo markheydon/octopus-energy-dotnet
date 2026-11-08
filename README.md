@@ -21,7 +21,7 @@ Roadmap (GitHub milestone → NuGet version; all stay on package **1.x** — see
 
 - **v1.0** REST core — shipped **`1.0.0`**: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
 - **v1.1** REST developer experience — shipped **`1.1.0`**: HttpClientFactory, interfaces, workflow helpers, safer consumption listing, 429 retry, trim-safe REST JSON, consumer how-tos
-- **v1.2** GraphQL extras — in progress (**`1.2.x`**, not `2.0.0`): **viewer**, **rate limits**, **electricity meter readings**, **account billing** (bills, transactions, payments), and **SmartFlex devices** (`devices`, `flexPlannedDispatches`) implemented in source; gas readings, Home Mini telemetry, Octoplus, and product switch still planned
+- **v1.2** GraphQL extras — in progress (**`1.2.x`**, not `2.0.0`): **viewer**, **rate limits**, **electricity meter readings**, **account billing**, **SmartFlex devices**, **Home Mini telemetry**, and **Octoplus** (public-host enrolment/points/wheel; not saving sessions on `api.backend.octopus.energy`) implemented in source; gas readings and product switch still planned
 
 ## Installation
 

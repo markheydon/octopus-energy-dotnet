@@ -65,7 +65,13 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `devices(accountNumber)` | Allowed (empty on probe account) | Implemented (#25 — `Devices.ListDevicesAsync`) |
 | `flexPlannedDispatches` | Allowed when entitled (`KT-CT-1111` without enrolled device) | Implemented (#25 — `Devices.ListFlexPlannedDispatchesAsync`) |
 | `smartMeterTelemetry` | Allowed when entitled (`KT-CT-1111` without EUI64) | Implemented (#26 — `SmartMeterTelemetry.GetTelemetryAsync`, `ListSmartDevicesAsync`) |
-| `loyaltyPointsBalance` (Octoplus proxy) | Denied (`KT-CT-1111` on probe account) | Planned (#27) |
+| `loyaltyPointsBalance` | Denied unentitled (`KT-CT-1111` on probe account) | Implemented (#27 — `Octoplus.GetLoyaltyPointsBalanceAsync`) |
+| `loyaltyPointLedgers` | Denied unentitled (expected on probe account) | Implemented (#27 — `Octoplus.ListLoyaltyPointLedgersAsync`) |
+| `octoplusAccountInfo` | Allowed when entitled | Implemented (#27 — `Octoplus.GetAccountInfoAsync`) |
+| `wheelOfFortuneSpins` | Allowed when entitled (deprecated field) | Implemented (#27 — `Octoplus.GetWheelOfFortuneSpinsAsync`) |
+| `joinOctoplusCampaign` | Allowed (mutation) | Implemented (#27 — `Octoplus.JoinCampaignAsync`) |
+| `redeemLoyaltyPointsForAccountCredit` | Allowed (mutation) | Implemented (#27 — `Octoplus.RedeemPointsForAccountCreditAsync`) |
+| `savingSessions` / join (backend host) | Not on public GraphQL schema | Out of scope — see allow-list |
 | `initiateProductSwitch` | Allowed (mutation) | Planned (#28) |
 | `rateLimitInfo` | Allowed | Implemented (`client.RateLimits`) |
 | `readingConsentGranularity` | Allowed | Planned |
