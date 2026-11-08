@@ -7,7 +7,7 @@
     <PackageId>OctopusEnergy.Client</PackageId>
     <Version>1.1.0</Version>
     <Authors>Mark Heydon</Authors>
-    <Description>Unofficial .NET client for the Octopus Energy customer REST API. Not affiliated with Octopus Energy.</Description>
+    <Description>Unofficial .NET client for the Octopus Energy customer APIs (REST plus curated GraphQL). Not affiliated with Octopus Energy.</Description>
     <PackageProjectUrl>https://markheydon.me.uk/octopus-energy-dotnet/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/markheydon/octopus-energy-dotnet</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

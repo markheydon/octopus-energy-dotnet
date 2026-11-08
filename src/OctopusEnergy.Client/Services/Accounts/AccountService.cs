@@ -34,8 +34,9 @@ public sealed class AccountService : IAccountService
     /// Thrown when the API returns a non-success HTTP status without a parseable error body.
     /// </exception>
     /// <remarks>
-    /// Requires authentication with a dashboard API key. Discovering the account number without
-    /// a bill is planned for milestone v1.2 GraphQL <c>viewer</c>; callers supply the account number for REST.
+    /// Requires authentication with a dashboard API key. When you do not have an account number,
+    /// use <see cref="Viewer.IViewerService.GetViewerAsync(System.Threading.CancellationToken)"/> on
+    /// <see cref="OctopusEnergyClient.Viewer"/> first; then call this method with the chosen number.
     /// </remarks>
     public Task<Account> GetAsync(string accountNumber, CancellationToken cancellationToken = default)
     {

@@ -5,6 +5,7 @@ using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
+using OctopusEnergy.Client.Models.Viewer;
 
 const string ApiKeyEnvironmentVariable = "OCTOPUS_ENERGY_API_KEY";
 const string AccountNumberEnvironmentVariable = "OCTOPUS_ENERGY_ACCOUNT_NUMBER";
@@ -79,6 +80,7 @@ try
         recorder.Skip("electricity consumption", "requires authenticated client");
         recorder.Skip("gas consumption", "requires authenticated client");
         recorder.Skip("rate limits", "requires authenticated client");
+        recorder.Skip("viewer", "requires authenticated client");
     }
 
     if (await TryRunSectionAsync(
@@ -242,6 +244,7 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             recorder.Skip("gas consumption", reason);
         }
 
+        await RunViewerSmokeAsync(authenticatedClient, recorder, cancellationToken);
         await RunRateLimitsSmokeAsync(authenticatedClient, recorder, cancellationToken);
         recorder.Pass("authenticated client");
         return null;
@@ -297,9 +300,24 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
         recorder.Skip("gas consumption", reason);
     }
 
+    await RunViewerSmokeAsync(authenticatedClient, recorder, cancellationToken);
     await RunRateLimitsSmokeAsync(authenticatedClient, recorder, cancellationToken);
     recorder.Pass("authenticated client");
     return account;
+}
+
+static async Task RunViewerSmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine();
+    Console.WriteLine("Viewer (GraphQL-backed, API key):");
+
+    ViewerDetail viewer = await client.Viewer.GetViewerAsync(cancellationToken);
+    Console.WriteLine("  Linked accounts: {0}", viewer.AccountNumbers.Count);
+
+    recorder.Pass("viewer");
 }
 
 static async Task RunRateLimitsSmokeAsync(
