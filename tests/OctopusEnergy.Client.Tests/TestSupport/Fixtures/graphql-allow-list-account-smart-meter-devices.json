@@ -1,0 +1,20 @@
+{
+  "data": {
+    "account": {
+      "electricityAgreements": [
+        {
+          "meterPoint": {
+            "mpan": "REDACTED",
+            "meters": [
+              {
+                "serialNumber": "REDACTED",
+                "smartDevices": []
+              }
+            ]
+          }
+        }
+      ],
+      "gasAgreements": []
+    }
+  }
+}

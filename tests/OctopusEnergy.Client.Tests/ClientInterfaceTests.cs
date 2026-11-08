@@ -8,6 +8,7 @@ using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
+using OctopusEnergy.Client.Models.SmartMeterTelemetry;
 using OctopusEnergy.Client.Models.Viewer;
 using OctopusEnergy.Client.Services.AccountBilling;
 using OctopusEnergy.Client.Services.Accounts;
@@ -17,6 +18,7 @@ using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
+using OctopusEnergy.Client.Services.SmartMeterTelemetry;
 using OctopusEnergy.Client.Services.Viewer;
 
 namespace OctopusEnergy.Client.Tests;
@@ -39,6 +41,7 @@ public sealed class ClientInterfaceTests
         Assert.IsAssignableFrom<IViewerService>(client.Viewer);
         Assert.IsAssignableFrom<IAccountBillingService>(client.AccountBilling);
         Assert.IsAssignableFrom<IDeviceService>(client.Devices);
+        Assert.IsAssignableFrom<ISmartMeterTelemetryService>(client.SmartMeterTelemetry);
     }
 
     [Fact]
@@ -56,6 +59,7 @@ public sealed class ClientInterfaceTests
         Assert.IsType<ViewerService>(client.Viewer);
         Assert.IsType<AccountBillingService>(client.AccountBilling);
         Assert.IsType<DeviceService>(client.Devices);
+        Assert.IsType<SmartMeterTelemetryService>(client.SmartMeterTelemetry);
     }
 
     [Fact]
@@ -87,6 +91,7 @@ public sealed class ClientInterfaceTests
             Viewer = new StubViewerService();
             AccountBilling = new StubAccountBillingService();
             Devices = new StubDeviceService();
+            SmartMeterTelemetry = new StubSmartMeterTelemetryService();
         }
 
         public string? LastRequestedAccountNumber { get; private set; }
@@ -110,6 +115,8 @@ public sealed class ClientInterfaceTests
         public IAccountBillingService AccountBilling { get; }
 
         public IDeviceService Devices { get; }
+
+        public ISmartMeterTelemetryService SmartMeterTelemetry { get; }
 
         public void Dispose()
         {
@@ -275,6 +282,25 @@ public sealed class ClientInterfaceTests
             string deviceId,
             CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<FlexPlannedDispatch>>([]);
+    }
+
+    private sealed class StubSmartMeterTelemetryService : ISmartMeterTelemetryService
+    {
+        public Task<IReadOnlyList<SmartMeterDevice>> ListSmartDevicesAsync(
+            string accountNumber,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<SmartMeterDevice>>([]);
+
+        public Task<IReadOnlyList<SmartMeterTelemetryReading>> GetTelemetryAsync(
+            string deviceId,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<SmartMeterTelemetryReading>>([]);
+
+        public Task<IReadOnlyList<SmartMeterTelemetryReading>> GetTelemetryAsync(
+            string deviceId,
+            SmartMeterTelemetryRange range,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<SmartMeterTelemetryReading>>([]);
     }
 
     private sealed class StubAccountBillingService : IAccountBillingService

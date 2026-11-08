@@ -1,0 +1,26 @@
+{
+  "data": {
+    "account": {
+      "electricityAgreements": [
+        {
+          "meterPoint": {
+            "mpan": "1234567890123",
+            "meters": [
+              {
+                "serialNumber": "MTR-IMPORT-01",
+                "smartDevices": [
+                  {
+                    "deviceId": "12-34-5A-FF-FF-6B-C7-89",
+                    "type": "ESME",
+                    "serialNumber": "ESME-001"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "gasAgreements": []
+    }
+  }
+}

@@ -51,6 +51,7 @@ Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEne
 - **Electricity meter readings (issue #24, partial).** `IOctopusEnergyClient.MeterReadings` (`IMeterReadingService`, `ElectricityMeterReadingCreate`, `ElectricityMeterReadingResult`) wraps `createElectricityMeterReading` for dashboard API keys. Gas remains on the same story (#24) and is unshipped pending allow-list re-probe on an account with gas.
 - **Account billing (issue #23).** `IOctopusEnergyClient.AccountBilling` (`IAccountBillingService`, `GraphQlRelayPage<T>`) lists bills, ledger transactions, and payments via separate GraphQL queries (`ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`). Default page size `AccountBillingListDefaults.DefaultFirst` (25).
 - **SmartFlex devices (issue #25).** `IOctopusEnergyClient.Devices` (`IDeviceService`, `SmartFlexDevice`, `FlexPlannedDispatch`) lists enrolled hardware via `devices(accountNumber:)` and planned windows via `flexPlannedDispatches(deviceId:)` only (not deprecated `plannedDispatches`). Empty device lists are returned without exception; unauthorised device ids surface as `OctopusEnergyKrakenException`.
+- **Home Mini telemetry (issue #26).** `IOctopusEnergyClient.SmartMeterTelemetry` (`ISmartMeterTelemetryService`, `SmartMeterDevice`, `SmartMeterTelemetryReading`, `SmartMeterTelemetryRange`) discovers EUI64 ids via agreement `smartDevices` and reads `smartMeterTelemetry(deviceId:)`. Field rate limits (`KT-CT-1199`, documented 125/h) are not retried automatically.
 
 ### Additive changes
 

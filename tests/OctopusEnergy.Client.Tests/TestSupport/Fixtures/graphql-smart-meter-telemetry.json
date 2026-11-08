@@ -1,0 +1,24 @@
+{
+  "data": {
+    "smartMeterTelemetry": [
+      {
+        "readAt": "2024-06-01T12:00:00+00:00",
+        "consumption": "123.456",
+        "consumptionDelta": "0.012",
+        "costDelta": "1.23",
+        "costDeltaWithTax": "1.29",
+        "demand": "2.5",
+        "export": "0"
+      },
+      {
+        "readAt": "2024-06-01T12:05:00+00:00",
+        "consumption": "123.468",
+        "consumptionDelta": "0.011",
+        "costDelta": "1.10",
+        "costDeltaWithTax": "1.16",
+        "demand": "2.4",
+        "export": "0"
+      }
+    ]
+  }
+}

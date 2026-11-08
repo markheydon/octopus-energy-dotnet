@@ -146,6 +146,46 @@ internal static class AllowListProbeQueries
         }
         """;
 
+    internal const string AccountSmartMeterDevices = """
+        query AccountSmartMeterDevicesAllowListProbe($accountNumber: String!) {
+          account(accountNumber: $accountNumber) {
+            electricityAgreements {
+              meterPoint {
+                mpan
+                meters {
+                  serialNumber
+                  smartDevices {
+                    deviceId
+                    type
+                  }
+                }
+              }
+            }
+            gasAgreements {
+              meterPoint {
+                mprn
+                meters {
+                  serialNumber
+                  smartDevices {
+                    deviceId
+                    type
+                  }
+                }
+              }
+            }
+          }
+        }
+        """;
+
+    internal const string SmartMeterTelemetryForDevice = """
+        query SmartMeterTelemetryAllowListProbe($deviceId: String!) {
+          smartMeterTelemetry(deviceId: $deviceId) {
+            readAt
+            __typename
+          }
+        }
+        """;
+
     internal const string SmartMeterTelemetry = """
         query SmartMeterTelemetryAllowListProbe {
           smartMeterTelemetry(deviceId: "0000000000000000") {
