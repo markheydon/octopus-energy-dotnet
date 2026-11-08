@@ -1,0 +1,16 @@
+{
+  "data": {
+    "wheelOfFortuneSpins": {
+      "electricity": {
+        "maxSpinsPerMonth": 1,
+        "remainingSpinsThisMonth": 1,
+        "usedSpinsThisMonth": 0
+      },
+      "gas": {
+        "maxSpinsPerMonth": 1,
+        "remainingSpinsThisMonth": 0,
+        "usedSpinsThisMonth": 1
+      }
+    }
+  }
+}

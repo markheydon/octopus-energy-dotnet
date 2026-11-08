@@ -6,6 +6,7 @@ using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Devices;
 using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.MeterReadings;
+using OctopusEnergy.Client.Models.Octoplus;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
 using OctopusEnergy.Client.Models.SmartMeterTelemetry;
@@ -16,6 +17,7 @@ using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Devices;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
+using OctopusEnergy.Client.Services.Octoplus;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
 using OctopusEnergy.Client.Services.SmartMeterTelemetry;
@@ -42,6 +44,7 @@ public sealed class ClientInterfaceTests
         Assert.IsAssignableFrom<IAccountBillingService>(client.AccountBilling);
         Assert.IsAssignableFrom<IDeviceService>(client.Devices);
         Assert.IsAssignableFrom<ISmartMeterTelemetryService>(client.SmartMeterTelemetry);
+        Assert.IsAssignableFrom<IOctoplusService>(client.Octoplus);
     }
 
     [Fact]
@@ -60,6 +63,7 @@ public sealed class ClientInterfaceTests
         Assert.IsType<AccountBillingService>(client.AccountBilling);
         Assert.IsType<DeviceService>(client.Devices);
         Assert.IsType<SmartMeterTelemetryService>(client.SmartMeterTelemetry);
+        Assert.IsType<OctoplusService>(client.Octoplus);
     }
 
     [Fact]
@@ -92,6 +96,7 @@ public sealed class ClientInterfaceTests
             AccountBilling = new StubAccountBillingService();
             Devices = new StubDeviceService();
             SmartMeterTelemetry = new StubSmartMeterTelemetryService();
+            Octoplus = new StubOctoplusService();
         }
 
         public string? LastRequestedAccountNumber { get; private set; }
@@ -117,6 +122,8 @@ public sealed class ClientInterfaceTests
         public IDeviceService Devices { get; }
 
         public ISmartMeterTelemetryService SmartMeterTelemetry { get; }
+
+        public IOctoplusService Octoplus { get; }
 
         public void Dispose()
         {
@@ -282,6 +289,41 @@ public sealed class ClientInterfaceTests
             string deviceId,
             CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<FlexPlannedDispatch>>([]);
+    }
+
+    private sealed class StubOctoplusService : IOctoplusService
+    {
+        public Task<OctoplusAccountInfo> GetAccountInfoAsync(
+            string accountNumber,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new OctoplusAccountInfo());
+
+        public Task<IReadOnlyList<LoyaltyPointLedgerEntry>> ListLoyaltyPointLedgersAsync(
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<LoyaltyPointLedgerEntry>>([]);
+
+        public Task<LoyaltyPointsBalance> GetLoyaltyPointsBalanceAsync(
+            string accountNumber,
+            string? schemeCode = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new LoyaltyPointsBalance());
+
+        public Task<WheelOfFortuneSpinsAvailability> GetWheelOfFortuneSpinsAsync(
+            string accountNumber,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new WheelOfFortuneSpinsAvailability());
+
+        public Task<JoinOctoplusCampaignResult> JoinCampaignAsync(
+            string accountNumber,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new JoinOctoplusCampaignResult());
+
+        public Task<RedeemLoyaltyPointsResult> RedeemPointsForAccountCreditAsync(
+            string accountNumber,
+            int points,
+            string? schemeCode = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new RedeemLoyaltyPointsResult());
     }
 
     private sealed class StubSmartMeterTelemetryService : ISmartMeterTelemetryService

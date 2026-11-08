@@ -1,0 +1,13 @@
+{
+  "data": {
+    "redeemLoyaltyPointsForAccountCredit": null
+  },
+  "errors": [
+    {
+      "message": "Validation failed.",
+      "extensions": {
+        "errorCode": "KT-CT-7899"
+      }
+    }
+  ]
+}

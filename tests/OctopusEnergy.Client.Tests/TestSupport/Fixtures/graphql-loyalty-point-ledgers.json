@@ -1,0 +1,14 @@
+{
+  "data": {
+    "loyaltyPointLedgers": [
+      {
+        "id": "ledger-1",
+        "ledgerType": "CREDIT",
+        "value": "100",
+        "balanceCarriedForward": "1250",
+        "postedAt": "2026-11-01T12:00:00+00:00",
+        "accountNumber": "A-TEST0001"
+      }
+    ]
+  }
+}

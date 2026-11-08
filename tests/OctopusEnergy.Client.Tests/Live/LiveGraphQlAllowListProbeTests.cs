@@ -184,12 +184,96 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
                 note: "Placeholder device id."));
         }
 
+        if (accountNumber is not null)
+        {
+            results.Add(await probe.ProbeAsync(
+                "loyaltyPointsBalance",
+                AllowListProbeQueries.LoyaltyPointsBalance,
+                new { accountNumber },
+                CancellationToken.None,
+                note: "Octoplus points balance for account."));
+        }
+        else
+        {
+            results.Add(new GraphQlAllowListProbeResult
+            {
+                Operation = "loyaltyPointsBalance",
+                Outcome = GraphQlProbeOutcome.Skipped,
+                Note = "Skipped: no account number from viewer or environment.",
+            });
+        }
+
         results.Add(await probe.ProbeAsync(
-            "loyaltyPointsBalance",
-            AllowListProbeQueries.LoyaltyPointsBalance,
+            "loyaltyPointLedgers",
+            AllowListProbeQueries.LoyaltyPointLedgers,
             variables: null,
             CancellationToken.None,
-            note: "Octoplus / loyalty proxy field on Query root."));
+            note: "Octoplus points ledger on Query root."));
+
+        if (accountNumber is not null)
+        {
+            results.Add(await probe.ProbeAsync(
+                "octoplusAccountInfo",
+                AllowListProbeQueries.OctoplusAccountInfo,
+                new { accountNumber },
+                CancellationToken.None,
+                note: "Octoplus enrolment status for account."));
+
+            results.Add(await probe.ProbeAsync(
+                "savingSessions",
+                AllowListProbeQueries.SavingSessions,
+                new { accountNumber },
+                CancellationToken.None,
+                note: "Saving session events and account join state (public Kraken GraphQL)."));
+
+            results.Add(await probe.ProbeAsync(
+                "joinSavingSessionsEvent",
+                AllowListProbeQueries.JoinSavingSessionsEvent,
+                new { accountNumber, eventCode = "INVALID-PROBE-EVENT" },
+                CancellationToken.None,
+                note: "Invalid event code; expect business/validation error, not disabled field."));
+
+            results.Add(await probe.ProbeAsync(
+                "wheelOfFortuneSpins",
+                AllowListProbeQueries.WheelOfFortuneSpins,
+                new { accountNumber },
+                CancellationToken.None,
+                note: "Deprecated public query; spin allowance per fuel."));
+
+            results.Add(await probe.ProbeAsync(
+                "joinOctoplusCampaign",
+                AllowListProbeQueries.JoinOctoplusCampaign,
+                new { accountNumber },
+                CancellationToken.None,
+                note: "Join probe; expect already-enrolled or business error when not eligible."));
+
+            results.Add(await probe.ProbeAsync(
+                "redeemLoyaltyPointsForAccountCredit",
+                AllowListProbeQueries.RedeemLoyaltyPointsForAccountCredit,
+                new { accountNumber },
+                CancellationToken.None,
+                note: "Zero points; expect validation or permission error, not disabled field."));
+        }
+        else
+        {
+            foreach (string operation in new[]
+                     {
+                         "octoplusAccountInfo",
+                         "savingSessions",
+                         "joinSavingSessionsEvent",
+                         "wheelOfFortuneSpins",
+                         "joinOctoplusCampaign",
+                         "redeemLoyaltyPointsForAccountCredit",
+                     })
+            {
+                results.Add(new GraphQlAllowListProbeResult
+                {
+                    Operation = operation,
+                    Outcome = GraphQlProbeOutcome.Skipped,
+                    Note = "Skipped: no account number from viewer or environment.",
+                });
+            }
+        }
 
         if (!string.IsNullOrWhiteSpace(meters?.Mpan)
             && !string.IsNullOrWhiteSpace(meters.ElectricitySerialNumber))

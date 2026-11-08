@@ -29,13 +29,13 @@
 | Account | REST `/v1/accounts/{number}/` | Implemented |
 | Consumption | REST electricity/gas consumption | Implemented (`ConsumptionService`) |
 
-How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md), [meter readings](../how-to/meter-readings.md), [account billing](../how-to/account-billing.md), [SmartFlex devices](../how-to/devices.md), [smart-meter telemetry](../how-to/smart-meter-telemetry.md). See also [getting started](../tutorial/getting-started.md), [REST and GraphQL](../explanation/rest-and-graphql.md), and [units, VAT, and time](../explanation/units-vat-and-time.md).
+How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md), [meter readings](../how-to/meter-readings.md), [account billing](../how-to/account-billing.md), [SmartFlex devices](../how-to/devices.md), [smart-meter telemetry](../how-to/smart-meter-telemetry.md), [Octoplus](../how-to/octoplus.md). See also [getting started](../tutorial/getting-started.md), [REST and GraphQL](../explanation/rest-and-graphql.md), and [units, VAT, and time](../explanation/units-vat-and-time.md).
 
 ## v1.2 GraphQL (in progress)
 
 Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). NuGet **1.2.x** when the public surface ships — see [release labels](../../VERSIONING.md#release-labels-quick-reference). Unreleased groundwork is documented in [plan/RELEASE.md](../../plan/RELEASE.md) (section *Unreleased (v1.2 groundwork)*).
 
-**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), electricity meter reading submission (`MeterReadings.CreateElectricityAsync`), account billing lists (`AccountBilling.ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`), SmartFlex devices (`Devices.ListDevicesAsync`, `Devices.ListFlexPlannedDispatchesAsync`), and Home Mini telemetry (`SmartMeterTelemetry.ListSmartDevicesAsync`, `SmartMeterTelemetry.GetTelemetryAsync`). Additional curated GraphQL stories are in progress.
+**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), electricity meter reading submission (`MeterReadings.CreateElectricityAsync`), account billing lists (`AccountBilling.ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`), SmartFlex devices (`Devices.ListDevicesAsync`, `Devices.ListFlexPlannedDispatchesAsync`), Home Mini telemetry (`SmartMeterTelemetry.ListSmartDevicesAsync`, `SmartMeterTelemetry.GetTelemetryAsync`), and Octoplus helpers (`Octoplus.GetAccountInfoAsync`, `ListLoyaltyPointLedgersAsync`, `GetLoyaltyPointsBalanceAsync`, `GetWheelOfFortuneSpinsAsync`, `JoinCampaignAsync`, `RedeemPointsForAccountCreditAsync`). Additional curated GraphQL stories are in progress.
 
 ### Infrastructure (unreleased, internal)
 
@@ -65,7 +65,13 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `devices(accountNumber)` | Allowed (empty on probe account) | Implemented (#25 — `Devices.ListDevicesAsync`) |
 | `flexPlannedDispatches` | Allowed when entitled (`KT-CT-1111` without enrolled device) | Implemented (#25 — `Devices.ListFlexPlannedDispatchesAsync`) |
 | `smartMeterTelemetry` | Allowed when entitled (`KT-CT-1111` without EUI64) | Implemented (#26 — `SmartMeterTelemetry.GetTelemetryAsync`, `ListSmartDevicesAsync`) |
-| `loyaltyPointsBalance` (Octoplus proxy) | Denied (`KT-CT-1111` on probe account) | Planned (#27) |
+| `loyaltyPointsBalance` | Denied unentitled (`KT-CT-1111` on probe account) | Implemented (#27 — `Octoplus.GetLoyaltyPointsBalanceAsync`) |
+| `loyaltyPointLedgers` | Denied unentitled (expected on probe account) | Implemented (#27 — `Octoplus.ListLoyaltyPointLedgersAsync`) |
+| `octoplusAccountInfo` | Allowed when entitled | Implemented (#27 — `Octoplus.GetAccountInfoAsync`) |
+| `wheelOfFortuneSpins` | Allowed when entitled (deprecated field) | Implemented (#27 — `Octoplus.GetWheelOfFortuneSpinsAsync`) |
+| `joinOctoplusCampaign` | Allowed (mutation) | Implemented (#27 — `Octoplus.JoinCampaignAsync`) |
+| `redeemLoyaltyPointsForAccountCredit` | Allowed (mutation) | Implemented (#27 — `Octoplus.RedeemPointsForAccountCreditAsync`) |
+| `savingSessions` / join (backend host) | Not on public GraphQL schema | Out of scope — see allow-list |
 | `initiateProductSwitch` | Allowed (mutation) | Planned (#28) |
 | `rateLimitInfo` | Allowed | Implemented (`client.RateLimits`) |
 | `readingConsentGranularity` | Allowed | Planned |

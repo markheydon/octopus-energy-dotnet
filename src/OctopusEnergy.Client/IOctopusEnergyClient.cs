@@ -4,6 +4,7 @@ using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Devices;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
+using OctopusEnergy.Client.Services.Octoplus;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
 using OctopusEnergy.Client.Services.SmartMeterTelemetry;
@@ -19,7 +20,7 @@ namespace OctopusEnergy.Client;
 /// <see cref="OctopusEnergyClient"/>. Catalogue, account, consumption, and industry
 /// calls use REST. Curated customer GraphQL (for example
 /// <see cref="Viewer"/>, <see cref="RateLimits"/>, <see cref="MeterReadings"/>,
-/// <see cref="AccountBilling"/>, <see cref="Devices"/>, and <see cref="SmartMeterTelemetry"/>)
+/// <see cref="AccountBilling"/>, <see cref="Devices"/>, <see cref="SmartMeterTelemetry"/>, and <see cref="Octoplus"/>)
 /// uses the same client and dashboard API key; JWT exchange is internal. Construct an
 /// <see cref="OctopusEnergyClient"/> to call the live API; depend on this interface
 /// in application code so unit tests can substitute behaviour.
@@ -80,4 +81,9 @@ public interface IOctopusEnergyClient : IDisposable
     /// GraphQL Home Mini / CAD smart-meter telemetry and EUI64 discovery for the authenticated API key.
     /// </summary>
     ISmartMeterTelemetryService SmartMeterTelemetry { get; }
+
+    /// <summary>
+    /// Optional GraphQL Octoplus enrolment, loyalty points, and wheel-of-fortune helpers.
+    /// </summary>
+    IOctoplusService Octoplus { get; }
 }
