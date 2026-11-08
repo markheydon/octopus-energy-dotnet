@@ -24,7 +24,7 @@ public interface ISmartMeterTelemetryService
     /// Thrown when the GraphQL API returns <c>errors.extensions.errorCode</c>.
     /// </exception>
     /// <exception cref="OctopusEnergyParseException">
-    /// Thrown when the response cannot be deserialised.
+    /// Thrown when the response cannot be deserialised or the account node is missing.
     /// </exception>
     /// <remarks>
     /// Uses the curated path <c>account → electricityAgreements | gasAgreements → meterPoint → meters → smartDevices</c>.
@@ -61,8 +61,10 @@ public interface ISmartMeterTelemetryService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Telemetry samples. The list is empty when none are available; it is never null.</returns>
     /// <exception cref="OctopusEnergyRequestException">
-    /// Thrown when the client was created without a dashboard API key, the device id is missing,
-    /// or <paramref name="range"/> is null.
+    /// Thrown when the client was created without a dashboard API key or the device id is missing.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="range"/> is null.
     /// </exception>
     /// <exception cref="OctopusEnergyKrakenException">
     /// Thrown when the GraphQL API returns <c>errors.extensions.errorCode</c>
