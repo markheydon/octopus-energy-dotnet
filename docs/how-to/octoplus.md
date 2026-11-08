@@ -41,6 +41,8 @@ IReadOnlyList<LoyaltyPointLedgerEntry> ledgers = await client.Octoplus.ListLoyal
     cancellationToken);
 ```
 
+`ListLoyaltyPointLedgersAsync` issues one GraphQL query. The public schema exposes `loyaltyPointLedgers` as a list field, not a Relay connection, so the SDK returns the full response in a single call. There is no `first`/`after` paging on this path; if Kraken adds connection-style pagination later, the SDK would need a follow-up change.
+
 ## Wheel of fortune (spin allowance)
 
 The underlying GraphQL field is deprecated but still returned for eligible accounts:
