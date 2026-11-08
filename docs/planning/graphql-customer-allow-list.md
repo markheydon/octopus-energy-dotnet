@@ -81,6 +81,8 @@ Copy redacted envelopes from test output into this document and into `tests/.../
 
 ## Related
 
+When re-probing or shipping public SDK methods for operations that are **Allowed** here but not yet wrapped (for example `createGasMeterReading`, `readingConsentGranularity`, `initiateProductSwitch`), update this probe matrix and the **Allow-list status** column in [API coverage](../reference/api-coverage.md) in the same change.
+
 - [API coverage](../reference/api-coverage.md) — consumer-facing summary table (must match probe statuses here)  
 - [coding notes §5](coding-notes.md) — candidate list and complexity notes  
 - [ADR-0001](../../adr/adr-0001-customer-sdk-dual-transport.md) — dual transport and allow-list follow-up  
