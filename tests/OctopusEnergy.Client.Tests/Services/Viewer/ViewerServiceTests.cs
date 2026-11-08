@@ -20,7 +20,7 @@ public sealed class ViewerServiceTests
         ViewerDetail viewer = await client.Viewer.GetViewerAsync(CancellationToken.None);
 
         Assert.Equal("viewer-id-redacted", viewer.Id);
-        Assert.Equal(["A-TEST0001", "A-TEST0002"], viewer.AccountNumbers);
+        Assert.Equal(["A-TEST0001", "A-TEST0002", "A-TEST0003"], viewer.AccountNumbers);
         Assert.Equal(2, handler.SentRequests.Count);
     }
 

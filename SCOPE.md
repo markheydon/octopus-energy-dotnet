@@ -24,7 +24,7 @@ Release naming: GitHub milestones (**v1.0**, **v1.1**, **v1.2**) and NuGet **1.x
 - Documented units (kWh vs gas m³, pence, VAT inc/exc).
 - NuGet packaging pipeline.
 - Consumer docs: getting started, pagination, errors, API coverage.
-- **No** GraphQL in the public v1 surface unless required for a REST gap that blocks G1 (account discovery via `viewer` is planned for milestone **v1.2** GraphQL).
+- **No** GraphQL in the public v1.0 REST MVP; account discovery via `viewer` is milestone **v1.2** GraphQL (see below).
 
 ---
 

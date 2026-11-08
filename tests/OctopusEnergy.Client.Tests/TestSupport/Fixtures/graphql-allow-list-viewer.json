@@ -5,6 +5,14 @@
       "accounts": [
         { "number": "A-TEST0001" },
         { "number": "A-TEST0002" }
+      ],
+      "portfolios": [
+        {
+          "accounts": [
+            { "number": "A-TEST0002" },
+            { "number": "A-TEST0003" }
+          ]
+        }
       ]
     }
   },
