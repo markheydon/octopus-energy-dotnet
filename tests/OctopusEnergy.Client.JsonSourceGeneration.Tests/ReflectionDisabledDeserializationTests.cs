@@ -60,6 +60,7 @@ public sealed class ReflectionDisabledDeserializationTests
             Deserialize<PaginatedResponse<TariffCharge>>("tariff-rates-agile-half-hours.json");
 
         Assert.NotEmpty(page.Results);
+        Assert.Null(page.Results[0].PaymentMethod);
     }
 
     [Fact]
