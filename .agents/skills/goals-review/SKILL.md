@@ -53,8 +53,10 @@ For **every** service implementation under `src/OctopusEnergy.Client/Services/`,
 **Step 1 - enumerate service implementations**
 
 ```bash
-find src/OctopusEnergy.Client/Services -name '*Service.cs' ! -name 'I*'
+find src/OctopusEnergy.Client/Services -name '*Service.cs' ! -name 'I[A-Z]*Service.cs'
 ```
+
+Excludes interface files (`IAccountService.cs`, `IIndustryService.cs`, …) but includes implementations whose names start with `I` followed by a lowercase letter (`IndustryService.cs`).
 
 **Step 2 - classify methods**
 
@@ -75,7 +77,7 @@ For list services:
 
 **Step 4 - verify docs, samples, and tests match the SDK**
 
-Cross-check [API coverage](../../../docs/reference/api-coverage.md), [samples](../../../samples/README.md), relevant how-to docs, and service tests against the inventory. Flag stale method names or examples as drift.
+Cross-check [API coverage](../../../docs/reference/api-coverage.md), [GraphQL allow-list](../../../docs/planning/graphql-customer-allow-list.md) (summary table must match probe statuses), [samples](../../../samples/README.md), relevant how-to docs, and service tests against the inventory. Flag stale method names or examples as drift.
 
 #### Checklist (apply per service)
 
@@ -107,6 +109,7 @@ Include a **Service list-method inventory** table in every goals review:
 
 - [ ] Callers use one client and do not have to choose REST or GraphQL transport for supported resources
 - [ ] Authentication and transport implementation details remain internal where applicable
+- [ ] **When the first public GraphQL resource service ships:** re-run the full service list-method inventory (REST plus GraphQL), confirm no caller-visible REST vs GraphQL choice, and update [API coverage](../../../docs/reference/api-coverage.md) and the allow-list together
 
 ### Scope boundaries
 

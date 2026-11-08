@@ -1,0 +1,13 @@
+{
+  "data": {
+    "initiateProductSwitch": null
+  },
+  "errors": [
+    {
+      "message": "An internal error occurred.",
+      "extensions": {
+        "errorCode": "KT-CT-7899"
+      }
+    }
+  ]
+}

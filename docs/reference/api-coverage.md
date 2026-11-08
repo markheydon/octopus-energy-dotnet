@@ -48,17 +48,23 @@ Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md
 
 ### Customer operations (planned public)
 
-| Area | Status |
-|---|---|
-| `viewer` / portfolios / multi-account | Planned |
-| Richer `account` projections (bills, transactions, payments) | Planned |
-| Meter reading mutations | Planned |
-| SmartFlex / Intelligent devices, Home Mini telemetry | Planned |
-| Octoplus / saving sessions | Planned |
-| Product switch mutation (if customer permissions allow) | Planned |
-| `rateLimitInfo` | Planned |
+Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planning/graphql-customer-allow-list.md).
 
-Keep this table aligned with [SCOPE.md](../../SCOPE.md) and [plan/RELEASE.md](../../plan/RELEASE.md) as groundwork merges and public services ship.
+| Area | Allow-list status | Public SDK |
+|---|---|---|
+| `viewer` / multi-account | Allowed | Planned (#22) |
+| `account` (minimal projection, meter discovery) | Allowed | Planned (#23) |
+| `account` (bills, transactions, payments) | Not probed | Planned (#23) |
+| Electricity meter reading mutation | Allowed (mutation) | Planned (#24) |
+| Gas meter reading mutation | Not probed on spike account | Planned (#24) |
+| `devices(accountNumber)` | Allowed (empty on probe account) | Planned (#25) |
+| `flexPlannedDispatches` | Denied (`KT-CT-1111` on probe account) | Planned (#25) |
+| `smartMeterTelemetry` | Denied (`KT-CT-1111` on probe account) | Planned (#26) |
+| `loyaltyPointsBalance` (Octoplus proxy) | Denied (`KT-CT-1111` on probe account) | Planned (#27) |
+| `initiateProductSwitch` | Allowed (mutation) | Planned (#28) |
+| `rateLimitInfo`, `readingConsentGranularity` | Allowed | Planned |
+
+Keep this table aligned with [SCOPE.md](../../SCOPE.md), [plan/RELEASE.md](../../plan/RELEASE.md), and the [GraphQL customer allow-list](../planning/graphql-customer-allow-list.md) (probe matrix is authoritative for **Allow-list status**). Update both documents in the same change when re-probing or shipping public GraphQL methods.
 
 ## Explicitly not covered
 

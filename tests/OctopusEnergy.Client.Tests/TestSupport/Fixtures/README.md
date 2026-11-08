@@ -33,6 +33,11 @@ before the 16:00 Europe/London day-ahead publish window).
 and `graphql-rate-limit-info.json` support Kraken token obtain, refresh, and `KT-CT-1112`
 retry tests. Tokens are obvious placeholders, not real JWTs.
 
+`graphql-allow-list-*.json` are **redacted** envelopes from the customer GraphQL allow-list
+spike (issue #21). They document allowed vs denied operations for v1.2 stories; regenerate
+via `LiveGraphQlAllowListProbeTests` and update
+[graphql-customer-allow-list.md](../../../../docs/planning/graphql-customer-allow-list.md).
+
 ## Live checks
 
 Live API smoke tests live under `tests/OctopusEnergy.Client.Tests/Live/` and are

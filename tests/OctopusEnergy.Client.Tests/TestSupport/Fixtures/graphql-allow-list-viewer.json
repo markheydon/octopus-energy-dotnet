@@ -1,0 +1,12 @@
+{
+  "data": {
+    "viewer": {
+      "id": "viewer-id-redacted",
+      "accounts": [
+        { "number": "A-TEST0001" },
+        { "number": "A-TEST0002" }
+      ]
+    }
+  },
+  "errors": null
+}

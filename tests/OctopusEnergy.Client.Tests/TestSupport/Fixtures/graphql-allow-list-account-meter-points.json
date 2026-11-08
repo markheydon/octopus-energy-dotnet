@@ -1,0 +1,20 @@
+{
+  "data": {
+    "account": {
+      "properties": [
+        {
+          "electricityMeterPoints": [
+            {
+              "mpan": "1000000000001",
+              "meters": [
+                { "serialNumber": "TEST-SERIAL-RED" }
+              ]
+            }
+          ],
+          "gasMeterPoints": []
+        }
+      ]
+    }
+  },
+  "errors": null
+}

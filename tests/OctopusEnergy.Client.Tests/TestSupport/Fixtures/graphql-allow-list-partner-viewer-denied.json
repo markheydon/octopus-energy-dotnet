@@ -1,0 +1,13 @@
+{
+  "data": {
+    "partnerViewer": null
+  },
+  "errors": [
+    {
+      "message": "Unauthorized.",
+      "extensions": {
+        "errorCode": "KT-CT-1111"
+      }
+    }
+  ]
+}

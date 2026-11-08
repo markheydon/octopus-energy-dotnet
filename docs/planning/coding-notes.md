@@ -1,8 +1,8 @@
 # Coding notes (research)
 
-**Last updated:** 13 September 2026  
+**Last updated:** 8 November 2026  
 **Audience:** implementers of this SDK, not package consumers.  
-**Status:** planning. Runtime allow-list for GraphQL is **unverified** until a customer token spike lands.
+**Status:** planning. Runtime customer GraphQL allow-list verified **8 November 2026** — see [graphql-customer-allow-list.md](graphql-customer-allow-list.md).
 
 These notes are the findings that should shape milestones **v1.0**–**v1.2** code ([release labels](../../VERSIONING.md#release-labels-quick-reference)). Official docs: [docs.octopus.energy](https://docs.octopus.energy/), [developer.octopus.energy](https://developer.octopus.energy/), GraphQL IDE at [api.octopus.energy/v1/graphql/](https://api.octopus.energy/v1/graphql/), deprecations at [announcements.kraken.tech](https://announcements.kraken.tech/announcements/public/).
 
@@ -109,9 +109,9 @@ Rate limits on the mutation include `email_from_graphql_input_fields` 5/m, `fail
 
 ## 5. GraphQL (milestone v1.2) — candidate customer operations
 
-Verify each with a real key before adding a service method.
+The authoritative runtime matrix is [graphql-customer-allow-list.md](graphql-customer-allow-list.md). Re-probe before shipping a new public method.
 
-Likely useful:
+Likely useful (high level):
 
 - `viewer` - discover accounts/portfolios so callers may omit `A-…`
 - `account(accountNumber)` - large type; use a **default projection** under complexity 200

@@ -1,0 +1,13 @@
+{
+  "data": {
+    "createElectricityMeterReading": null
+  },
+  "errors": [
+    {
+      "message": "Electricity meter cannot be found for the given serial number.",
+      "extensions": {
+        "errorCode": "KT-GB-11007"
+      }
+    }
+  ]
+}
