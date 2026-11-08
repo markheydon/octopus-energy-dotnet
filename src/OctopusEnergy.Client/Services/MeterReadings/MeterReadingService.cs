@@ -4,7 +4,7 @@ using OctopusEnergy.Client.Models.MeterReadings;
 namespace OctopusEnergy.Client.Services.MeterReadings;
 
 /// <summary>
-/// GraphQL meter reading mutations for the authenticated dashboard API key.
+/// GraphQL meter reading mutations and consent lookup for the authenticated dashboard API key.
 /// </summary>
 public sealed class MeterReadingService : IMeterReadingService
 {
@@ -28,7 +28,7 @@ public sealed class MeterReadingService : IMeterReadingService
                 "A dashboard API key is required to submit meter readings.");
         }
 
-        ValidateRequest(request);
+        ValidateElectricityRequest(request);
 
         CreateElectricityMeterReadingVariables variables = new()
         {
@@ -46,10 +46,71 @@ public sealed class MeterReadingService : IMeterReadingService
         CreateMeterReadingOutputWire? output = data.CreateElectricityMeterReading
             ?? throw new OctopusEnergyParseException("The electricity meter reading mutation returned no data.");
 
-        return MapResult(output);
+        return new ElectricityMeterReadingResult { ReadingErrors = MapReadingErrors(output) };
     }
 
-    private static void ValidateRequest(ElectricityMeterReadingCreate request)
+    /// <inheritdoc />
+    public async Task<GasMeterReadingResult> CreateGasAsync(
+        GasMeterReadingCreate request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        if (_graphQl is null)
+        {
+            throw new OctopusEnergyRequestException(
+                "A dashboard API key is required to submit meter readings.");
+        }
+
+        ValidateGasRequest(request);
+
+        CreateGasMeterReadingVariables variables = new()
+        {
+            Mprn = request.Mprn.Trim(),
+            SerialNumber = request.SerialNumber.Trim(),
+            ReadAt = MeterReadingWireFormatting.FormatReadAtDate(request.ReadAt),
+            Reading = request.Reading,
+        };
+
+        CreateGasMeterReadingMutationData data = await _graphQl.ExecuteAsync<CreateGasMeterReadingMutationData>(
+            MeterReadingMutations.CreateGas,
+            variables,
+            cancellationToken).ConfigureAwait(false);
+
+        CreateMeterReadingOutputWire? output = data.CreateGasMeterReading
+            ?? throw new OctopusEnergyParseException("The gas meter reading mutation returned no data.");
+
+        return new GasMeterReadingResult { ReadingErrors = MapReadingErrors(output) };
+    }
+
+    /// <inheritdoc />
+    public async Task<ReadingConsentGranularity> GetReadingConsentGranularityAsync(
+        string mpan,
+        CancellationToken cancellationToken = default)
+    {
+        if (_graphQl is null)
+        {
+            throw new OctopusEnergyRequestException(
+                "A dashboard API key is required to query reading consent granularity.");
+        }
+
+        if (string.IsNullOrWhiteSpace(mpan))
+        {
+            throw new OctopusEnergyRequestException("MPAN is required.");
+        }
+
+        ReadingConsentGranularityQueryVariables variables = new() { Mpan = mpan.Trim() };
+
+        ReadingConsentGranularityQueryData data = await _graphQl.ExecuteAsync<ReadingConsentGranularityQueryData>(
+            MeterReadingQueries.ReadingConsentGranularity,
+            variables,
+            cancellationToken).ConfigureAwait(false);
+
+        return data.ReadingConsentGranularity
+            ?? throw new OctopusEnergyParseException("The readingConsentGranularity query returned no data.");
+    }
+
+    private static void ValidateElectricityRequest(ElectricityMeterReadingCreate request)
     {
         if (string.IsNullOrWhiteSpace(request.Mpan))
         {
@@ -64,6 +125,19 @@ public sealed class MeterReadingService : IMeterReadingService
         if (request.Readings is null or { Count: 0 })
         {
             throw new OctopusEnergyRequestException("At least one register reading is required.");
+        }
+    }
+
+    private static void ValidateGasRequest(GasMeterReadingCreate request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Mprn))
+        {
+            throw new OctopusEnergyRequestException("MPRN is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.SerialNumber))
+        {
+            throw new OctopusEnergyRequestException("Meter serial number is required.");
         }
     }
 
@@ -85,11 +159,11 @@ public sealed class MeterReadingService : IMeterReadingService
         return wireReadings;
     }
 
-    private static ElectricityMeterReadingResult MapResult(CreateMeterReadingOutputWire output)
+    private static List<MeterReadingFieldError> MapReadingErrors(CreateMeterReadingOutputWire output)
     {
         if (output.ReadingErrors is null or { Count: 0 })
         {
-            return new ElectricityMeterReadingResult();
+            return [];
         }
 
         List<MeterReadingFieldError> errors = new(output.ReadingErrors.Count);
@@ -103,6 +177,6 @@ public sealed class MeterReadingService : IMeterReadingService
             });
         }
 
-        return new ElectricityMeterReadingResult { ReadingErrors = errors };
+        return errors;
     }
 }

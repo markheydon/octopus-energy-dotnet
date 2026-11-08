@@ -9,6 +9,12 @@ internal sealed class CreateElectricityMeterReadingMutationData
     public CreateMeterReadingOutputWire? CreateElectricityMeterReading { get; init; }
 }
 
+internal sealed class CreateGasMeterReadingMutationData
+{
+    [JsonPropertyName("createGasMeterReading")]
+    public CreateMeterReadingOutputWire? CreateGasMeterReading { get; init; }
+}
+
 internal sealed class CreateMeterReadingOutputWire
 {
     [JsonPropertyName("readingErrors")]
@@ -46,6 +52,21 @@ internal sealed class ElectricityReadingInputWire
 
     [JsonPropertyName("reading")]
     public int Reading { get; init; }
+}
+
+internal sealed class CreateGasMeterReadingVariables
+{
+    [JsonPropertyName("mprn")]
+    public required string Mprn { get; init; }
+
+    [JsonPropertyName("serialNumber")]
+    public required string SerialNumber { get; init; }
+
+    [JsonPropertyName("readAt")]
+    public required string ReadAt { get; init; }
+
+    [JsonPropertyName("reading")]
+    public required int Reading { get; init; }
 }
 
 internal static class MeterReadingWireFormatting

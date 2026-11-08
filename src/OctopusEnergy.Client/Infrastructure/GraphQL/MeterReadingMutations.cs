@@ -22,4 +22,25 @@ internal static class MeterReadingMutations
           }
         }
         """;
+
+    internal const string CreateGas = """
+        mutation CreateGasMeterReading(
+          $mprn: String!
+          $serialNumber: String!
+          $readAt: Date!
+          $reading: Int!
+        ) {
+          createGasMeterReading(
+            mprn: $mprn
+            serialNumber: $serialNumber
+            readAt: $readAt
+            reading: $reading
+          ) {
+            readingErrors {
+              field
+              errors
+            }
+          }
+        }
+        """;
 }

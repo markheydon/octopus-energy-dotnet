@@ -277,6 +277,16 @@ public sealed class ClientInterfaceTests
             ElectricityMeterReadingCreate request,
             CancellationToken cancellationToken = default) =>
             Task.FromResult(new ElectricityMeterReadingResult());
+
+        public Task<GasMeterReadingResult> CreateGasAsync(
+            GasMeterReadingCreate request,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new GasMeterReadingResult());
+
+        public Task<ReadingConsentGranularity> GetReadingConsentGranularityAsync(
+            string mpan,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new ReadingConsentGranularity());
     }
 
     private sealed class StubViewerService : IViewerService

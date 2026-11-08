@@ -1,20 +1,37 @@
-# Electricity meter readings
+# Meter readings
 
-Submit an electricity meter reading through GraphQL using the same dashboard API key as REST.
+Submit electricity or gas readings and query smart-meter reading consent through GraphQL using the same dashboard API key as REST.
 
 ## When to use this guide
 
-You want to record a manual or supplementary electricity reading without authoring GraphQL documents yourself. The SDK calls `createElectricityMeterReading` internally.
+You want to record manual or supplementary readings, or check consent granularity before submitting, without authoring GraphQL documents yourself. The SDK calls `createElectricityMeterReading`, `createGasMeterReading`, and `readingConsentGranularity` internally.
 
-Gas meter readings are not yet on the public surface; the allow-list spike did not verify them on the probe account. See [API coverage](../reference/api-coverage.md).
+The gas mutation is implemented from the public Kraken schema and unit-test fixtures. The [GraphQL customer allow-list](../planning/graphql-customer-allow-list.md) gas row is still **Not probed** on the maintainer account (no gas meter). Re-probe on a gas-capable dashboard key before treating runtime allow-list status as verified.
 
 ## Prerequisites
 
 - Dashboard API key — see [authentication](authentication.md)
-- Import MPAN and electricity meter serial number (for example from [account detail](accounts.md))
+- MPAN / MPRN and meter serial numbers — for example from [account detail](accounts.md)
 - Reading date as `DateTimeOffset` (the SDK sends the UK civil date to Kraken)
 
-## Submit a reading
+## Reading consent granularity
+
+```csharp
+using OctopusEnergy.Client;
+
+const string apiKey = "sk_test_not_a_real_key";
+CancellationToken cancellationToken = default;
+
+using var client = new OctopusEnergyClient(apiKey);
+
+ReadingConsentGranularity consent = await client.MeterReadings.GetReadingConsentGranularityAsync(
+    mpan: "1234567890123",
+    cancellationToken);
+
+Console.WriteLine(consent.GranularityValue);
+```
+
+## Submit an electricity reading
 
 ```csharp
 using OctopusEnergy.Client;
@@ -52,14 +69,33 @@ if (result.ReadingErrors.Count > 0)
 }
 ```
 
+## Submit a gas reading
+
+```csharp
+using OctopusEnergy.Client;
+using OctopusEnergy.Client.Models.MeterReadings;
+
+GasMeterReadingCreate gasRequest = new()
+{
+    Mprn = "1234567890",
+    SerialNumber = "G1A2S3",
+    ReadAt = DateTimeOffset.UtcNow,
+    Reading = 54321,
+};
+
+GasMeterReadingResult gasResult = await client.MeterReadings.CreateGasAsync(
+    gasRequest,
+    cancellationToken);
+```
+
 ## Errors
 
 - Missing API key: `OctopusEnergyRequestException` before any HTTP call.
 - Kraken GraphQL failures (`errors.extensions.errorCode`, for example `KT-GB-11007`): `OctopusEnergyKrakenException`. See [error handling](error-handling.md).
-- Field validation inside the mutation payload appears in `ElectricityMeterReadingResult.ReadingErrors` when GraphQL returns HTTP 200 with no top-level `errors`.
+- Field validation inside the mutation payload appears in `ElectricityMeterReadingResult.ReadingErrors` or `GasMeterReadingResult.ReadingErrors` when GraphQL returns HTTP 200 with no top-level `errors`.
 
 ## Related
 
-- [Account detail](accounts.md) — MPAN and serial discovery via REST
+- [Account detail](accounts.md) — MPAN, MPRN, and serial discovery via REST
 - [REST and GraphQL](../explanation/rest-and-graphql.md)
 - [GraphQL customer allow-list](../planning/graphql-customer-allow-list.md)

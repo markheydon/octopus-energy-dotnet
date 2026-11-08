@@ -35,7 +35,7 @@ How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to
 
 Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). NuGet **1.2.x** when the public surface ships — see [release labels](../../VERSIONING.md#release-labels-quick-reference). Unreleased groundwork is documented in [plan/RELEASE.md](../../plan/RELEASE.md) (section *Unreleased (v1.2 groundwork)*).
 
-**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), electricity meter reading submission (`MeterReadings.CreateElectricityAsync`), account billing lists (`AccountBilling.ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`), SmartFlex devices (`Devices.ListDevicesAsync`, `Devices.ListFlexPlannedDispatchesAsync`), Home Mini telemetry (`SmartMeterTelemetry.ListSmartDevicesAsync`, `SmartMeterTelemetry.GetTelemetryAsync`), and Octoplus helpers (`Octoplus.GetAccountInfoAsync`, `ListLoyaltyPointLedgersAsync`, `GetLoyaltyPointsBalanceAsync`, `GetWheelOfFortuneSpinsAsync`, `JoinCampaignAsync`, `RedeemPointsForAccountCreditAsync`). Additional curated GraphQL stories are in progress.
+**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), meter readings (`MeterReadings.CreateElectricityAsync`, `MeterReadings.CreateGasAsync`, `MeterReadings.GetReadingConsentGranularityAsync`), account billing lists (`AccountBilling.ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`), SmartFlex devices (`Devices.ListDevicesAsync`, `Devices.ListFlexPlannedDispatchesAsync`), Home Mini telemetry (`SmartMeterTelemetry.ListSmartDevicesAsync`, `SmartMeterTelemetry.GetTelemetryAsync`), and Octoplus helpers (`Octoplus.GetAccountInfoAsync`, `ListLoyaltyPointLedgersAsync`, `GetLoyaltyPointsBalanceAsync`, `GetWheelOfFortuneSpinsAsync`, `JoinCampaignAsync`, `RedeemPointsForAccountCreditAsync`). Additional curated GraphQL stories are in progress.
 
 ### Infrastructure (unreleased, internal)
 
@@ -60,8 +60,8 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `account` → `bills` | Allowed | Implemented (#23, billing — `AccountBilling.ListBillsPageAsync`) |
 | `account` → `transactions` | Allowed | Implemented (#23, billing — `AccountBilling.ListTransactionsPageAsync`) |
 | `account` → `payments` | Allowed | Implemented (#23, billing — `AccountBilling.ListPaymentsPageAsync`) |
-| Electricity meter reading mutation | Allowed (mutation) | Implemented (#24, partial — `MeterReadings.CreateElectricityAsync`) |
-| Gas meter reading mutation | Not probed on spike account | Planned (#24, gas) |
+| Electricity meter reading mutation | Allowed (mutation) | Implemented (`MeterReadings.CreateElectricityAsync`) |
+| Gas meter reading mutation | Not probed (fixture-only SDK; no gas on probe account) | Implemented (`MeterReadings.CreateGasAsync`, #99) |
 | `devices(accountNumber)` | Allowed (empty on probe account) | Implemented (#25 — `Devices.ListDevicesAsync`) |
 | `flexPlannedDispatches` | Allowed when entitled (`KT-CT-1111` without enrolled device) | Implemented (#25 — `Devices.ListFlexPlannedDispatchesAsync`) |
 | `smartMeterTelemetry` | Allowed when entitled (`KT-CT-1111` without EUI64) | Implemented (#26 — `SmartMeterTelemetry.GetTelemetryAsync`, `ListSmartDevicesAsync`) |
@@ -74,7 +74,7 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `savingSessions` / join (backend host) | Not on public GraphQL schema | Out of scope — see allow-list |
 | `initiateProductSwitch` | Allowed (mutation) | Implemented (#28 — `ProductSwitch.InitiateAsync`) |
 | `rateLimitInfo` | Allowed | Implemented (`client.RateLimits`) |
-| `readingConsentGranularity` | Allowed | Planned |
+| `readingConsentGranularity` | Allowed | Implemented (`MeterReadings.GetReadingConsentGranularityAsync`, #100) |
 
 Keep this table aligned with [SCOPE.md](../../SCOPE.md), [plan/RELEASE.md](../../plan/RELEASE.md), and the [GraphQL customer allow-list](../planning/graphql-customer-allow-list.md) (probe matrix is authoritative for **Allow-list status**). Update both documents in the same change when re-probing or shipping public GraphQL methods.
 

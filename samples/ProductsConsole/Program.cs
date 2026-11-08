@@ -228,11 +228,16 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
                 electricitySerial!,
                 cancellationToken);
             recorder.Pass("electricity consumption");
-            await RunMeterReadingsSmokeAsync(
+            await RunElectricityMeterReadingsSmokeAsync(
                 authenticatedClient,
                 recorder,
                 mpan!,
                 electricitySerial!,
+                cancellationToken);
+            await RunReadingConsentSmokeAsync(
+                authenticatedClient,
+                recorder,
+                mpan!,
                 cancellationToken);
         }
         else
@@ -242,6 +247,7 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             WriteConsumptionSkipped("electricity", reason);
             recorder.Skip("electricity consumption", reason);
             recorder.Skip("meter readings", reason);
+            recorder.Skip("reading consent granularity", reason);
         }
 
         if (TryResolveGasConsumptionTarget(
@@ -257,6 +263,12 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
                 gasSerial!,
                 cancellationToken);
             recorder.Pass("gas consumption");
+            await RunGasMeterReadingsSmokeAsync(
+                authenticatedClient,
+                recorder,
+                mprn!,
+                gasSerial!,
+                cancellationToken);
         }
         else
         {
@@ -264,6 +276,7 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
                 $"Set {AccountNumberEnvironmentVariable} or both {MprnEnvironmentVariable} and {GasMeterSerialEnvironmentVariable}.";
             WriteConsumptionSkipped("gas", reason);
             recorder.Skip("gas consumption", reason);
+            recorder.Skip("gas meter readings", reason);
         }
 
         await RunViewerSmokeAsync(authenticatedClient, recorder, cancellationToken);
@@ -303,11 +316,16 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             accountElectricitySerial!,
             cancellationToken);
         recorder.Pass("electricity consumption");
-        await RunMeterReadingsSmokeAsync(
+        await RunElectricityMeterReadingsSmokeAsync(
             authenticatedClient,
             recorder,
             accountMpan!,
             accountElectricitySerial!,
+            cancellationToken);
+        await RunReadingConsentSmokeAsync(
+            authenticatedClient,
+            recorder,
+            accountMpan!,
             cancellationToken);
     }
     else
@@ -316,6 +334,7 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
         WriteConsumptionSkipped("electricity", reason);
         recorder.Skip("electricity consumption", reason);
         recorder.Skip("meter readings", reason);
+        recorder.Skip("reading consent granularity", reason);
     }
 
     if (TryResolveGasConsumptionTarget(
@@ -331,12 +350,19 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             accountGasSerial!,
             cancellationToken);
         recorder.Pass("gas consumption");
+        await RunGasMeterReadingsSmokeAsync(
+            authenticatedClient,
+            recorder,
+            accountMprn!,
+            accountGasSerial!,
+            cancellationToken);
     }
     else
     {
         const string reason = "No gas meter with a serial number was returned on the account.";
         WriteConsumptionSkipped("gas", reason);
         recorder.Skip("gas consumption", reason);
+        recorder.Skip("gas meter readings", reason);
     }
 
     await RunViewerSmokeAsync(authenticatedClient, recorder, cancellationToken);
@@ -580,7 +606,7 @@ static async Task RunOctoplusSmokeAsync(
     }
 }
 
-static async Task RunMeterReadingsSmokeAsync(
+static async Task RunElectricityMeterReadingsSmokeAsync(
     OctopusEnergyClient client,
     SmokeRecorder recorder,
     string mpan,
@@ -589,7 +615,7 @@ static async Task RunMeterReadingsSmokeAsync(
 {
     Console.WriteLine();
     Console.WriteLine(
-        "Meter readings (GraphQL-backed, API key; historic probe — Kraken may persist if the mutation succeeds):");
+        "Electricity meter readings (GraphQL-backed, API key; historic probe — Kraken may persist if the mutation succeeds):");
 
     ElectricityMeterReadingCreate request = new()
     {
@@ -625,6 +651,89 @@ static async Task RunMeterReadingsSmokeAsync(
             "  Kraken response ({0}); mutation path responded.",
             ex.KrakenErrorCode);
         recorder.Pass("meter readings");
+    }
+}
+
+static async Task RunGasMeterReadingsSmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    string mprn,
+    string serialNumber,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine();
+    Console.WriteLine(
+        "Gas meter readings (GraphQL-backed, API key; historic probe — Kraken may persist if the mutation succeeds):");
+
+    GasMeterReadingCreate request = new()
+    {
+        Mprn = mprn,
+        SerialNumber = serialNumber,
+        ReadAt = new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero),
+        Reading = 1,
+    };
+
+    try
+    {
+        GasMeterReadingResult result = await client.MeterReadings.CreateGasAsync(
+            request,
+            cancellationToken);
+
+        if (result.ReadingErrors.Count > 0)
+        {
+            Console.WriteLine(
+                "  Field validation errors returned ({0}); mutation path responded.",
+                result.ReadingErrors.Count);
+        }
+        else
+        {
+            Console.WriteLine(
+                "  Mutation completed without field validation errors (Kraken may have stored the probe reading).");
+        }
+
+        recorder.Pass("gas meter readings");
+    }
+    catch (OctopusEnergyKrakenException ex)
+    {
+        Console.WriteLine(
+            "  Kraken response ({0}); mutation path responded.",
+            ex.KrakenErrorCode);
+        recorder.Pass("gas meter readings");
+    }
+}
+
+static async Task RunReadingConsentSmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    string mpan,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine();
+    Console.WriteLine("Reading consent granularity (GraphQL-backed, API key):");
+
+    try
+    {
+        ReadingConsentGranularity consent = await client.MeterReadings.GetReadingConsentGranularityAsync(
+            mpan,
+            cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(consent.GranularityValue))
+        {
+            Console.WriteLine("  Query succeeded without a granularity value.");
+        }
+        else
+        {
+            Console.WriteLine("  Query returned a granularity value.");
+        }
+
+        recorder.Pass("reading consent granularity");
+    }
+    catch (OctopusEnergyKrakenException ex)
+    {
+        Console.WriteLine(
+            "  Kraken response ({0}); query path responded.",
+            ex.KrakenErrorCode);
+        recorder.Pass("reading consent granularity");
     }
 }
 
