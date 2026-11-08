@@ -62,8 +62,8 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `account` → `payments` | Allowed | Implemented (#23, billing — `AccountBilling.ListPaymentsPageAsync`) |
 | Electricity meter reading mutation | Allowed (mutation) | Implemented (#24, partial — `MeterReadings.CreateElectricityAsync`) |
 | Gas meter reading mutation | Not probed on spike account | Planned (#24, gas) |
-| `devices(accountNumber)` | Allowed (empty on probe account) | Planned (#25) |
-| `flexPlannedDispatches` | Denied (`KT-CT-1111` on probe account) | Planned (#25) |
+| `devices(accountNumber)` | Allowed (empty on probe account) | Implemented (#25 — `Devices.ListDevicesAsync`) |
+| `flexPlannedDispatches` | Allowed when entitled (`KT-CT-1111` without enrolled device) | Implemented (#25 — `Devices.ListFlexPlannedDispatchesAsync`) |
 | `smartMeterTelemetry` | Denied (`KT-CT-1111` on probe account) | Planned (#26) |
 | `loyaltyPointsBalance` (Octoplus proxy) | Denied (`KT-CT-1111` on probe account) | Planned (#27) |
 | `initiateProductSwitch` | Allowed (mutation) | Planned (#28) |

@@ -67,7 +67,19 @@ internal static class AllowListProbeQueries
     internal const string Devices = """
         query DevicesAllowListProbe($accountNumber: String!) {
           devices(accountNumber: $accountNumber) {
+            id
             __typename
+          }
+        }
+        """;
+
+    internal const string FlexPlannedDispatchesForDevice = """
+        query FlexPlannedDispatchesAllowListProbe($deviceId: String!) {
+          flexPlannedDispatches(deviceId: $deviceId) {
+            start
+            end
+            type
+            energyAddedKwh
           }
         }
         """;

@@ -4,6 +4,7 @@ using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Services.AccountBilling;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
+using OctopusEnergy.Client.Services.Devices;
 using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Products;
@@ -178,6 +179,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         MeterReadings = new MeterReadingService(_graphQl);
         Viewer = new ViewerService(_graphQl);
         AccountBilling = new AccountBillingService(_graphQl);
+        Devices = new DeviceService(_graphQl);
     }
 
     /// <summary>
@@ -238,6 +240,15 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Each list uses a separate query to stay under the complexity cap (200).
     /// </remarks>
     public IAccountBillingService AccountBilling { get; }
+
+    /// <summary>
+    /// GraphQL SmartFlex devices and <c>flexPlannedDispatches</c> for the authenticated dashboard API key.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
+    /// Uses <c>flexPlannedDispatches</c> only (not deprecated <c>plannedDispatches</c>).
+    /// </remarks>
+    public IDeviceService Devices { get; }
 
     internal RestClient Rest { get; }
 

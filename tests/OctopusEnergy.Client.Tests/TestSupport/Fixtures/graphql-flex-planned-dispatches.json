@@ -1,0 +1,19 @@
+{
+  "data": {
+    "flexPlannedDispatches": [
+      {
+        "start": "2026-11-08T00:30:00+00:00",
+        "end": "2026-11-08T05:00:00+00:00",
+        "type": "SMART",
+        "energyAddedKwh": "12.5"
+      },
+      {
+        "start": "2026-11-08T12:00:00+00:00",
+        "end": "2026-11-08T12:30:00+00:00",
+        "type": "BOOST",
+        "energyAddedKwh": "-2.0"
+      }
+    ]
+  },
+  "errors": null
+}
