@@ -1,5 +1,4 @@
 using System.Net;
-using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.GraphQL;
 using OctopusEnergy.Client.Tests.TestSupport;
@@ -28,12 +27,12 @@ public sealed class GraphQlClientTests
         using HttpClient httpClient = new(handler) { BaseAddress = new Uri("https://api.example.test/v1/") };
         (_, _, GraphQlClient graphQlClient) = GraphQlTestSupport.CreateStack(httpClient);
 
-        RateLimitInfoData data = await graphQlClient.ExecuteAsync<RateLimitInfoData>(
+        RateLimitInfoQueryData data = await graphQlClient.ExecuteAsync<RateLimitInfoQueryData>(
             RateLimitInfoQuery,
-            variables: null,
             CancellationToken.None);
 
         Assert.NotNull(data.RateLimitInfo);
+        Assert.NotNull(data.RateLimitInfo.PointsAllowanceRateLimit);
         Assert.Equal(4, handler.SentRequests.Count);
 
         HttpRequestMessage authenticatedRetry = handler.SentRequests[3];
@@ -53,9 +52,8 @@ public sealed class GraphQlClientTests
         (_, _, GraphQlClient graphQlClient) = GraphQlTestSupport.CreateStack(httpClient);
 
         OctopusEnergyKrakenException exception = await Assert.ThrowsAsync<OctopusEnergyKrakenException>(
-            () => graphQlClient.ExecuteAsync<RateLimitInfoData>(
+            () => graphQlClient.ExecuteAsync<RateLimitInfoQueryData>(
                 RateLimitInfoQuery,
-                variables: null,
                 CancellationToken.None));
 
         Assert.Equal("KT-CT-1112", exception.KrakenErrorCode);
@@ -84,15 +82,4 @@ public sealed class GraphQlClientTests
         Assert.Equal(expectedToken, Assert.Single(values));
     }
 
-    private sealed class RateLimitInfoData
-    {
-        [JsonPropertyName("rateLimitInfo")]
-        public RateLimitInfoStub? RateLimitInfo { get; init; }
-    }
-
-    private sealed class RateLimitInfoStub
-    {
-        [JsonPropertyName("__typename")]
-        public string? TypeName { get; init; }
-    }
 }

@@ -2,13 +2,19 @@ using System.Text.Json.Serialization;
 
 namespace OctopusEnergy.Client.Infrastructure.GraphQL;
 
-internal sealed class GraphQlRequestEnvelope
+internal sealed class GraphQlQueryOnlyEnvelope
+{
+    [JsonPropertyName("query")]
+    public string Query { get; init; } = string.Empty;
+}
+
+internal sealed class GraphQlRequestEnvelope<TVariables>
 {
     [JsonPropertyName("query")]
     public string Query { get; init; } = string.Empty;
 
     [JsonPropertyName("variables")]
-    public object? Variables { get; init; }
+    public TVariables? Variables { get; init; }
 }
 
 internal sealed class GraphQlResponseEnvelope<TData>

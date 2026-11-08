@@ -33,6 +33,9 @@
     <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\industry-grid-supply-points-london.json" Link="Fixtures\industry-grid-supply-points-london.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\electricity-meter-point-london.json" Link="Fixtures\electricity-meter-point-london.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\api-error-not-found.json" Link="Fixtures\api-error-not-found.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\graphql-octoplus-account-info.json" Link="Fixtures\graphql-octoplus-account-info.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\graphql-smart-meter-telemetry.json" Link="Fixtures\graphql-smart-meter-telemetry.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\OctopusEnergy.Client.Tests\TestSupport\Fixtures\graphql-initiate-product-switch-success.json" Link="Fixtures\graphql-initiate-product-switch-success.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

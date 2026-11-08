@@ -27,7 +27,7 @@ public sealed class SmartMeterTelemetryService : ISmartMeterTelemetryService
             AccountNumber = accountNumber.Trim(),
         };
 
-        ListSmartMeterDevicesQueryData data = await _graphQl!.ExecuteAsync<ListSmartMeterDevicesQueryData>(
+        ListSmartMeterDevicesQueryData data = await _graphQl!.ExecuteAsync<ListSmartMeterDevicesQueryData, ListSmartMeterDevicesQueryVariables>(
             SmartMeterTelemetryQueries.ListSmartMeterDevices,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -80,7 +80,7 @@ public sealed class SmartMeterTelemetryService : ISmartMeterTelemetryService
             Grouping = range is null ? null : ToGraphQlGrouping(range.Grouping),
         };
 
-        SmartMeterTelemetryQueryData data = await _graphQl!.ExecuteAsync<SmartMeterTelemetryQueryData>(
+        SmartMeterTelemetryQueryData data = await _graphQl!.ExecuteAsync<SmartMeterTelemetryQueryData, SmartMeterTelemetryQueryVariables>(
             SmartMeterTelemetryQueries.SmartMeterTelemetry,
             variables,
             cancellationToken).ConfigureAwait(false);

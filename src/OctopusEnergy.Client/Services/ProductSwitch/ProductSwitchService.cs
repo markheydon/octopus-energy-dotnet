@@ -38,7 +38,7 @@ public sealed class ProductSwitchService : IProductSwitchService
             SuppressCommunications = request.SuppressCommunications,
         };
 
-        InitiateProductSwitchMutationData data = await _graphQl!.ExecuteAsync<InitiateProductSwitchMutationData>(
+        InitiateProductSwitchMutationData data = await _graphQl!.ExecuteAsync<InitiateProductSwitchMutationData, InitiateProductSwitchMutationVariables>(
             ProductSwitchMutations.Initiate,
             variables,
             cancellationToken).ConfigureAwait(false);

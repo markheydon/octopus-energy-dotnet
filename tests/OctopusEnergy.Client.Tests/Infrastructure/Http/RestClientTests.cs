@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Models.Common;
+using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Tests.TestSupport;
 
 namespace OctopusEnergy.Client.Tests.Infrastructure.Http;
@@ -19,7 +20,7 @@ public sealed class RestClientTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        PaginatedResult<TestItem> page = await client.Rest.GetPageAsync<TestItem>("items/", CancellationToken.None);
+        PaginatedResult<Product> page = await client.Rest.GetPageAsync<Product>("items/", CancellationToken.None);
 
         Assert.Equal(3, page.Count);
         Assert.Equal(2, page.Results.Count);
@@ -38,7 +39,7 @@ public sealed class RestClientTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        List<TestItem> items = await CollectAsync(client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None));
+        List<Product> items = await CollectAsync(client.Rest.GetAllPagesAsync<Product>("items/", CancellationToken.None));
 
         Assert.Equal(["ITEM-1", "ITEM-2", "ITEM-3"], items.Select(item => item.Code));
     }
@@ -52,7 +53,7 @@ public sealed class RestClientTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        List<TestItem> items = await CollectAsync(client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None));
+        List<Product> items = await CollectAsync(client.Rest.GetAllPagesAsync<Product>("items/", CancellationToken.None));
 
         Assert.Single(items);
         Assert.Equal("ITEM-3", items[0].Code);
@@ -69,7 +70,7 @@ public sealed class RestClientTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyException exception = await Assert.ThrowsAsync<OctopusEnergyException>(
-            async () => await CollectAsync(client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None)));
+            async () => await CollectAsync(client.Rest.GetAllPagesAsync<Product>("items/", CancellationToken.None)));
 
         Assert.Contains("repeated next URL", exception.Message, StringComparison.Ordinal);
     }
@@ -84,7 +85,7 @@ public sealed class RestClientTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyApiException exception = await Assert.ThrowsAsync<OctopusEnergyApiException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("missing/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("missing/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.NotFound, exception.StatusCode);
         Assert.Equal("Not found.", exception.Detail);
@@ -100,7 +101,7 @@ public sealed class RestClientTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("broken/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("broken/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.InternalServerError, exception.StatusCode);
     }
@@ -115,7 +116,7 @@ public sealed class RestClientTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyParseException exception = await Assert.ThrowsAsync<OctopusEnergyParseException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None));
 
         Assert.Contains("could not be deserialised", exception.Message, StringComparison.Ordinal);
     }
@@ -130,7 +131,7 @@ public sealed class RestClientTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyParseException exception = await Assert.ThrowsAsync<OctopusEnergyParseException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None));
 
         Assert.Contains("JSON null", exception.Message, StringComparison.Ordinal);
     }
@@ -145,7 +146,7 @@ public sealed class RestClientTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.BadRequest, exception.StatusCode);
     }
@@ -161,9 +162,9 @@ public sealed class RestClientTests
         using OctopusEnergyClient client = new(httpClient);
 
         CancellationToken cancellationToken = TestContext.Current.CancellationToken;
-        List<TestItem> items = [];
-        await using IAsyncEnumerator<TestItem> enumerator = client.Rest
-            .GetAllPagesAsync<TestItem>("items/", cancellationToken)
+        List<Product> items = [];
+        await using IAsyncEnumerator<Product> enumerator = client.Rest
+            .GetAllPagesAsync<Product>("items/", cancellationToken)
             .GetAsyncEnumerator(cancellationToken);
 
         Assert.True(await enumerator.MoveNextAsync());
@@ -189,7 +190,7 @@ public sealed class RestClientTests
         RestClient rest = new(httpClient, new Uri("https://api.example.test/v1/"), maxPageHops: 2);
 
         OctopusEnergyException exception = await Assert.ThrowsAsync<OctopusEnergyException>(
-            async () => await CollectAsync(rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None)));
+            async () => await CollectAsync(rest.GetAllPagesAsync<Product>("items/", CancellationToken.None)));
 
         Assert.Contains("2 pages", exception.Message, StringComparison.Ordinal);
     }
@@ -203,7 +204,7 @@ public sealed class RestClientTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        List<TestItem> items = await CollectAsync(client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None));
+        List<Product> items = await CollectAsync(client.Rest.GetAllPagesAsync<Product>("items/", CancellationToken.None));
 
         Assert.Empty(items);
     }
@@ -218,7 +219,7 @@ public sealed class RestClientTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        List<TestItem> items = await CollectAsync(client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None));
+        List<Product> items = await CollectAsync(client.Rest.GetAllPagesAsync<Product>("items/", CancellationToken.None));
 
         Assert.Equal(["REL-1", "REL-2"], items.Select(item => item.Code));
     }
@@ -242,24 +243,4 @@ public sealed class RestClientTests
         return items;
     }
 
-    private sealed class TestItem
-    {
-        [JsonPropertyName("code")]
-        public string Code { get; init; } = string.Empty;
-    }
-
-    private sealed class PaginatedResponseStub
-    {
-        [JsonPropertyName("count")]
-        public int Count { get; init; }
-
-        [JsonPropertyName("next")]
-        public string? Next { get; init; }
-
-        [JsonPropertyName("previous")]
-        public string? Previous { get; init; }
-
-        [JsonPropertyName("results")]
-        public IReadOnlyList<TestItem> Results { get; init; } = [];
-    }
 }

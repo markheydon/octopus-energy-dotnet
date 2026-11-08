@@ -38,7 +38,7 @@ public sealed class LiveGraphQlTokenProbeTests
 
         string authorization = await tokenProvider.GetAuthorizationHeaderValueAsync(CancellationToken.None);
 
-        await graphQl.ExecuteAsync<ViewerProbeData>(ViewerQuery, variables: null, CancellationToken.None);
+        await graphQl.ExecuteAsync<ViewerProbeData>(ViewerQuery, CancellationToken.None);
 
         Assert.False(authorization.Contains(' ', StringComparison.Ordinal));
     }

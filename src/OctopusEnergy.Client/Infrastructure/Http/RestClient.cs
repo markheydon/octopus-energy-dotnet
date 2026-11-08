@@ -58,11 +58,8 @@ internal sealed class RestClient
 
         try
         {
-            return await JsonSerializer.DeserializeAsync<T>(
-                contentStream,
-                OctopusJsonSerializerOptions.Default,
-                cancellationToken).ConfigureAwait(false)
-                ?? throw new OctopusEnergyParseException("The API returned JSON null where a response model was expected.");
+            return await OctopusJsonSerializerOptions.DeserializeAsync<T>(contentStream, cancellationToken)
+                .ConfigureAwait(false);
         }
         catch (JsonException ex)
         {
@@ -244,9 +241,9 @@ internal sealed class RestClient
             {
                 try
                 {
-                    ApiErrorResponse? error = JsonSerializer.Deserialize<ApiErrorResponse>(
+                    ApiErrorResponse? error = JsonSerializer.Deserialize(
                         body,
-                        OctopusJsonSerializerOptions.Default);
+                        OctopusEnergyJsonContext.Default.ApiErrorResponse);
 
                     if (!string.IsNullOrWhiteSpace(error?.Detail))
                     {

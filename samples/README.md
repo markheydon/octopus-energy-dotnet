@@ -46,6 +46,7 @@ At the end, a **smoke summary** lists each check with ✓ (pass), `-` (skip), or
 | `OCTOPUS_ENERGY_ELECTRICITY_METER_SERIAL` | No | From account | Electricity meter serial for consumption. |
 | `OCTOPUS_ENERGY_MPRN` | No | From account | Gas MPRN for consumption without an account number. |
 | `OCTOPUS_ENERGY_GAS_METER_SERIAL` | No | From account | Gas meter serial for consumption. |
+| `OCTOPUS_ENERGY_ENABLE_METER_READING_MUTATIONS` | No | - | When set to `1`, runs electricity and gas meter reading **mutations** in Products console smoke (not enabled by default; may persist readings on the probe account). |
 
 The sample never logs your key.
 

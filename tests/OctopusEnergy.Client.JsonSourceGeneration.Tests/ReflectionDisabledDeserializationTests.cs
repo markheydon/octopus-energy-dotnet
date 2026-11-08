@@ -1,5 +1,7 @@
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using OctopusEnergy.Client;
+using OctopusEnergy.Client.Infrastructure.GraphQL;
 using OctopusEnergy.Client.Infrastructure.Serialization;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
@@ -89,11 +91,65 @@ public sealed class ReflectionDisabledDeserializationTests
         Assert.False(string.IsNullOrWhiteSpace(error.Detail));
     }
 
+    [Fact]
+    public void Deserialize_OctoplusAccountInfoEnvelope_Succeeds()
+    {
+        GraphQlResponseEnvelope<OctoplusAccountInfoQueryData> envelope =
+            DeserializeEnvelope<OctoplusAccountInfoQueryData>("graphql-octoplus-account-info.json");
+
+        Assert.NotNull(envelope.Data?.OctoplusAccountInfo);
+    }
+
+    [Fact]
+    public void Deserialize_SmartMeterTelemetryEnvelope_Succeeds()
+    {
+        GraphQlResponseEnvelope<SmartMeterTelemetryQueryData> envelope =
+            DeserializeEnvelope<SmartMeterTelemetryQueryData>("graphql-smart-meter-telemetry.json");
+
+        Assert.NotNull(envelope.Data?.SmartMeterTelemetry);
+    }
+
+    [Fact]
+    public void Deserialize_InitiateProductSwitchEnvelope_Succeeds()
+    {
+        GraphQlResponseEnvelope<InitiateProductSwitchMutationData> envelope =
+            DeserializeEnvelope<InitiateProductSwitchMutationData>("graphql-initiate-product-switch-success.json");
+
+        Assert.NotNull(envelope.Data?.InitiateProductSwitch);
+    }
+
+    [Fact]
+    public void Serialize_GraphQlRequestEnvelope_OctoplusVariables_ProducesJson()
+    {
+        GraphQlRequestEnvelope<OctoplusAccountInfoQueryVariables> body = new()
+        {
+            Query = "query { }",
+            Variables = new OctoplusAccountInfoQueryVariables { AccountNumber = "A-12345678" },
+        };
+
+        JsonTypeInfo typeInfo = OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(GraphQlRequestEnvelope<OctoplusAccountInfoQueryVariables>))
+            ?? throw new InvalidOperationException("Missing type info.");
+
+        string json = JsonSerializer.Serialize(body, typeInfo);
+        Assert.Contains("A-12345678", json, StringComparison.Ordinal);
+        Assert.Contains("query", json, StringComparison.Ordinal);
+    }
+
     private static T Deserialize<T>(string fixtureName)
     {
         string fullPath = Path.Combine(AppContext.BaseDirectory, "Fixtures", fixtureName);
         string json = File.ReadAllText(fullPath);
-        return JsonSerializer.Deserialize<T>(json, OctopusJsonSerializerOptions.Default)
-            ?? throw new InvalidOperationException($"Fixture {fixtureName} deserialised to null.");
+        return (T)(JsonSerializer.Deserialize(json, OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(T))!)
+            ?? throw new InvalidOperationException($"Fixture {fixtureName} deserialised to null."));
+    }
+
+    private static GraphQlResponseEnvelope<TData> DeserializeEnvelope<TData>(string fixtureName)
+    {
+        string fullPath = Path.Combine(AppContext.BaseDirectory, "Fixtures", fixtureName);
+        string json = File.ReadAllText(fullPath);
+        return (GraphQlResponseEnvelope<TData>)(JsonSerializer.Deserialize(
+                   json,
+                   OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(GraphQlResponseEnvelope<TData>))!)
+            ?? throw new InvalidOperationException($"Fixture {fixtureName} deserialised to null."));
     }
 }

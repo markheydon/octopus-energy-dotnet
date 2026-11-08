@@ -28,7 +28,7 @@ public sealed class GridSupplyPointJsonConverterTests
     {
         GridSupplyPointModel? model = JsonSerializer.Deserialize<GridSupplyPointModel>(
             """{"gsp":"_C"}""",
-            OctopusJsonSerializerOptions.Default);
+            OctopusTestJsonSerializerOptions.Default);
 
         Assert.NotNull(model);
         Assert.Equal(GridSupplyPoint.C, model!.Gsp);
@@ -39,7 +39,7 @@ public sealed class GridSupplyPointJsonConverterTests
     {
         string json = JsonSerializer.Serialize(
             new GridSupplyPointModel { Gsp = GridSupplyPoint.C },
-            OctopusJsonSerializerOptions.Default);
+            OctopusTestJsonSerializerOptions.Default);
 
         Assert.Equal("""{"gsp":"_C"}""", json);
     }

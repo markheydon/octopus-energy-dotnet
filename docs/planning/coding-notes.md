@@ -192,7 +192,7 @@ Variable tariffs auto-extend. Fixed products fall back to variable at end of ter
 - Agile “day” follows CET market index (roughly 23:00–23:00 UK).
 - Go: long `valid_from`/`valid_to` windows, not 48 slots.
 - Economy 7: separate day/night rate URLs (`E-2R-…`).
-- Tracker: GraphQL daily pricing (`trackerTariffDailyPricing`) is milestone **v1.2**.
+- Tracker day-ahead unit rates: public REST tracker URLs (`https://api.octopus.energy/v1/tracker/{tariff_code}/daily/...`) and standard product tariff rate lists cover comparison without a customer GraphQL wrapper. A GraphQL `trackerTariffDailyPricing` field is **not** on the public developer reference (November 2026); do not add a SDK method until a dashboard key probe succeeds and the allow-list is updated.
 - Price vs consumption period matching: price endpoint returns exact requested periods; consumption returns overlapping intervals. Off-by-one around clock changes is a test fixture candidate.
 
 ---

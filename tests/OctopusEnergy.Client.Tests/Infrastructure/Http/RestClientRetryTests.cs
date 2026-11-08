@@ -3,6 +3,8 @@ using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.Http;
+using OctopusEnergy.Client.Models.Common;
+using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Tests.TestSupport;
 
 namespace OctopusEnergy.Client.Tests.Infrastructure.Http;
@@ -22,7 +24,7 @@ public sealed class RestClientRetryTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        PaginatedResponseStub result = await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        PaginatedResponse<Product> result = await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         Assert.Equal(0, result.Count);
         Assert.Equal(2, handler.SentRequests.Count);
@@ -44,7 +46,7 @@ public sealed class RestClientRetryTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.TooManyRequests, exception.StatusCode);
         Assert.Equal(4, handler.SentRequests.Count);
@@ -61,7 +63,7 @@ public sealed class RestClientRetryTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.Unauthorized, exception.StatusCode);
         Assert.Single(handler.SentRequests);
@@ -80,7 +82,7 @@ public sealed class RestClientRetryTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        PaginatedResponseStub result = await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        PaginatedResponse<Product> result = await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         Assert.Equal(0, result.Count);
         Assert.Equal(2, handler.SentRequests.Count);
@@ -99,7 +101,7 @@ public sealed class RestClientRetryTests
         using OctopusEnergyClient client = new(httpClient, OctopusEnergyRetryOptions.Disabled);
 
         OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.TooManyRequests, exception.StatusCode);
         Assert.Single(handler.SentRequests);
@@ -119,7 +121,7 @@ public sealed class RestClientRetryTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        Task<PaginatedResponseStub> requestTask = client.Rest.GetAsync<PaginatedResponseStub>(
+        Task<PaginatedResponse<Product>> requestTask = client.Rest.GetAsync<PaginatedResponse<Product>>(
             "items/",
             cancellationTokenSource.Token);
 
@@ -154,7 +156,7 @@ public sealed class RestClientRetryTests
             retryOptions: retryOptions);
 
         DateTimeOffset started = DateTimeOffset.UtcNow;
-        PaginatedResponseStub result = await rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        PaginatedResponse<Product> result = await rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
         TimeSpan elapsed = DateTimeOffset.UtcNow - started;
 
         Assert.Equal(0, result.Count);
@@ -176,7 +178,7 @@ public sealed class RestClientRetryTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        PaginatedResponseStub result = await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        PaginatedResponse<Product> result = await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         Assert.Equal(0, result.Count);
         Assert.Equal(2, handler.SentRequests.Count);
@@ -196,8 +198,8 @@ public sealed class RestClientRetryTests
         using HttpClient httpClient = CreateHttpClient(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        List<TestItem> items = [];
-        await foreach (TestItem item in client.Rest.GetAllPagesAsync<TestItem>("items/", CancellationToken.None))
+        List<Product> items = [];
+        await foreach (Product item in client.Rest.GetAllPagesAsync<Product>("items/", CancellationToken.None))
         {
             items.Add(item);
         }
@@ -219,7 +221,7 @@ public sealed class RestClientRetryTests
         using OctopusEnergyClient client = new("sk_test_key", httpClient, OctopusEnergyRetryOptions.Disabled);
 
         OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.TooManyRequests, exception.StatusCode);
         Assert.Single(handler.SentRequests);
@@ -248,7 +250,7 @@ public sealed class RestClientRetryTests
             retryOptions: retryOptions);
 
         DateTimeOffset started = DateTimeOffset.UtcNow;
-        PaginatedResponseStub result = await rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        PaginatedResponse<Product> result = await rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
         TimeSpan elapsed = DateTimeOffset.UtcNow - started;
 
         Assert.Equal(0, result.Count);
@@ -266,7 +268,7 @@ public sealed class RestClientRetryTests
         using OctopusEnergyClient client = new(httpClient);
 
         OctopusEnergyHttpException exception = await Assert.ThrowsAsync<OctopusEnergyHttpException>(
-            () => client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None));
+            () => client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None));
 
         Assert.Equal(HttpStatusCode.InternalServerError, exception.StatusCode);
         Assert.Single(handler.SentRequests);
@@ -280,24 +282,4 @@ public sealed class RestClientRetryTests
         };
     }
 
-    private sealed class TestItem
-    {
-        [JsonPropertyName("code")]
-        public string Code { get; init; } = string.Empty;
-    }
-
-    private sealed class PaginatedResponseStub
-    {
-        [JsonPropertyName("count")]
-        public int Count { get; init; }
-
-        [JsonPropertyName("next")]
-        public string? Next { get; init; }
-
-        [JsonPropertyName("previous")]
-        public string? Previous { get; init; }
-
-        [JsonPropertyName("results")]
-        public IReadOnlyList<object> Results { get; init; } = [];
-    }
 }

@@ -110,7 +110,7 @@ public sealed class BstIntervalFixtureTests
     private static T Deserialize<T>(string fixtureName)
     {
         string json = FixtureFile.Read(fixtureName);
-        return JsonSerializer.Deserialize<T>(json, OctopusJsonSerializerOptions.Default)
+        return JsonSerializer.Deserialize<T>(json, OctopusTestJsonSerializerOptions.Default)
             ?? throw new InvalidOperationException($"Fixture {fixtureName} deserialised to null.");
     }
 

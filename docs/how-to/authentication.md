@@ -37,11 +37,29 @@ A trailing slash is applied when missing so relative REST paths resolve correctl
 
 ## Hosted applications (`IHttpClientFactory`)
 
-In ASP.NET Core or worker hosts, register a named `HttpClient` and add `OctopusEnergyClientHandler` so authentication, `Accept`, and `User-Agent` are applied **per request** without mutating shared `HttpClient` default headers.
+In ASP.NET Core or worker hosts, register a named `HttpClient` and resolve `IOctopusEnergyClient` from dependency injection.
 
-The SDK does not reference `Microsoft.Extensions.Http`; add that package in your host project.
+The client package references `Microsoft.Extensions.Http`. Your host project must call `services.AddHttpClient()` (via the extension below or manually).
 
-Choose **one** place to supply the API key:
+### Recommended registration
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using OctopusEnergy.Client;
+using OctopusEnergy.Client.DependencyInjection;
+
+services.AddOctopusEnergyClient(options =>
+{
+    options.ApiKey = configuration["OctopusEnergy:ApiKey"];
+    options.BaseAddress = new Uri(OctopusEnergyClient.DefaultBaseUrl);
+});
+```
+
+`AddOctopusEnergyClient` registers a named `HttpClient`, attaches `OctopusEnergyClientHandler` when `ApiKey` is set (handler carries auth), and exposes `IOctopusEnergyClient` as a singleton.
+
+### Manual registration
+
+Choose **one** place to supply the API key when not using `AddOctopusEnergyClient`:
 
 - **Handler carries auth** (recommended when the same named client is used outside the SDK), or
 - **Client carries auth** (simpler when the named client is only used with `OctopusEnergyClient`).

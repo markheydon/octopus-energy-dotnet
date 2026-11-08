@@ -89,7 +89,7 @@ internal sealed class KrakenTokenProvider : IDisposable
             Input = new ObtainKrakenTokenInput { APIKey = _apiKey },
         };
 
-        GraphQlResponseEnvelope<ObtainKrakenTokenResponseData> response = await _transport.PostAsync<ObtainKrakenTokenResponseData>(
+        GraphQlResponseEnvelope<ObtainKrakenTokenResponseData> response = await _transport.PostAsync<ObtainKrakenTokenResponseData, ObtainKrakenTokenVariables>(
             KrakenTokenMutations.ObtainKrakenToken,
             variables,
             authorizationHeaderValue: null,
@@ -105,7 +105,7 @@ internal sealed class KrakenTokenProvider : IDisposable
             Input = new ObtainKrakenTokenInput { RefreshToken = _refreshToken },
         };
 
-        GraphQlResponseEnvelope<ObtainKrakenTokenResponseData> response = await _transport.PostAsync<ObtainKrakenTokenResponseData>(
+        GraphQlResponseEnvelope<ObtainKrakenTokenResponseData> response = await _transport.PostAsync<ObtainKrakenTokenResponseData, ObtainKrakenTokenVariables>(
             KrakenTokenMutations.ObtainKrakenToken,
             variables,
             authorizationHeaderValue: null,

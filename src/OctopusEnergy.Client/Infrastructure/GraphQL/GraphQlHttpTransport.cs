@@ -1,6 +1,7 @@
 using System.Net;
-using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using OctopusEnergy.Client.Infrastructure.Serialization;
 
 namespace OctopusEnergy.Client.Infrastructure.GraphQL;
@@ -19,23 +20,51 @@ internal sealed class GraphQlHttpTransport
         _graphQlEndpoint = graphQlEndpoint;
     }
 
-    internal async Task<GraphQlResponseEnvelope<TData>> PostAsync<TData>(
+    internal Task<GraphQlResponseEnvelope<TData>> PostAsync<TData>(
         string query,
-        object? variables,
         string? authorizationHeaderValue,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(query);
 
-        GraphQlRequestEnvelope body = new()
+        GraphQlQueryOnlyEnvelope body = new() { Query = query };
+        JsonTypeInfo typeInfo = OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(GraphQlQueryOnlyEnvelope))
+            ?? throw new InvalidOperationException("GraphQlQueryOnlyEnvelope is not registered for source generation.");
+
+        return PostCoreAsync<TData>(body, typeInfo, authorizationHeaderValue, cancellationToken);
+    }
+
+    internal Task<GraphQlResponseEnvelope<TData>> PostAsync<TData, TVariables>(
+        string query,
+        TVariables? variables,
+        string? authorizationHeaderValue,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(query);
+
+        GraphQlRequestEnvelope<TVariables> body = new()
         {
             Query = query,
             Variables = variables,
         };
 
+        JsonTypeInfo typeInfo = OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(GraphQlRequestEnvelope<TVariables>))
+            ?? throw new InvalidOperationException(
+                $"GraphQlRequestEnvelope<{typeof(TVariables).Name}> is not registered for source generation.");
+
+        return PostCoreAsync<TData>(body, typeInfo, authorizationHeaderValue, cancellationToken);
+    }
+
+    private async Task<GraphQlResponseEnvelope<TData>> PostCoreAsync<TData>(
+        object requestBody,
+        JsonTypeInfo requestTypeInfo,
+        string? authorizationHeaderValue,
+        CancellationToken cancellationToken)
+    {
+        string requestJson = JsonSerializer.Serialize(requestBody, requestTypeInfo);
         using HttpRequestMessage request = new(HttpMethod.Post, _graphQlEndpoint)
         {
-            Content = JsonContent.Create(body, options: OctopusJsonSerializerOptions.Default),
+            Content = new StringContent(requestJson, Encoding.UTF8, "application/json"),
         };
 
         GraphQlRequestHeaders.Apply(request, authorizationHeaderValue);
@@ -51,10 +80,14 @@ internal sealed class GraphQlHttpTransport
 
         try
         {
-            envelope = await JsonSerializer.DeserializeAsync<GraphQlResponseEnvelope<TData>>(
+            JsonTypeInfo responseTypeInfo = OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(GraphQlResponseEnvelope<TData>))
+                ?? throw new InvalidOperationException(
+                    $"GraphQlResponseEnvelope<{typeof(TData).Name}> is not registered for source generation.");
+
+            envelope = await JsonSerializer.DeserializeAsync(
                 contentStream,
-                OctopusJsonSerializerOptions.Default,
-                cancellationToken).ConfigureAwait(false);
+                responseTypeInfo,
+                cancellationToken).ConfigureAwait(false) as GraphQlResponseEnvelope<TData>;
         }
         catch (JsonException ex)
         {
@@ -79,5 +112,43 @@ internal sealed class GraphQlHttpTransport
         }
 
         return envelope;
+    }
+
+    /// <summary>
+    /// Live allow-list probe path. Variable payloads may be anonymous types; only tests call this.
+    /// </summary>
+    internal Task<GraphQlResponseEnvelope<JsonElement>> PostProbeAsync(
+        string query,
+        object? variables,
+        string? authorizationHeaderValue,
+        JsonSerializerOptions variableSerializationOptions,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(query);
+        ArgumentNullException.ThrowIfNull(variableSerializationOptions);
+
+        JsonTypeInfo requestTypeInfo;
+        object requestBody;
+
+        if (variables is null)
+        {
+            requestBody = new GraphQlQueryOnlyEnvelope { Query = query };
+            requestTypeInfo = OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(GraphQlQueryOnlyEnvelope))
+                ?? throw new InvalidOperationException("GraphQlQueryOnlyEnvelope is not registered for source generation.");
+        }
+        else
+        {
+            JsonElement variablesElement = JsonSerializer.SerializeToElement(variables, variableSerializationOptions);
+            requestBody = new GraphQlRequestEnvelope<JsonElement>
+            {
+                Query = query,
+                Variables = variablesElement,
+            };
+
+            requestTypeInfo = OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(GraphQlRequestEnvelope<JsonElement>))
+                ?? throw new InvalidOperationException("GraphQlRequestEnvelope<JsonElement> is not registered for source generation.");
+        }
+
+        return PostCoreAsync<JsonElement>(requestBody, requestTypeInfo, authorizationHeaderValue, cancellationToken);
     }
 }

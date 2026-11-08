@@ -39,7 +39,7 @@ internal static partial class GraphQlProbeJsonRedactor
 
     internal static string SerializeEnvelope<TData>(GraphQlResponseEnvelope<TData> envelope)
     {
-        return JsonSerializer.Serialize(envelope, OctopusJsonSerializerOptions.Default);
+        return JsonSerializer.Serialize(envelope, OctopusTestJsonSerializerOptions.Default);
     }
 
     [GeneratedRegex(@"""id""\s*:\s*""\d+""", RegexOptions.CultureInvariant)]

@@ -46,7 +46,7 @@ public sealed class GridSupplyPointDictionaryConverterTests
 
     private static ProductDetail Deserialize(string json)
     {
-        return JsonSerializer.Deserialize<ProductDetail>(json, OctopusJsonSerializerOptions.Default)
+        return JsonSerializer.Deserialize<ProductDetail>(json, OctopusTestJsonSerializerOptions.Default)
             ?? throw new InvalidOperationException("Expected product detail JSON to deserialise.");
     }
 }

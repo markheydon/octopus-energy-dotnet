@@ -26,7 +26,6 @@ public sealed class RateLimitService : IRateLimitService
 
         RateLimitInfoQueryData data = await _graphQl.ExecuteAsync<RateLimitInfoQueryData>(
             RateLimitInfoQueries.GetRateLimitInfo,
-            variables: null,
             cancellationToken).ConfigureAwait(false);
 
         return data.RateLimitInfo
