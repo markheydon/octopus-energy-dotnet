@@ -1,0 +1,9 @@
+{
+  "data": {
+    "account": {
+      "number": "A-TEST0001",
+      "__typename": "AccountType"
+    }
+  },
+  "errors": null
+}

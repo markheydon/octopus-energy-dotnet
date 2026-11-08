@@ -49,4 +49,5 @@ Negative:
 
 ## Follow-up
 
-Runtime spike for GraphQL customer allow-list (GitHub issue). Confirm `Authorization` header scheme before implementing GraphQL transport.
+- Runtime customer GraphQL allow-list: [docs/planning/graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) (issue #21, verified 8 November 2026).
+- `Authorization` header scheme: raw JWT from `obtainKrakenToken` (issue #20; reconfirmed via `LiveGraphQlTokenProbeTests`).

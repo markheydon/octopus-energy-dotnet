@@ -57,6 +57,18 @@ Do not put API keys in the repo. CI uses recorded fixtures only. Optional live c
 Set `OCTOPUS_ENERGY_ENABLE_LIVE_TESTS=1` to run live xUnit smoke tests under
 `tests/OctopusEnergy.Client.Tests/Live/`. They remain skipped in CI.
 
+To regenerate the v1.2 GraphQL customer allow-list matrix (issue #21), run:
+
+```bash
+export OCTOPUS_ENERGY_ENABLE_LIVE_TESTS=1
+export OCTOPUS_ENERGY_API_KEY='…'
+dotnet test tests/OctopusEnergy.Client.Tests/OctopusEnergy.Client.Tests.csproj \
+  -c Release --filter "FullyQualifiedName~LiveGraphQlAllowListProbeTests" \
+  --output detailed
+```
+
+Results belong in [docs/planning/graphql-customer-allow-list.md](planning/graphql-customer-allow-list.md) (redacted). See `AllowListProbeQueries` for probe documents.
+
 To smoke-test the SDK against the live UK API without xUnit, run the [products console sample](../samples/README.md):
 
 ```bash
