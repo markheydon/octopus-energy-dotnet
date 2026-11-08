@@ -1,0 +1,29 @@
+{
+  "data": {
+    "account": {
+      "transactions": {
+        "edges": [
+          {
+            "node": {
+              "id": "transaction-id-redacted",
+              "postedDate": "2026-11-06",
+              "__typename": "Payment",
+              "amounts": {
+                "net": 4000,
+                "tax": 0,
+                "gross": 4000
+              }
+            }
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "endCursor": "cursor-tx-end",
+          "startCursor": "cursor-tx-start"
+        }
+      }
+    }
+  },
+  "errors": null
+}

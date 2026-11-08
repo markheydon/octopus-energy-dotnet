@@ -70,6 +70,24 @@ public sealed class LiveGraphQlAllowListProbeTests(ITestOutputHelper output)
                 CancellationToken.None));
 
             results.Add(await probe.ProbeAsync(
+                "accountBills",
+                AllowListProbeQueries.AccountBills,
+                new { accountNumber },
+                CancellationToken.None));
+
+            results.Add(await probe.ProbeAsync(
+                "accountTransactions",
+                AllowListProbeQueries.AccountTransactions,
+                new { accountNumber },
+                CancellationToken.None));
+
+            results.Add(await probe.ProbeAsync(
+                "accountPayments",
+                AllowListProbeQueries.AccountPayments,
+                new { accountNumber },
+                CancellationToken.None));
+
+            results.Add(await probe.ProbeAsync(
                 "initiateProductSwitch",
                 AllowListProbeQueries.InitiateProductSwitch,
                 new { accountNumber },

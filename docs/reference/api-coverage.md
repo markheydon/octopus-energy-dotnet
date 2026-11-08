@@ -57,7 +57,9 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `viewer` / multi-account | Allowed | Implemented (`ViewerService`) |
 | `account` (minimal GraphQL projection) | Allowed | Planned (#23); REST `Accounts.GetAsync` today |
 | Account meter discovery (GraphQL fields) | Allowed | Planned (#23); REST account meters today |
-| `account` (bills, transactions, payments) | Not probed | Planned (#23) |
+| `account` → `bills` | Allowed | Implemented (`AccountBilling.ListBillsPageAsync`) |
+| `account` → `transactions` | Allowed | Implemented (`AccountBilling.ListTransactionsPageAsync`) |
+| `account` → `payments` | Allowed | Implemented (`AccountBilling.ListPaymentsPageAsync`) |
 | Electricity meter reading mutation | Allowed (mutation) | Implemented (#24, partial — `MeterReadings.CreateElectricityAsync`) |
 | Gas meter reading mutation | Not probed on spike account | Planned (#24, gas) |
 | `devices(accountNumber)` | Allowed (empty on probe account) | Planned (#25) |

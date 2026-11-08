@@ -1,4 +1,5 @@
 using OctopusEnergy.Client;
+using OctopusEnergy.Client.Models.AccountBilling;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Common;
 using OctopusEnergy.Client.Models.Consumption;
@@ -7,6 +8,7 @@ using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
 using OctopusEnergy.Client.Models.Viewer;
+using OctopusEnergy.Client.Services.AccountBilling;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
@@ -33,6 +35,7 @@ public sealed class ClientInterfaceTests
         Assert.IsAssignableFrom<IRateLimitService>(client.RateLimits);
         Assert.IsAssignableFrom<IMeterReadingService>(client.MeterReadings);
         Assert.IsAssignableFrom<IViewerService>(client.Viewer);
+        Assert.IsAssignableFrom<IAccountBillingService>(client.AccountBilling);
     }
 
     [Fact]
@@ -48,6 +51,7 @@ public sealed class ClientInterfaceTests
         Assert.IsType<RateLimitService>(client.RateLimits);
         Assert.IsType<MeterReadingService>(client.MeterReadings);
         Assert.IsType<ViewerService>(client.Viewer);
+        Assert.IsType<AccountBillingService>(client.AccountBilling);
     }
 
     [Fact]
@@ -77,6 +81,7 @@ public sealed class ClientInterfaceTests
             RateLimits = new StubRateLimitService();
             MeterReadings = new StubMeterReadingService();
             Viewer = new StubViewerService();
+            AccountBilling = new StubAccountBillingService();
         }
 
         public string? LastRequestedAccountNumber { get; private set; }
@@ -96,6 +101,8 @@ public sealed class ClientInterfaceTests
         public IMeterReadingService MeterReadings { get; }
 
         public IViewerService Viewer { get; }
+
+        public IAccountBillingService AccountBilling { get; }
 
         public void Dispose()
         {
@@ -248,6 +255,27 @@ public sealed class ClientInterfaceTests
     {
         public Task<ViewerDetail> GetViewerAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult(new ViewerDetail());
+    }
+
+    private sealed class StubAccountBillingService : IAccountBillingService
+    {
+        public Task<GraphQlRelayPage<AccountBill>> ListBillsPageAsync(
+            string accountNumber,
+            AccountBillListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new GraphQlRelayPage<AccountBill>());
+
+        public Task<GraphQlRelayPage<AccountTransaction>> ListTransactionsPageAsync(
+            string accountNumber,
+            AccountTransactionListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new GraphQlRelayPage<AccountTransaction>());
+
+        public Task<GraphQlRelayPage<AccountPayment>> ListPaymentsPageAsync(
+            string accountNumber,
+            AccountPaymentListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new GraphQlRelayPage<AccountPayment>());
     }
 
     private sealed class StubTariffRatesService : ITariffRatesService

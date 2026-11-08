@@ -35,7 +35,7 @@ See [authentication](../how-to/authentication.md) for custom base URLs and suppl
 
 ### Testability with interfaces
 
-Depend on `IOctopusEnergyClient` and the resource service interfaces (`IAccountService`, `IConsumptionService`, `IViewerService`, `IRateLimitService`, `IMeterReadingService`, and so on) in application code so unit tests can substitute behaviour. Construct `OctopusEnergyClient` at the composition root; the concrete client implements `IOctopusEnergyClient` and exposes interface-typed resource properties.
+Depend on `IOctopusEnergyClient` and the resource service interfaces (`IAccountService`, `IConsumptionService`, `IViewerService`, `IRateLimitService`, `IMeterReadingService`, `IAccountBillingService`, and so on) in application code so unit tests can substitute behaviour. Construct `OctopusEnergyClient` at the composition root; the concrete client implements `IOctopusEnergyClient` and exposes interface-typed resource properties.
 
 ```csharp
 public sealed class AccountSummaryService(IOctopusEnergyClient client)

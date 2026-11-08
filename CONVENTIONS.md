@@ -34,6 +34,7 @@ src/
     │   ├── Consumption/                 # Consumption interval and list request models
     │   ├── Industry/                    # GSP and MPAN lookup models
     │   ├── Products/                    # Product catalogue and tariff charge models
+    │   ├── AccountBilling/              # GraphQL bills, transactions, payments
     │   ├── MeterReadings/               # GraphQL meter reading models
     │   ├── RateLimits/                  # GraphQL rate-limit query models
     │   └── Viewer/                      # GraphQL viewer discovery models
@@ -42,6 +43,7 @@ src/
         ├── Consumption/                 # ConsumptionService
         ├── Industry/                    # IndustryService
         ├── Products/                    # ProductService, TariffRatesService
+        ├── AccountBilling/              # AccountBillingService (GraphQL-backed)
         ├── MeterReadings/               # MeterReadingService (GraphQL-backed)
         ├── RateLimits/                  # RateLimitService (GraphQL-backed)
         └── Viewer/                      # ViewerService (GraphQL-backed)

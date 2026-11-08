@@ -1,0 +1,19 @@
+{
+  "data": {
+    "account": {
+      "bills": {
+        "edges": [
+          {
+            "node": {
+              "id": "bill-id-redacted",
+              "billType": "STATEMENT",
+              "issuedDate": "2026-10-14",
+              "temporaryUrl": "https://example.test/billing/statements/redacted.pdf"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "errors": null
+}
