@@ -39,11 +39,26 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 
 ### Unreleased (v1.2 groundwork)
 
-Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` stays on the latest **1.1.x** release while GraphQL customer APIs land on `main`. When you tag **1.2.0** (or the first **1.2.x** public GraphQL release):
+Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` stays on the latest **1.1.x** release while GraphQL customer APIs land on `main`.
 
-1. Bump `<Version>` and add a **1.2.0** section here; move the bullets below out of *Unreleased*.
-2. Retitle [API coverage](../docs/reference/api-coverage.md) *v1.2 GraphQL (in progress)* and related consumer wording to match the shipped package.
-3. Confirm [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) and the coverage table still agree.
+#### 1.2.0 tag checklist
+
+Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL release):
+
+1. [ ] From the repository root, pass Release checks:
+
+   ```bash
+   dotnet format OctopusEnergy.slnx --verify-no-changes
+   dotnet build OctopusEnergy.slnx -c Release -warnaserror
+   dotnet test OctopusEnergy.slnx -c Release --no-build
+   ```
+
+2. [ ] Bump `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` to **1.2.0** (or the intended **1.2.x** patch).
+3. [ ] Add a **1.2.0 — GraphQL customer extras** section below; move every bullet out of *Unreleased* into that section with the release date.
+4. [ ] Retitle [API coverage](../docs/reference/api-coverage.md): change *v1.2 GraphQL (in progress)* to shipped wording; update [README.md](../README.md) *Status* and *Roadmap* so NuGet **1.2.x** matches the package.
+5. [ ] Confirm [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) and the [API coverage](../docs/reference/api-coverage.md) customer-operations table agree on every **Public SDK** row (method names, probe status, planned vs implemented).
+6. [ ] Optionally re-run live allow-list probes (`OCTOPUS_ENERGY_ENABLE_LIVE_TESTS=1` and `OCTOPUS_ENERGY_API_KEY`) and refresh fixtures when probe results change.
+7. [ ] Tag and push (`git tag v1.2.0 && git push origin v1.2.0`); complete [Publish steps](#publish-steps).
 
 - **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. `OctopusEnergyClient.GraphQl` remains `internal`. Status tables: [API coverage](../docs/reference/api-coverage.md#v12-graphql-in-progress).
 - **GraphQL operational limits (issue #29).** `GraphQlRelayLimits`, Kraken exception types, `GraphQlRelayPageInfo`, and `client.RateLimits.GetRateLimitInfoAsync` (hourly points allowance). No automatic retry on `KT-CT-1199`.
@@ -53,6 +68,7 @@ Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEne
 - **SmartFlex devices (issue #25).** `IOctopusEnergyClient.Devices` (`IDeviceService`, `SmartFlexDevice`, `FlexPlannedDispatch`) lists enrolled hardware via `devices(accountNumber:)` and planned windows via `flexPlannedDispatches(deviceId:)` only (not deprecated `plannedDispatches`). Empty device lists are returned without exception; unauthorised device ids surface as `OctopusEnergyKrakenException`.
 - **Home Mini telemetry (issue #26).** `IOctopusEnergyClient.SmartMeterTelemetry` (`ISmartMeterTelemetryService`, `SmartMeterDevice`, `SmartMeterTelemetryReading`, `SmartMeterTelemetryRange`) discovers EUI64 ids via agreement `smartDevices` and reads `smartMeterTelemetry(deviceId:)`. Field rate limits (`KT-CT-1199`, documented 125/h) are not retried automatically.
 - **Octoplus (issue #27).** `IOctopusEnergyClient.Octoplus` (`IOctoplusService`) wraps public-host `octoplusAccountInfo`, `loyaltyPointLedgers`, `loyaltyPointsBalance`, deprecated `wheelOfFortuneSpins`, `joinOctoplusCampaign`, and `redeemLoyaltyPointsForAccountCredit`. `savingSessions` is not on the public GraphQL schema (backend host is out of scope).
+- **Product switch (issue #28).** `IOctopusEnergyClient.ProductSwitch` (`IProductSwitchService`, `ProductSwitchInitiate`, `ProductSwitchResult`) wraps `initiateProductSwitch` when the dashboard key has switch-product or renewal permission. Obtain quoted product or offer identifiers outside the SDK.
 - **ProductsConsole sample.** Authenticated smoke exercises `Devices`, `SmartMeterTelemetry`, and `Octoplus` when `OCTOPUS_ENERGY_ACCOUNT_NUMBER` is set (device counts only; empty lists and `KT-CT-1111` are treated as successful probe paths).
 
 ### Additive changes

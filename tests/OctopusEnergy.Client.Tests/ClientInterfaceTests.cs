@@ -8,6 +8,7 @@ using OctopusEnergy.Client.Models.Industry;
 using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Octoplus;
 using OctopusEnergy.Client.Models.Products;
+using OctopusEnergy.Client.Models.ProductSwitch;
 using OctopusEnergy.Client.Models.RateLimits;
 using OctopusEnergy.Client.Models.SmartMeterTelemetry;
 using OctopusEnergy.Client.Models.Viewer;
@@ -19,6 +20,7 @@ using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Octoplus;
 using OctopusEnergy.Client.Services.Products;
+using OctopusEnergy.Client.Services.ProductSwitch;
 using OctopusEnergy.Client.Services.RateLimits;
 using OctopusEnergy.Client.Services.SmartMeterTelemetry;
 using OctopusEnergy.Client.Services.Viewer;
@@ -45,6 +47,7 @@ public sealed class ClientInterfaceTests
         Assert.IsAssignableFrom<IDeviceService>(client.Devices);
         Assert.IsAssignableFrom<ISmartMeterTelemetryService>(client.SmartMeterTelemetry);
         Assert.IsAssignableFrom<IOctoplusService>(client.Octoplus);
+        Assert.IsAssignableFrom<IProductSwitchService>(client.ProductSwitch);
     }
 
     [Fact]
@@ -64,6 +67,7 @@ public sealed class ClientInterfaceTests
         Assert.IsType<DeviceService>(client.Devices);
         Assert.IsType<SmartMeterTelemetryService>(client.SmartMeterTelemetry);
         Assert.IsType<OctoplusService>(client.Octoplus);
+        Assert.IsType<ProductSwitchService>(client.ProductSwitch);
     }
 
     [Fact]
@@ -97,6 +101,7 @@ public sealed class ClientInterfaceTests
             Devices = new StubDeviceService();
             SmartMeterTelemetry = new StubSmartMeterTelemetryService();
             Octoplus = new StubOctoplusService();
+            ProductSwitch = new StubProductSwitchService();
         }
 
         public string? LastRequestedAccountNumber { get; private set; }
@@ -124,6 +129,8 @@ public sealed class ClientInterfaceTests
         public ISmartMeterTelemetryService SmartMeterTelemetry { get; }
 
         public IOctoplusService Octoplus { get; }
+
+        public IProductSwitchService ProductSwitch { get; }
 
         public void Dispose()
         {
@@ -289,6 +296,18 @@ public sealed class ClientInterfaceTests
             string deviceId,
             CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<FlexPlannedDispatch>>([]);
+    }
+
+    private sealed class StubProductSwitchService : IProductSwitchService
+    {
+        public Task<ProductSwitchResult> InitiateAsync(
+            ProductSwitchInitiate request,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new ProductSwitchResult
+            {
+                ProductCode = "E-1R-VAR-22-11-25-C",
+                SwitchDate = new DateOnly(2026, 4, 1),
+            });
     }
 
     private sealed class StubOctoplusService : IOctoplusService

@@ -9,6 +9,7 @@ using OctopusEnergy.Client.Services.Industry;
 using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Octoplus;
 using OctopusEnergy.Client.Services.Products;
+using OctopusEnergy.Client.Services.ProductSwitch;
 using OctopusEnergy.Client.Services.RateLimits;
 using OctopusEnergy.Client.Services.SmartMeterTelemetry;
 using OctopusEnergy.Client.Services.Viewer;
@@ -23,7 +24,7 @@ namespace OctopusEnergy.Client;
 /// (<see cref="DefaultBaseUrl"/> by default) with shared pagination and error handling.
 /// When constructed with a dashboard API key, GraphQL-backed resource services
 /// (<see cref="Viewer"/>, <see cref="RateLimits"/>, <see cref="MeterReadings"/>,
-/// <see cref="AccountBilling"/>, <see cref="Devices"/>, <see cref="SmartMeterTelemetry"/>, <see cref="Octoplus"/>) exchange the key for a Kraken JWT
+/// <see cref="AccountBilling"/>, <see cref="Devices"/>, <see cref="SmartMeterTelemetry"/>, <see cref="Octoplus"/>, <see cref="ProductSwitch"/>) exchange the key for a Kraken JWT
 /// internally on first use — callers do not choose transport per call or attach tokens.
 /// </remarks>
 public sealed class OctopusEnergyClient : IOctopusEnergyClient
@@ -188,6 +189,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         Devices = new DeviceService(_graphQl);
         SmartMeterTelemetry = new SmartMeterTelemetryService(_graphQl);
         Octoplus = new OctoplusService(_graphQl);
+        ProductSwitch = new ProductSwitchService(_graphQl);
     }
 
     /// <summary>
@@ -274,6 +276,15 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Requires a dashboard API key. Saving-session joins are not on the public Kraken GraphQL host; see <see cref="Services.Octoplus.IOctoplusService"/> remarks.
     /// </remarks>
     public IOctoplusService Octoplus { get; }
+
+    /// <summary>
+    /// GraphQL <c>initiateProductSwitch</c> for the authenticated dashboard API key.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key with permission to switch product or manage account renewals.
+    /// Uses GraphQL internally; callers do not supply JWTs or queries. Obtain quote or offer identifiers from Octopus quoting flows outside this SDK.
+    /// </remarks>
+    public IProductSwitchService ProductSwitch { get; }
 
     internal RestClient Rest { get; }
 

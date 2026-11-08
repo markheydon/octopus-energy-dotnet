@@ -19,6 +19,7 @@ Unofficial .NET SDK for the Octopus Energy **customer** APIs. These pages help y
 | [SmartFlex devices](how-to/devices.md) | Device discovery and planned dispatches (GraphQL) |
 | [Smart-meter telemetry](how-to/smart-meter-telemetry.md) | Home Mini EUI64 discovery and telemetry (GraphQL) |
 | [Octoplus](how-to/octoplus.md) | Enrolment, loyalty points, and wheel of fortune (GraphQL) |
+| [Product switch](how-to/product-switch.md) | Initiate a tariff product switch (GraphQL) |
 | [Tariff rates](how-to/tariff-rates.md) | Standing charges and unit-rate history |
 | [Industry lookups](how-to/industry.md) | GSP by postcode and MPAN lookup |
 | [Tariff codes and GSP](how-to/tariff-codes.md) | Parse tariff codes and build charge paths |

@@ -40,6 +40,7 @@ src/
     │   ├── Devices/                     # SmartFlex device and dispatch models
     │   ├── SmartMeterTelemetry/         # Home Mini telemetry and EUI64 models
     │   ├── Octoplus/                    # Loyalty points, enrolment, wheel-of-fortune models
+    │   ├── ProductSwitch/               # GraphQL initiate product switch models
     │   └── Viewer/                      # GraphQL viewer discovery models
     └── Services/                        # Resource-oriented services
         ├── Accounts/                    # AccountService
@@ -52,6 +53,7 @@ src/
         ├── Devices/                     # DeviceService (GraphQL-backed)
         ├── SmartMeterTelemetry/         # SmartMeterTelemetryService (GraphQL-backed)
         ├── Octoplus/                    # OctoplusService (GraphQL-backed, optional module)
+        ├── ProductSwitch/               # ProductSwitchService (GraphQL-backed)
         └── Viewer/                      # ViewerService (GraphQL-backed)
 
 tests/
@@ -96,6 +98,7 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 - **Customer allow-list** - do not add a method because it exists on the GraphQL schema. Add it because a customer API key can call it (documented + runtime-verified).
 - **No full schema codegen** - hand-picked operations.
 - **Documented contract validation only** - e.g. REST `page_size` maxima from Octopus docs.
+- **GraphQL list patterns** - REST lists use `IAsyncEnumerable<T>`; Relay connections use `GraphQlRelayPage<T>` page methods; bounded GraphQL arrays may use `IReadOnlyList<T>`. See [ADR-0002](adr/adr-0002-graphql-public-list-patterns.md).
 
 ---
 
@@ -127,6 +130,7 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 
 | Date | Change | Reason |
 |---|---|---|
+| 8 November 2026 | GraphQL list patterns bullet; link ADR-0002 | Goals review follow-up |
 | 8 November 2026 | Add RateLimits to project tree | Goals review follow-up |
 | 7 November 2026 | Extend project tree (Consumption, Industry, TariffRates, samples) | Goals review doc drift (#20 groundwork) |
 | 7 November 2026 | GraphQL folder note uses milestone v1.2 | Release-label doc tidy |
