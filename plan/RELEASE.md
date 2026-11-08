@@ -91,4 +91,5 @@ Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL re
 - `ListElectricityPageAsync` / `ListGasPageAsync` on `IConsumptionService` — fetch one consumption page and read total `count` without auto-pagination.
 - `RestPageSizeLimits.Validate` — rejects `page_size` less than 1 for consumption and tariff rate requests (previously sent to the API).
 - Consumer how-tos: [consumption](../docs/how-to/consumption.md), [tariff rates](../docs/how-to/tariff-rates.md), [industry lookups](../docs/how-to/industry.md).
+- **EV device tariff rates (issue #101).** `ITariffRatesService.ListEvDeviceOffPeakUnitRatesAsync` and `ListEvDevicePeakUnitRatesAsync` wrap the official `ev-device-off-peak-unit-rates` and `ev-device-peak-unit-rates` REST paths for electricity tariffs.
 - **Trim-safe REST JSON** — `System.Text.Json` source generation for all REST wire models used by `RestClient`, so file-based apps and hosts with `JsonSerializerIsReflectionEnabledByDefault=false` work without consumer MSBuild workarounds. Does not claim full Native AOT compatibility for the entire package (see issue #68).

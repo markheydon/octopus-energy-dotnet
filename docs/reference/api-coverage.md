@@ -23,7 +23,7 @@
 |---|---|---|
 | Products | REST `/v1/products/` | Implemented |
 | Product / tariffs | REST `/v1/products/{code}/` | Implemented |
-| Unit rates / standing charges | REST tariff charge URLs | Implemented (`TariffRatesService`) |
+| Unit rates / standing charges | REST tariff charge URLs (`standing-charges`, `standard-unit-rates`, `day-unit-rates`, `night-unit-rates`, `ev-device-off-peak-unit-rates`, `ev-device-peak-unit-rates`) | Implemented (`TariffRatesService`) |
 | Grid supply points | REST `/v1/industry/grid-supply-points/` | Implemented (`IndustryService`) |
 | Electricity meter-point | REST `/v1/electricity-meter-points/{mpan}/` | Implemented (`IndustryService`) |
 | Account | REST `/v1/accounts/{number}/` | Implemented |

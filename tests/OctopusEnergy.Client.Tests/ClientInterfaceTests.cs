@@ -421,6 +421,18 @@ public sealed class ClientInterfaceTests
             CancellationToken cancellationToken = default) =>
             EmptyCharges();
 
+        public IAsyncEnumerable<TariffCharge> ListEvDeviceOffPeakUnitRatesAsync(
+            TariffCode tariffCode,
+            TariffChargeListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            EmptyCharges();
+
+        public IAsyncEnumerable<TariffCharge> ListEvDevicePeakUnitRatesAsync(
+            TariffCode tariffCode,
+            TariffChargeListRequest? request = null,
+            CancellationToken cancellationToken = default) =>
+            EmptyCharges();
+
         public IAsyncEnumerable<TariffCharge> ListChargesAsync(
             TariffCode tariffCode,
             TariffChargeKind chargeKind,

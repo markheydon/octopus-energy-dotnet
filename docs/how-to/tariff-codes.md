@@ -50,7 +50,7 @@ await foreach (TariffCharge dayRate in client.TariffRates.ListDayUnitRatesAsync(
 }
 ```
 
-Gas tariffs support standing charges and standard unit rates only. `ListDayUnitRatesAsync` and `ListNightUnitRatesAsync` throw `OctopusEnergyRequestException` for gas or single-register electricity.
+Gas tariffs support standing charges and standard unit rates only. `ListDayUnitRatesAsync` and `ListNightUnitRatesAsync` throw `OctopusEnergyRequestException` for gas or single-register electricity. EV device peak and off-peak lists are electricity-only (`ListEvDeviceOffPeakUnitRatesAsync`, `ListEvDevicePeakUnitRatesAsync`).
 
 ## Compose a code without parsing
 

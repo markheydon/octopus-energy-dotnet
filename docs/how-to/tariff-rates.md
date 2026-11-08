@@ -70,6 +70,30 @@ await foreach (TariffCharge nightRate in client.TariffRates.ListNightUnitRatesAs
 
 Gas tariffs and single-register electricity tariffs support standing charges and standard unit rates only. `ListDayUnitRatesAsync` and `ListNightUnitRatesAsync` throw `OctopusEnergyRequestException` for gas or single-register electricity before any HTTP call.
 
+## EV device peak and off-peak rates
+
+Electricity tariffs that expose EV device rate lists support dedicated peak and off-peak endpoints (often `E-1R-…`):
+
+```csharp
+TariffCode evTariff = TariffCode.Parse("E-1R-EXAMPLE-22-11-25-C");
+
+await foreach (TariffCharge offPeakRate in client.TariffRates.ListEvDeviceOffPeakUnitRatesAsync(
+    evTariff,
+    cancellationToken: cancellationToken))
+{
+    Console.WriteLine($"Off-peak: {offPeakRate.ValueIncVat} p/kWh");
+}
+
+await foreach (TariffCharge peakRate in client.TariffRates.ListEvDevicePeakUnitRatesAsync(
+    evTariff,
+    cancellationToken: cancellationToken))
+{
+    Console.WriteLine($"Peak: {peakRate.ValueIncVat} p/kWh");
+}
+```
+
+`ListEvDeviceOffPeakUnitRatesAsync` and `ListEvDevicePeakUnitRatesAsync` throw `OctopusEnergyRequestException` for gas tariffs before any HTTP call.
+
 ## Filter by period
 
 Pass a `TariffChargeListRequest` to limit the window and control page size:

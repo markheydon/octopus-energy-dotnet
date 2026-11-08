@@ -80,6 +80,40 @@ public sealed class TariffRatesService : ITariffRatesService
     }
 
     /// <summary>
+    /// Lists EV device off-peak unit rates for an electricity tariff.
+    /// </summary>
+    /// <param name="tariffCode">Parsed electricity tariff code.</param>
+    /// <param name="request">Optional period and page-size filters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="tariffCode"/> is gas.
+    /// </exception>
+    public IAsyncEnumerable<TariffCharge> ListEvDeviceOffPeakUnitRatesAsync(
+        TariffCode tariffCode,
+        TariffChargeListRequest? request = null,
+        CancellationToken cancellationToken = default)
+    {
+        return ListChargesAsync(tariffCode, TariffChargeKind.EvDeviceOffPeakUnitRates, request, cancellationToken);
+    }
+
+    /// <summary>
+    /// Lists EV device peak unit rates for an electricity tariff.
+    /// </summary>
+    /// <param name="tariffCode">Parsed electricity tariff code.</param>
+    /// <param name="request">Optional period and page-size filters.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="OctopusEnergyRequestException">
+    /// Thrown when <paramref name="tariffCode"/> is gas.
+    /// </exception>
+    public IAsyncEnumerable<TariffCharge> ListEvDevicePeakUnitRatesAsync(
+        TariffCode tariffCode,
+        TariffChargeListRequest? request = null,
+        CancellationToken cancellationToken = default)
+    {
+        return ListChargesAsync(tariffCode, TariffChargeKind.EvDevicePeakUnitRates, request, cancellationToken);
+    }
+
+    /// <summary>
     /// Lists charge periods for a tariff charge endpoint.
     /// </summary>
     /// <param name="tariffCode">Parsed tariff code.</param>
