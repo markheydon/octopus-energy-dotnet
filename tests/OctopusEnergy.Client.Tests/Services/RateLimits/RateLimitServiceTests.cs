@@ -26,6 +26,22 @@ public sealed class RateLimitServiceTests
     }
 
     [Fact]
+    public async Task GetRateLimitInfoAsync_WhenRateLimitInfoNull_ThrowsParseException()
+    {
+        QueuedHttpMessageHandler handler = new();
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("graphql-obtain-token.json"));
+        handler.Enqueue(HttpStatusCode.OK, FixtureFile.Read("graphql-rate-limit-info-null.json"));
+
+        using HttpClient httpClient = new(handler) { BaseAddress = new Uri("https://api.example.test/v1/") };
+        using OctopusEnergyClient client = new("test-api-key", httpClient);
+
+        await Assert.ThrowsAsync<OctopusEnergyParseException>(
+            () => client.RateLimits.GetRateLimitInfoAsync(CancellationToken.None));
+
+        Assert.Equal(2, handler.SentRequests.Count);
+    }
+
+    [Fact]
     public async Task GetRateLimitInfoAsync_WhenNoApiKey_ThrowsBeforeHttpCall()
     {
         using OctopusEnergyClient client = new();

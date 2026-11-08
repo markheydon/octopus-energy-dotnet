@@ -4,7 +4,7 @@ namespace OctopusEnergy.Client;
 
 /// <summary>
 /// Thrown when the Octopus API returns a documented error payload
-/// (for example REST <c>detail</c> or future GraphQL <c>extensions.errorCode</c>).
+/// (for example REST <c>detail</c>). Kraken GraphQL errors use <see cref="OctopusEnergyKrakenException"/>.
 /// </summary>
 public class OctopusEnergyApiException : OctopusEnergyHttpException
 {
