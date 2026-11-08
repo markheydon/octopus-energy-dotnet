@@ -51,4 +51,9 @@ namespace OctopusEnergy.Client.Infrastructure.Serialization;
 [JsonSerializable(typeof(RateLimitInfoQueryData))]
 [JsonSerializable(typeof(RateLimitInfo))]
 [JsonSerializable(typeof(PointsAllowanceRateLimit))]
+[JsonSerializable(typeof(GraphQlResponseEnvelope<ViewerQueryData>))]
+[JsonSerializable(typeof(ViewerQueryData))]
+[JsonSerializable(typeof(ViewerWire))]
+[JsonSerializable(typeof(ViewerAccountWire))]
+[JsonSerializable(typeof(ViewerPortfolioWire))]
 internal partial class OctopusEnergyJsonContext : JsonSerializerContext;

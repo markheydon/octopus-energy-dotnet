@@ -1,0 +1,19 @@
+{
+  "data": {
+    "viewer": {
+      "id": "viewer-id-redacted",
+      "accounts": [
+        { "number": "A-TEST0001" }
+      ],
+      "portfolios": [
+        {
+          "accounts": [
+            { "number": "A-TEST0001" },
+            { "number": "A-TEST0003" }
+          ]
+        }
+      ]
+    }
+  },
+  "errors": null
+}

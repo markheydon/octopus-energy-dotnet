@@ -25,7 +25,7 @@ This artefact is the gate for milestone **v1.2** GraphQL stories ([#22](https://
 | Operation | Status | Runtime code(s) | Notes | Redacted fixture |
 |---|---|---|---|---|
 | `obtainKrakenToken` (`APIKey`) | Allowed | — | Confirmed in #20; raw `Authorization` header. | [graphql-obtain-token.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-obtain-token.json) |
-| `viewer` → `accounts { number }` | Allowed | — | Multi-account list; no silent default account. | [graphql-allow-list-viewer.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-viewer.json) |
+| `viewer` → `accounts { number }` and `portfolios { accounts { number } }` | Allowed | — | Multi-account list merged with portfolio accounts (deduplicated); no silent default account. | [graphql-allow-list-viewer.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-viewer.json) |
 | `account(accountNumber)` | Allowed | — | Minimal projection succeeded. | [graphql-allow-list-account.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-account.json) |
 | Account meter discovery | Allowed | — | `account.properties.electricityMeterPoints` / `gasMeterPoints` for MPAN/MPRN. | [graphql-allow-list-account-meter-points.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-allow-list-account-meter-points.json) |
 | `rateLimitInfo` | Allowed | — | | [graphql-rate-limit-info.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-rate-limit-info.json) |

@@ -1,8 +1,8 @@
 # OctopusEnergy.Client
 
-Unofficial .NET client for the **Octopus Energy customer REST API** (public catalogue plus authenticated account and consumption data). Not affiliated with Octopus Energy Limited.
+Unofficial .NET client for the **Octopus Energy customer APIs** (REST catalogue, account, and consumption; curated GraphQL where REST does not cover discovery and operational limits). Not affiliated with Octopus Energy Limited.
 
-Stable `1.x` with SemVer guarantees for the REST customer core. `1.1.0` adds developer-experience improvements (hosting, testability, workflow helpers, trim-safe REST JSON). GraphQL extras are planned for GitHub milestone **v1.2** (NuGet **1.2.x**, not **2.0.0**); see [release labels](https://github.com/markheydon/octopus-energy-dotnet/blob/main/VERSIONING.md#release-labels-quick-reference).
+Stable `1.x` with SemVer guarantees for the REST customer core. `1.1.0` adds developer-experience improvements (hosting, testability, workflow helpers, trim-safe REST JSON). Milestone **v1.2** (NuGet **1.2.x**, not **2.0.0**) adds GraphQL-backed `Viewer` and `RateLimits` on the same client (transport is internal). See [release labels](https://github.com/markheydon/octopus-energy-dotnet/blob/main/VERSIONING.md#release-labels-quick-reference).
 
 Dashboard API keys expose account structure and consumption. Treat keys as secrets and do not share them with untrusted third parties. This library is not a developer licence from Octopus Energy.
 
