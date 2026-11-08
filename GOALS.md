@@ -31,7 +31,7 @@ This project should be the same kind of library as FreeAgent.NET: strongly typed
 - Pagination, timezones, units, and errors work without consumer workarounds on the shipped REST customer surface (`1.0.0` core, `1.1.0` developer experience).
 - Package on NuGet at stable `1.x` (`1.1.0` latest) with consumer documentation that states units, VAT, and BST behaviour (see [plan/RELEASE.md](plan/RELEASE.md)).
 - Partner-only operations are not in the public surface.
-- GraphQL customer extras (milestone **v1.2**, NuGet **1.2.x**): `Viewer` and `RateLimits` are implemented in source; additional curated operations remain planned until **1.2.x** ships ([release labels](VERSIONING.md#release-labels-quick-reference)).
+- GraphQL customer extras (milestone **v1.2**, NuGet **1.2.x**): `Viewer`, `RateLimits`, and electricity `MeterReadings` are implemented in source; additional curated operations remain planned until **1.2.x** ships ([release labels](VERSIONING.md#release-labels-quick-reference)).
 
 ---
 

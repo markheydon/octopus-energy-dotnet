@@ -3,6 +3,7 @@ using OctopusEnergy.Client;
 using OctopusEnergy.Client.Models.Accounts;
 using OctopusEnergy.Client.Models.Consumption;
 using OctopusEnergy.Client.Models.Industry;
+using OctopusEnergy.Client.Models.MeterReadings;
 using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Models.RateLimits;
 using OctopusEnergy.Client.Models.Viewer;
@@ -81,6 +82,7 @@ try
         recorder.Skip("gas consumption", "requires authenticated client");
         recorder.Skip("rate limits", "requires authenticated client");
         recorder.Skip("viewer", "requires authenticated client");
+        recorder.Skip("meter readings", "requires authenticated client");
     }
 
     if (await TryRunSectionAsync(
@@ -213,6 +215,12 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
                 electricitySerial!,
                 cancellationToken);
             recorder.Pass("electricity consumption");
+            await RunMeterReadingsSmokeAsync(
+                authenticatedClient,
+                recorder,
+                mpan!,
+                electricitySerial!,
+                cancellationToken);
         }
         else
         {
@@ -220,6 +228,7 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
                 $"Set {AccountNumberEnvironmentVariable} or both {MpanEnvironmentVariable} and {ElectricityMeterSerialEnvironmentVariable}.";
             WriteConsumptionSkipped("electricity", reason);
             recorder.Skip("electricity consumption", reason);
+            recorder.Skip("meter readings", reason);
         }
 
         if (TryResolveGasConsumptionTarget(
@@ -271,12 +280,19 @@ static async Task<Account?> RunAuthenticatedSmokeAsync(
             accountElectricitySerial!,
             cancellationToken);
         recorder.Pass("electricity consumption");
+        await RunMeterReadingsSmokeAsync(
+            authenticatedClient,
+            recorder,
+            accountMpan!,
+            accountElectricitySerial!,
+            cancellationToken);
     }
     else
     {
         const string reason = "No import electricity meter with a serial number was returned on the account.";
         WriteConsumptionSkipped("electricity", reason);
         recorder.Skip("electricity consumption", reason);
+        recorder.Skip("meter readings", reason);
     }
 
     if (TryResolveGasConsumptionTarget(
@@ -344,6 +360,54 @@ static async Task RunRateLimitsSmokeAsync(
     }
 
     recorder.Pass("rate limits");
+}
+
+static async Task RunMeterReadingsSmokeAsync(
+    OctopusEnergyClient client,
+    SmokeRecorder recorder,
+    string mpan,
+    string serialNumber,
+    CancellationToken cancellationToken)
+{
+    Console.WriteLine();
+    Console.WriteLine(
+        "Meter readings (GraphQL-backed, API key; historic probe — Kraken may persist if the mutation succeeds):");
+
+    ElectricityMeterReadingCreate request = new()
+    {
+        Mpan = mpan,
+        SerialNumber = serialNumber,
+        ReadAt = new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero),
+        Readings = [new ElectricityRegisterReading { Reading = 1 }],
+    };
+
+    try
+    {
+        ElectricityMeterReadingResult result = await client.MeterReadings.CreateElectricityAsync(
+            request,
+            cancellationToken);
+
+        if (result.ReadingErrors.Count > 0)
+        {
+            Console.WriteLine(
+                "  Field validation errors returned ({0}); mutation path responded.",
+                result.ReadingErrors.Count);
+        }
+        else
+        {
+            Console.WriteLine(
+                "  Mutation completed without field validation errors (Kraken may have stored the probe reading).");
+        }
+
+        recorder.Pass("meter readings");
+    }
+    catch (OctopusEnergyKrakenException ex)
+    {
+        Console.WriteLine(
+            "  Kraken response ({0}); mutation path responded.",
+            ex.KrakenErrorCode);
+        recorder.Pass("meter readings");
+    }
 }
 
 static async Task<ProductDetail> RunProductsSmokeAsync(

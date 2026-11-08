@@ -4,6 +4,7 @@ using OctopusEnergy.Client.Infrastructure.Http;
 using OctopusEnergy.Client.Services.Accounts;
 using OctopusEnergy.Client.Services.Consumption;
 using OctopusEnergy.Client.Services.Industry;
+using OctopusEnergy.Client.Services.MeterReadings;
 using OctopusEnergy.Client.Services.Products;
 using OctopusEnergy.Client.Services.RateLimits;
 using OctopusEnergy.Client.Services.Viewer;
@@ -173,6 +174,7 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
         Products = new ProductService(Rest);
         TariffRates = new TariffRatesService(Rest);
         RateLimits = new RateLimitService(_graphQl);
+        MeterReadings = new MeterReadingService(_graphQl);
         Viewer = new ViewerService(_graphQl);
     }
 
@@ -208,6 +210,15 @@ public sealed class OctopusEnergyClient : IOctopusEnergyClient
     /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
     /// </remarks>
     public IRateLimitService RateLimits { get; }
+
+    /// <summary>
+    /// GraphQL meter reading mutations for the authenticated dashboard API key.
+    /// </summary>
+    /// <remarks>
+    /// Requires a dashboard API key. Uses GraphQL internally; callers do not supply JWTs or queries.
+    /// Gas meter readings are not yet exposed pending allow-list verification on a suitable account.
+    /// </remarks>
+    public IMeterReadingService MeterReadings { get; }
 
     /// <summary>
     /// GraphQL viewer discovery for account numbers linked to the dashboard API key.

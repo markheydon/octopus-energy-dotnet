@@ -1,6 +1,6 @@
 # Getting started
 
-`OctopusEnergy.Client` is an **unofficial**, stable .NET SDK for the Octopus Energy **customer** APIs. Most operations use REST; a small set (account discovery on `client.Viewer` and operational rate limits on `client.RateLimits`) uses GraphQL internally while you keep a single `OctopusEnergyClient`. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
+`OctopusEnergy.Client` is an **unofficial**, stable .NET SDK for the Octopus Energy **customer** APIs. Most operations use REST; a small set (account discovery on `client.Viewer`, operational rate limits on `client.RateLimits`, and electricity meter readings on `client.MeterReadings`) uses GraphQL internally while you keep a single `OctopusEnergyClient`. It is not affiliated with Octopus Energy Limited, and the website terms of use are not a developer licence.
 
 A dashboard API key exposes your account structure and smart-meter consumption. Treat it as a secret and do not share it with third-party services you do not trust. Partner enrolment, quoting, and operations APIs are out of scope - see [customer vs partner](../explanation/customer-vs-partner.md).
 
@@ -35,7 +35,7 @@ See [authentication](../how-to/authentication.md) for custom base URLs and suppl
 
 ### Testability with interfaces
 
-Depend on `IOctopusEnergyClient` and the resource service interfaces (`IAccountService`, `IConsumptionService`, `IViewerService`, `IRateLimitService`, and so on) in application code so unit tests can substitute behaviour. Construct `OctopusEnergyClient` at the composition root; the concrete client implements `IOctopusEnergyClient` and exposes interface-typed resource properties.
+Depend on `IOctopusEnergyClient` and the resource service interfaces (`IAccountService`, `IConsumptionService`, `IViewerService`, `IRateLimitService`, `IMeterReadingService`, and so on) in application code so unit tests can substitute behaviour. Construct `OctopusEnergyClient` at the composition root; the concrete client implements `IOctopusEnergyClient` and exposes interface-typed resource properties.
 
 ```csharp
 public sealed class AccountSummaryService(IOctopusEnergyClient client)
@@ -118,6 +118,7 @@ See [samples/FileBasedProducts](https://github.com/markheydon/octopus-energy-dot
 - [Tariff rates](../how-to/tariff-rates.md)
 - [Industry lookups](../how-to/industry.md)
 - [Authentication](../how-to/authentication.md)
+- [Meter readings](../how-to/meter-readings.md)
 - [Pagination](../how-to/pagination.md)
 - [REST and GraphQL](../explanation/rest-and-graphql.md)
 - [Error handling](../how-to/error-handling.md)
