@@ -12,8 +12,7 @@ Work is tracked as GitHub Issues using **feature → story** (no epic unless a t
 - [v1.0](https://github.com/markheydon/octopus-energy-dotnet/milestone/1) - first REST release
 - [v1.1](https://github.com/markheydon/octopus-energy-dotnet/milestone/3) - REST developer experience (NuGet `1.x` minors)
 - [v1.2](https://github.com/markheydon/octopus-energy-dotnet/milestone/2) - GraphQL extras (#7) and REST typed wire fields (#66); NuGet `1.2.x`
-- [v1.3](https://github.com/markheydon/octopus-energy-dotnet/milestone/4) - Public surface consolidation (#65, #67); NuGet `1.3.x`
-- [v1.4](https://github.com/markheydon/octopus-energy-dotnet/milestone/5) - Packaging hardening (#68, #64); NuGet `1.4.x`
+- [v1.3](https://github.com/markheydon/octopus-energy-dotnet/milestone/4) - Public surface consolidation (#65, #67) and packaging hardening (#68, #64); NuGet `1.3.x` (former **v1.4** milestone merged here, November 2026)
 
 Stories and enablers are sub-issues of the relevant feature and also sit on the matching milestone.
 
