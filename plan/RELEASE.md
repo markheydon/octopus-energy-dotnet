@@ -81,4 +81,4 @@ Milestone **v1.2**: curated GraphQL-backed customer APIs on the same `OctopusEne
 5. [x] [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) aligned with API coverage **Public SDK** rows.
 6. [ ] Optional live allow-list re-probe (not run for this tag).
 7. [x] Gas mutation live re-probe **deferred** (no gas-capable dashboard key; docs aligned).
-8. [ ] Tag `v1.2.0` and [Publish steps](#publish-steps).
+8. [x] Tag `v1.2.0` and [Publish steps](#publish-steps).
