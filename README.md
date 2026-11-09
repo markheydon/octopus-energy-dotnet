@@ -23,7 +23,7 @@ Roadmap (GitHub milestone → NuGet version; all stay on package **1.x** — see
 
 - **v1.0** REST core — shipped **`1.0.0`**: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
 - **v1.1** REST developer experience — shipped **`1.1.0`**: HttpClientFactory, interfaces, workflow helpers, safer consumption listing, 429 retry, trim-safe REST JSON, consumer how-tos
-- **v1.2** GraphQL extras — in progress on **`main`** (**`1.2.x`** NuGet when tagged, not `2.0.0`): **viewer**, **rate limits**, **electricity and gas meter readings** (gas allow-list live probe deferred — no gas-capable dashboard key), **reading consent**, **account billing**, **SmartFlex devices**, **Home Mini telemetry**, **Octoplus** (public-host enrolment/points/wheel; not saving sessions on `api.backend.octopus.energy`), and **product switch**
+- **v1.2** GraphQL extras — in progress on **`main`** (**`1.2.x`** NuGet when tagged, not `2.0.0`): **viewer**, **rate limits**, **electricity and gas meter readings** (gas allow-list live probe deferred — no gas-capable dashboard key), **reading consent**, **account billing**, **SmartFlex devices**, **Home Mini telemetry**, **Octoplus** (public-host enrolment/points/wheel; not saving sessions on `api.backend.octopus.energy`), and **product switch**; **`AddOctopusEnergyClient`**, GraphQL JSON source generation, and opt-in meter reading mutations in the Products console sample
 
 ## Installation
 
@@ -56,7 +56,7 @@ See [getting started](https://markheydon.me.uk/octopus-energy-dotnet/tutorial/ge
 |------|-----------------------------------------------|
 | SDK-style `.csproj` apps | Yes |
 | File-based apps (`dotnet run app.cs`, .NET 10+) | Yes — use `#:package OctopusEnergy.Client@<version>` |
-| Native AOT publish of apps using this library | REST JSON deserialisation is source-generated; the package is not marketed as fully AOT-compatible end-to-end |
+| Native AOT publish of apps using this library | REST and GraphQL JSON deserialisation is source-generated; the package is not marketed as fully AOT-compatible end-to-end |
 
 File-based apps enable trim-friendly JSON defaults. You do not need `#:property JsonSerializerIsReflectionEnabledByDefault=true` for this client.
 

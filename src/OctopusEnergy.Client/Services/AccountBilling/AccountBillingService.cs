@@ -37,7 +37,7 @@ public sealed class AccountBillingService : IAccountBillingService
 
         bool pagingWithAfter = variables.After is not null;
 
-        AccountBillsQueryData data = await _graphQl!.ExecuteAsync<AccountBillsQueryData>(
+        AccountBillsQueryData data = await _graphQl!.ExecuteAsync<AccountBillsQueryData, AccountBillsQueryVariables>(
             AccountBillingQueries.ListBills,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -73,7 +73,7 @@ public sealed class AccountBillingService : IAccountBillingService
 
         bool pagingWithAfter = variables.After is not null;
 
-        AccountTransactionsQueryData data = await _graphQl!.ExecuteAsync<AccountTransactionsQueryData>(
+        AccountTransactionsQueryData data = await _graphQl!.ExecuteAsync<AccountTransactionsQueryData, AccountTransactionsQueryVariables>(
             AccountBillingQueries.ListTransactions,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -107,7 +107,7 @@ public sealed class AccountBillingService : IAccountBillingService
 
         bool pagingWithAfter = variables.After is not null;
 
-        AccountPaymentsQueryData data = await _graphQl!.ExecuteAsync<AccountPaymentsQueryData>(
+        AccountPaymentsQueryData data = await _graphQl!.ExecuteAsync<AccountPaymentsQueryData, AccountPaymentsQueryVariables>(
             AccountBillingQueries.ListPayments,
             variables,
             cancellationToken).ConfigureAwait(false);

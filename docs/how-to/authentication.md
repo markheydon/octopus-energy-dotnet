@@ -37,11 +37,34 @@ A trailing slash is applied when missing so relative REST paths resolve correctl
 
 ## Hosted applications (`IHttpClientFactory`)
 
-In ASP.NET Core or worker hosts, register a named `HttpClient` and add `OctopusEnergyClientHandler` so authentication, `Accept`, and `User-Agent` are applied **per request** without mutating shared `HttpClient` default headers.
+In ASP.NET Core or worker hosts, register a named `HttpClient` and resolve `IOctopusEnergyClient` from dependency injection.
 
-The SDK does not reference `Microsoft.Extensions.Http`; add that package in your host project.
+The client package references `Microsoft.Extensions.Http` transitively. Your host project does not need a separate package reference when it already references `OctopusEnergy.Client`. Register the client via `AddOctopusEnergyClient` below (or call `services.AddHttpClient()` manually).
 
-Choose **one** place to supply the API key:
+### Recommended registration
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using OctopusEnergy.Client;
+using OctopusEnergy.Client.DependencyInjection;
+
+services.AddOctopusEnergyClient(options =>
+{
+    options.ApiKey = configuration["OctopusEnergy:ApiKey"];
+    options.BaseAddress = new Uri(OctopusEnergyClient.DefaultBaseUrl);
+});
+```
+
+`AddOctopusEnergyClient` registers a named `HttpClient`, attaches `OctopusEnergyClientHandler` when `ApiKey` is set (handler carries auth), and exposes `IOctopusEnergyClient` as a singleton. The same `ApiKey` also initialises GraphQL-backed services on the client — do not register a different key on another handler for that named client.
+
+Optional `OctopusEnergyClientOptions` members:
+
+- `HttpClientName` — defaults to `OctopusEnergy`; must match if other code resolves the same named client from the factory.
+- `RetryOptions` — HTTP 429/503 retry for REST calls (defaults to SDK retry policy). Set `OctopusEnergyRetryOptions.Disabled` when your host already retries — see [error handling](error-handling.md#rate-limiting-and-retries).
+
+### Manual registration
+
+Choose **one** place to supply the API key when not using `AddOctopusEnergyClient`:
 
 - **Handler carries auth** (recommended when the same named client is used outside the SDK), or
 - **Client carries auth** (simpler when the named client is only used with `OctopusEnergyClient`).

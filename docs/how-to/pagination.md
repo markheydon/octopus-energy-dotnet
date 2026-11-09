@@ -62,7 +62,7 @@ When you pass an `HttpClient` to `OctopusEnergyClient`:
 - If `BaseAddress` is already set, a trailing slash is normalised when resolving relative REST paths.
 - `Accept: application/json`, `User-Agent`, and HTTP Basic authentication (when an API key is supplied) are applied per request, not on `DefaultRequestHeaders`.
 
-Prefer resolving clients from `IHttpClientFactory` in hosted applications, or a dedicated `HttpClient` per SDK client instance in console tools.
+Prefer resolving clients from `IHttpClientFactory` in hosted applications (`AddOctopusEnergyClient` registers `IOctopusEnergyClient` — see [authentication](authentication.md#hosted-applications-ihttpclientfactory)), or a dedicated `HttpClient` per SDK client instance in console tools.
 
 See [authentication](authentication.md) for API-key handling and secret hygiene.
 

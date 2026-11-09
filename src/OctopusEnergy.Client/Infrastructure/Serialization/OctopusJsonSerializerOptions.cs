@@ -9,14 +9,23 @@ internal static class OctopusJsonSerializerOptions
 
     private static JsonSerializerOptions CreateDefault()
     {
-        JsonSerializerOptions options = new()
+        return new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
-            TypeInfoResolver = JsonTypeInfoResolver.Combine(
-                OctopusEnergyJsonContext.Default,
-                new DefaultJsonTypeInfoResolver()),
+            TypeInfoResolver = OctopusEnergyJsonContext.Default,
         };
+    }
 
-        return options;
+    internal static async Task<T> DeserializeAsync<T>(Stream utf8Json, CancellationToken cancellationToken)
+    {
+        JsonTypeInfo typeInfo = OctopusEnergyJsonContext.Default.GetTypeInfo(typeof(T))
+            ?? throw new OctopusEnergyParseException(
+                $"The type {typeof(T).FullName} is not registered for JSON source generation.");
+
+        object? value = await JsonSerializer.DeserializeAsync(utf8Json, typeInfo, cancellationToken).ConfigureAwait(false);
+
+        return value is T typed
+            ? typed
+            : throw new OctopusEnergyParseException("The API returned JSON null where a response model was expected.");
     }
 }

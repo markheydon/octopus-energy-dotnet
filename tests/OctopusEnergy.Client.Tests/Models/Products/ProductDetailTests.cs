@@ -156,7 +156,7 @@ public sealed class ProductDetailTests
     {
         return JsonSerializer.Deserialize<ProductDetail>(
                 FixtureFile.Read("products-agile-detail.json"),
-                OctopusJsonSerializerOptions.Default)
+                OctopusTestJsonSerializerOptions.Default)
             ?? throw new InvalidOperationException("Expected product detail JSON to deserialise.");
     }
 }

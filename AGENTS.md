@@ -36,7 +36,7 @@ All documentation, comments, and user-facing text **must use UK English**.
 
 ## Sample apps
 
-A [products console sample](samples/README.md) smoke-tests the live UK API: public catalogue, tariff rates, and industry lookups without a key; with `OCTOPUS_ENERGY_API_KEY` (and usually `OCTOPUS_ENERGY_ACCOUNT_NUMBER`) it also exercises account, consumption, viewer, rate limits, meter readings, account billing, SmartFlex devices, Home Mini telemetry, and Octoplus (product switch is summarised but not invoked). It is opt-in and not run in CI. CI runs the file-based products sample only. Additional samples may follow as the SDK surface grows; each must reflect implemented SDK behaviour only.
+A [products console sample](samples/README.md) smoke-tests the live UK API: public catalogue, tariff rates, and industry lookups without a key; with `OCTOPUS_ENERGY_API_KEY` (and usually `OCTOPUS_ENERGY_ACCOUNT_NUMBER`) it also exercises account, consumption, viewer, rate limits, meter reading queries (and mutations only when `OCTOPUS_ENERGY_ENABLE_METER_READING_MUTATIONS=1`), account billing, SmartFlex devices, Home Mini telemetry, and Octoplus (product switch is summarised but not invoked). It is opt-in and not run in CI. CI runs the file-based products sample only. Additional samples may follow as the SDK surface grows; each must reflect implemented SDK behaviour only.
 
 There is **no** Blazor sample yet. Do not add one until v1 has a broader HTTP surface worth demonstrating.
 

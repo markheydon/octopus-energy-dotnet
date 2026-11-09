@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Text.RegularExpressions;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.Configuration;
@@ -41,6 +42,12 @@ internal sealed class GraphQlAllowListProbeResult
 /// </summary>
 internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
 {
+    private static readonly JsonSerializerOptions ProbeVariableSerializationOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+    };
+
     private readonly HttpClient _httpClient;
     private readonly GraphQlHttpTransport _transport;
     private readonly KrakenTokenProvider _tokenProvider;
@@ -120,10 +127,11 @@ internal sealed partial class GraphQlAllowListProbe : IAsyncDisposable
 
         try
         {
-            GraphQlResponseEnvelope<JsonElement> response = await _transport.PostAsync<JsonElement>(
+            GraphQlResponseEnvelope<JsonElement> response = await _transport.PostProbeAsync(
                 query,
                 variables,
                 authorization,
+                ProbeVariableSerializationOptions,
                 cancellationToken).ConfigureAwait(false);
 
             IReadOnlyList<string> codes = response.Errors?

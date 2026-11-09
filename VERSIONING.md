@@ -40,7 +40,7 @@ Tag format: `1.x.y` (for example `1.0.0`).
 | Package version | Git tag | Milestone | What you get |
 |---|---|---|---|
 | **1.1.0** (published) | `v1.1.0` | v1.1 | REST customer core plus developer experience (hosting, interfaces, retries, trim-safe REST JSON) |
-| **1.2.0** (upcoming) | `v1.2.0` | v1.2 | Adds curated GraphQL-backed services and typed wire enums (`WireField<T>` on selected REST models) |
+| **1.2.0** (upcoming) | `v1.2.0` | v1.2 | Adds curated GraphQL-backed services, typed wire enums (`WireField<T>` on selected REST models), `AddOctopusEnergyClient`, and trim-safe GraphQL JSON (`OctopusEnergyJsonContext`) |
 
 The newest stable package on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) is **1.1.0**. Milestone **v1.2** code is on repository `main` until maintainers complete the [1.2.0 tag checklist](plan/RELEASE.md#120-tag-checklist). Pin `1.1.0` when you only need REST; use a project reference or wait for **1.2.x** for GraphQL accessors.
 

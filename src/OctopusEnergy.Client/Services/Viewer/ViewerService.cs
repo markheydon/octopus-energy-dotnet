@@ -26,7 +26,6 @@ public sealed class ViewerService : IViewerService
 
         ViewerQueryData data = await _graphQl.ExecuteAsync<ViewerQueryData>(
             ViewerQueries.GetViewer,
-            variables: null,
             cancellationToken).ConfigureAwait(false);
 
         ViewerWire? wire = data.Viewer

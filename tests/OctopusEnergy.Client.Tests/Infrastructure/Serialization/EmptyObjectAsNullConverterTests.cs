@@ -11,7 +11,7 @@ public sealed class EmptyObjectAsNullConverterTests
     {
         ProductPaymentMethodTariffs? tariffs = JsonSerializer.Deserialize<ProductPaymentMethodTariffs>(
             """{"direct_debit_monthly":{}}""",
-            OctopusJsonSerializerOptions.Default);
+            OctopusTestJsonSerializerOptions.Default);
 
         Assert.NotNull(tariffs);
         Assert.Null(tariffs!.DirectDebitMonthly);
@@ -22,7 +22,7 @@ public sealed class EmptyObjectAsNullConverterTests
     {
         ProductPaymentMethodTariffs? tariffs = JsonSerializer.Deserialize<ProductPaymentMethodTariffs>(
             """{"direct_debit_monthly":{"code":"E-1R-AGILE-FLEX-22-11-25-C"}}""",
-            OctopusJsonSerializerOptions.Default);
+            OctopusTestJsonSerializerOptions.Default);
 
         Assert.NotNull(tariffs?.DirectDebitMonthly);
         Assert.Equal("E-1R-AGILE-FLEX-22-11-25-C", tariffs.DirectDebitMonthly!.Code);
@@ -38,7 +38,7 @@ public sealed class EmptyObjectAsNullConverterTests
               "electricity_dual_rate": {}
             }
             """,
-            OctopusJsonSerializerOptions.Default);
+            OctopusTestJsonSerializerOptions.Default);
 
         Assert.NotNull(quote?.ElectricitySingleRate);
         Assert.Null(quote.ElectricityDualRate);

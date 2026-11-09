@@ -95,6 +95,10 @@ GasMeterReadingResult gasResult = await client.MeterReadings.CreateGasAsync(
 - Kraken GraphQL failures (`errors.extensions.errorCode`, for example `KT-GB-11007`): `OctopusEnergyKrakenException`. See [error handling](error-handling.md).
 - Field validation inside the mutation payload appears in `ElectricityMeterReadingResult.ReadingErrors` or `GasMeterReadingResult.ReadingErrors` when GraphQL returns HTTP 200 with no top-level `errors`.
 
+## Local smoke (Products console)
+
+The [Products console sample](../../samples/README.md) queries reading consent by default. Electricity and gas **mutations** run only when `OCTOPUS_ENERGY_ENABLE_METER_READING_MUTATIONS=1` (opt-in; successful mutations may persist on the probe account).
+
 ## Related
 
 - [Account detail](accounts.md) — MPAN, MPRN, and serial discovery via REST

@@ -38,7 +38,7 @@ public sealed class MeterReadingService : IMeterReadingService
             Readings = MapReadings(request.Readings),
         };
 
-        CreateElectricityMeterReadingMutationData data = await _graphQl.ExecuteAsync<CreateElectricityMeterReadingMutationData>(
+        CreateElectricityMeterReadingMutationData data = await _graphQl.ExecuteAsync<CreateElectricityMeterReadingMutationData, CreateElectricityMeterReadingVariables>(
             MeterReadingMutations.CreateElectricity,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -72,7 +72,7 @@ public sealed class MeterReadingService : IMeterReadingService
             Reading = request.Reading,
         };
 
-        CreateGasMeterReadingMutationData data = await _graphQl.ExecuteAsync<CreateGasMeterReadingMutationData>(
+        CreateGasMeterReadingMutationData data = await _graphQl.ExecuteAsync<CreateGasMeterReadingMutationData, CreateGasMeterReadingVariables>(
             MeterReadingMutations.CreateGas,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -101,7 +101,7 @@ public sealed class MeterReadingService : IMeterReadingService
 
         ReadingConsentGranularityQueryVariables variables = new() { Mpan = mpan.Trim() };
 
-        ReadingConsentGranularityQueryData data = await _graphQl.ExecuteAsync<ReadingConsentGranularityQueryData>(
+        ReadingConsentGranularityQueryData data = await _graphQl.ExecuteAsync<ReadingConsentGranularityQueryData, ReadingConsentGranularityQueryVariables>(
             MeterReadingQueries.ReadingConsentGranularity,
             variables,
             cancellationToken).ConfigureAwait(false);

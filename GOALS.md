@@ -31,7 +31,7 @@ This project should be the same kind of library as FreeAgent.NET: strongly typed
 - Pagination, timezones, units, and errors work without consumer workarounds on the shipped REST customer surface (`1.0.0` core, `1.1.0` developer experience).
 - Package on NuGet at stable `1.x` (`1.1.0` latest) with consumer documentation that states units, VAT, and BST behaviour (see [plan/RELEASE.md](plan/RELEASE.md)).
 - Partner-only operations are not in the public surface.
-- GraphQL customer extras (milestone **v1.2**, NuGet **1.2.x** when tagged): curated customer GraphQL on `main` — `Viewer`, `RateLimits`, `MeterReadings` (electricity, gas, and consent), `AccountBilling`, `Devices`, `SmartMeterTelemetry`, `Octoplus`, and `ProductSwitch`. Latest NuGet remains **1.1.0** until the **1.2.x** tag; optional GraphQL account projection (#23) and `savingSessions` stay out of scope ([release labels](VERSIONING.md#release-labels-quick-reference)).
+- GraphQL customer extras (milestone **v1.2**, NuGet **1.2.x** when tagged): curated customer GraphQL on `main` — `Viewer`, `RateLimits`, `MeterReadings` (electricity, gas, and consent), `AccountBilling`, `Devices`, `SmartMeterTelemetry`, `Octoplus`, and `ProductSwitch`, plus `AddOctopusEnergyClient` and source-generated REST/GraphQL JSON. Latest NuGet remains **1.1.0** until the **1.2.x** tag; optional GraphQL account projection (#23), `trackerTariffDailyPricing`, and `savingSessions` stay out of scope ([release labels](VERSIONING.md#release-labels-quick-reference)).
 
 ---
 

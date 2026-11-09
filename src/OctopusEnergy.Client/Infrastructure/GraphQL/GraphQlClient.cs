@@ -25,7 +25,6 @@ internal sealed class GraphQlClient : IDisposable
 
     internal async Task<TData> ExecuteAsync<TData>(
         string query,
-        object? variables,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(query);
@@ -35,27 +34,76 @@ internal sealed class GraphQlClient : IDisposable
 
         GraphQlResponseEnvelope<TData> response = await _transport.PostAsync<TData>(
             query,
-            variables,
             authorization,
             cancellationToken).ConfigureAwait(false);
 
-        if (ContainsErrorCode(response.Errors, ExpiredTokenErrorCode))
-        {
-            authorization = await _tokenProvider.ForceRefreshAsync(cancellationToken).ConfigureAwait(false);
-
-            response = await _transport.PostAsync<TData>(
-                query,
-                variables,
-                authorization,
-                cancellationToken).ConfigureAwait(false);
-        }
+        response = await RetryOnExpiredTokenAsync(
+            query,
+            authorization,
+            response,
+            static (transport, query, authorization, ct) => transport.PostAsync<TData>(query, authorization, ct),
+            cancellationToken).ConfigureAwait(false);
 
         if (response.Errors is { Count: > 0 })
         {
             throw GraphQlKrakenErrors.Map(response.Errors);
         }
 
-        return response.Data ?? throw new OctopusEnergyParseException("The GraphQL API returned JSON null where a response model was expected.");
+        return response.Data ?? throw new OctopusEnergyParseException(
+            "The GraphQL API returned JSON null where a response model was expected.");
+    }
+
+    internal async Task<TData> ExecuteAsync<TData, TVariables>(
+        string query,
+        TVariables? variables,
+        CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(query);
+
+        string authorization = await _tokenProvider.GetAuthorizationHeaderValueAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        GraphQlResponseEnvelope<TData> response = await _transport.PostAsync<TData, TVariables>(
+            query,
+            variables,
+            authorization,
+            cancellationToken).ConfigureAwait(false);
+
+        response = await RetryOnExpiredTokenAsync(
+            query,
+            authorization,
+            response,
+            (transport, _, authorization, ct) => transport.PostAsync<TData, TVariables>(
+                query,
+                variables,
+                authorization,
+                ct),
+            cancellationToken).ConfigureAwait(false);
+
+        if (response.Errors is { Count: > 0 })
+        {
+            throw GraphQlKrakenErrors.Map(response.Errors);
+        }
+
+        return response.Data ?? throw new OctopusEnergyParseException(
+            "The GraphQL API returned JSON null where a response model was expected.");
+    }
+
+    private async Task<GraphQlResponseEnvelope<TData>> RetryOnExpiredTokenAsync<TData>(
+        string query,
+        string authorization,
+        GraphQlResponseEnvelope<TData> response,
+        Func<GraphQlHttpTransport, string, string?, CancellationToken, Task<GraphQlResponseEnvelope<TData>>> post,
+        CancellationToken cancellationToken)
+    {
+        if (ContainsErrorCode(response.Errors, ExpiredTokenErrorCode))
+        {
+            authorization = await _tokenProvider.ForceRefreshAsync(cancellationToken).ConfigureAwait(false);
+
+            response = await post(_transport, query, authorization, cancellationToken).ConfigureAwait(false);
+        }
+
+        return response;
     }
 
     private static bool ContainsErrorCode(IReadOnlyList<GraphQlError>? errors, string errorCode)
@@ -63,5 +111,4 @@ internal sealed class GraphQlClient : IDisposable
         return errors?.Any(error =>
             string.Equals(error.Extensions?.ErrorCode, errorCode, StringComparison.Ordinal)) == true;
     }
-
 }

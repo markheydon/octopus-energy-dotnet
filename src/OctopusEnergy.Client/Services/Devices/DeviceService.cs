@@ -28,7 +28,7 @@ public sealed class DeviceService : IDeviceService
             AccountNumber = accountNumber.Trim(),
         };
 
-        ListDevicesQueryData data = await _graphQl!.ExecuteAsync<ListDevicesQueryData>(
+        ListDevicesQueryData data = await _graphQl!.ExecuteAsync<ListDevicesQueryData, ListDevicesQueryVariables>(
             DeviceQueries.ListDevices,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -54,7 +54,7 @@ public sealed class DeviceService : IDeviceService
             DeviceId = deviceId.Trim(),
         };
 
-        FlexPlannedDispatchesQueryData data = await _graphQl!.ExecuteAsync<FlexPlannedDispatchesQueryData>(
+        FlexPlannedDispatchesQueryData data = await _graphQl!.ExecuteAsync<FlexPlannedDispatchesQueryData, FlexPlannedDispatchesQueryVariables>(
             DeviceQueries.FlexPlannedDispatches,
             variables,
             cancellationToken).ConfigureAwait(false);

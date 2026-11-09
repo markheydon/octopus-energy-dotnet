@@ -4,6 +4,8 @@ using System.Text.Json.Serialization;
 using OctopusEnergy.Client;
 using OctopusEnergy.Client.Infrastructure.Authentication;
 using OctopusEnergy.Client.Infrastructure.Http;
+using OctopusEnergy.Client.Models.Common;
+using OctopusEnergy.Client.Models.Products;
 using OctopusEnergy.Client.Tests.TestSupport;
 
 namespace OctopusEnergy.Client.Tests;
@@ -49,7 +51,7 @@ public sealed class OctopusEnergyClientTests
         using HttpClient httpClient = new(handler);
         using OctopusEnergyClient client = new(httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.Equal(new Uri("https://api.octopus.energy/v1/items/"), request.RequestUri);
@@ -70,7 +72,7 @@ public sealed class OctopusEnergyClientTests
 
         using OctopusEnergyClient client = new(httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.Contains(
@@ -105,7 +107,7 @@ public sealed class OctopusEnergyClientTests
         };
         using OctopusEnergyClient client = new(httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.Equal(new Uri("https://api.example.test/v1/items/"), request.RequestUri);
@@ -143,7 +145,7 @@ public sealed class OctopusEnergyClientTests
         Assert.Equal("Bearer", httpClient.DefaultRequestHeaders.Authorization?.Scheme);
         Assert.Equal("existing-token", httpClient.DefaultRequestHeaders.Authorization?.Parameter);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.NotNull(request.Headers.Authorization);
@@ -171,8 +173,8 @@ public sealed class OctopusEnergyClientTests
         using OctopusEnergyClient firstClient = new(firstApiKey, sharedHttpClient);
         using OctopusEnergyClient secondClient = new(secondApiKey, sharedHttpClient);
 
-        await firstClient.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
-        await secondClient.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await firstClient.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
+        await secondClient.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         Assert.Equal(2, handler.SentRequests.Count);
         Assert.Null(sharedHttpClient.DefaultRequestHeaders.Authorization);
@@ -198,7 +200,7 @@ public sealed class OctopusEnergyClientTests
 
         using OctopusEnergyClient client = new(httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.Single(
@@ -224,7 +226,7 @@ public sealed class OctopusEnergyClientTests
         };
         using OctopusEnergyClient client = new(httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(innerHandler.SentRequests);
         Assert.Equal(
@@ -251,7 +253,7 @@ public sealed class OctopusEnergyClientTests
         };
         using OctopusEnergyClient client = new(clientApiKey, httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(innerHandler.SentRequests);
         Assert.Equal(
@@ -277,7 +279,7 @@ public sealed class OctopusEnergyClientTests
 
         using OctopusEnergyClient client = new(httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(innerHandler.SentRequests);
         Assert.Single(
@@ -303,7 +305,7 @@ public sealed class OctopusEnergyClientTests
         };
         using OctopusEnergyClient client = new(apiKey, httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(innerHandler.SentRequests);
         Assert.Single(
@@ -380,7 +382,7 @@ public sealed class OctopusEnergyClientTests
         };
         using OctopusEnergyClient client = new(httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.Null(request.Headers.Authorization);
@@ -398,7 +400,7 @@ public sealed class OctopusEnergyClientTests
         };
         using OctopusEnergyClient client = new(httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.Contains(request.Headers.UserAgent, value => value.Product?.Name == OctopusEnergyUserAgent.ProductName);
@@ -418,7 +420,7 @@ public sealed class OctopusEnergyClientTests
         };
         using OctopusEnergyClient client = new(apiKey, httpClient);
 
-        await client.Rest.GetAsync<PaginatedResponseStub>("items/", CancellationToken.None);
+        await client.Rest.GetAsync<PaginatedResponse<Product>>("items/", CancellationToken.None);
 
         HttpRequestMessage request = Assert.Single(handler.SentRequests);
         Assert.NotNull(request.Headers.Authorization);
@@ -429,18 +431,4 @@ public sealed class OctopusEnergyClientTests
         Assert.Contains(request.Headers.UserAgent, value => value.Product?.Name == OctopusEnergyUserAgent.ProductName);
     }
 
-    private sealed class PaginatedResponseStub
-    {
-        [JsonPropertyName("count")]
-        public int Count { get; init; }
-
-        [JsonPropertyName("next")]
-        public string? Next { get; init; }
-
-        [JsonPropertyName("previous")]
-        public string? Previous { get; init; }
-
-        [JsonPropertyName("results")]
-        public IReadOnlyList<object> Results { get; init; } = [];
-    }
 }

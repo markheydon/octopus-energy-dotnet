@@ -28,7 +28,7 @@ public sealed class OctoplusService : IOctoplusService
             AccountNumber = accountNumber.Trim(),
         };
 
-        OctoplusAccountInfoQueryData data = await _graphQl!.ExecuteAsync<OctoplusAccountInfoQueryData>(
+        OctoplusAccountInfoQueryData data = await _graphQl!.ExecuteAsync<OctoplusAccountInfoQueryData, OctoplusAccountInfoQueryVariables>(
             OctoplusQueries.OctoplusAccountInfo,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -52,7 +52,6 @@ public sealed class OctoplusService : IOctoplusService
 
         LoyaltyPointLedgersQueryData data = await _graphQl!.ExecuteAsync<LoyaltyPointLedgersQueryData>(
             OctoplusQueries.LoyaltyPointLedgers,
-            variables: null,
             cancellationToken).ConfigureAwait(false);
 
         if (data.LoyaltyPointLedgers is not { Count: > 0 })
@@ -78,7 +77,7 @@ public sealed class OctoplusService : IOctoplusService
             SchemeCode = string.IsNullOrWhiteSpace(schemeCode) ? null : schemeCode.Trim(),
         };
 
-        LoyaltyPointsBalanceQueryData data = await _graphQl!.ExecuteAsync<LoyaltyPointsBalanceQueryData>(
+        LoyaltyPointsBalanceQueryData data = await _graphQl!.ExecuteAsync<LoyaltyPointsBalanceQueryData, LoyaltyPointsBalanceQueryVariables>(
             OctoplusQueries.LoyaltyPointsBalance,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -107,7 +106,7 @@ public sealed class OctoplusService : IOctoplusService
             AccountNumber = accountNumber.Trim(),
         };
 
-        WheelOfFortuneSpinsQueryData data = await _graphQl!.ExecuteAsync<WheelOfFortuneSpinsQueryData>(
+        WheelOfFortuneSpinsQueryData data = await _graphQl!.ExecuteAsync<WheelOfFortuneSpinsQueryData, WheelOfFortuneSpinsQueryVariables>(
             OctoplusQueries.WheelOfFortuneSpins,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -136,7 +135,7 @@ public sealed class OctoplusService : IOctoplusService
             AccountNumber = accountNumber.Trim(),
         };
 
-        JoinOctoplusCampaignMutationData data = await _graphQl!.ExecuteAsync<JoinOctoplusCampaignMutationData>(
+        JoinOctoplusCampaignMutationData data = await _graphQl!.ExecuteAsync<JoinOctoplusCampaignMutationData, JoinOctoplusCampaignMutationVariables>(
             OctoplusQueries.JoinOctoplusCampaign,
             variables,
             cancellationToken).ConfigureAwait(false);
@@ -173,7 +172,7 @@ public sealed class OctoplusService : IOctoplusService
             SchemeCode = string.IsNullOrWhiteSpace(schemeCode) ? null : schemeCode.Trim(),
         };
 
-        RedeemLoyaltyPointsMutationData data = await _graphQl!.ExecuteAsync<RedeemLoyaltyPointsMutationData>(
+        RedeemLoyaltyPointsMutationData data = await _graphQl!.ExecuteAsync<RedeemLoyaltyPointsMutationData, RedeemLoyaltyPointsMutationVariables>(
             OctoplusQueries.RedeemLoyaltyPointsForAccountCredit,
             variables,
             cancellationToken).ConfigureAwait(false);

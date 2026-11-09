@@ -24,9 +24,8 @@ public sealed class GraphQlKrakenErrorsTests
         (_, _, GraphQlClient graphQlClient) = GraphQlTestSupport.CreateStack(httpClient);
 
         Exception exception = await Assert.ThrowsAnyAsync<Exception>(
-            () => graphQlClient.ExecuteAsync<object>(
+            () => graphQlClient.ExecuteAsync<RateLimitInfoQueryData>(
                 "query { rateLimitInfo { __typename } }",
-                variables: null,
                 CancellationToken.None));
 
         Assert.IsType(expectedType, exception);

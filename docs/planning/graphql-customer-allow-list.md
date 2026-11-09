@@ -51,6 +51,7 @@ Usually do not add a public SDK method unless the matrix row is **Allowed**, **A
 | `joinOctoplusCampaign` | Allowed (mutation) | business / permission codes expected on probe | Customer mutation on public host. | [graphql-join-octoplus-campaign.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-join-octoplus-campaign.json) |
 | `redeemLoyaltyPointsForAccountCredit` | Allowed (mutation) | validation / permission codes expected on probe | Zero-point probe confirms mutation path, not a persisted redemption. | [graphql-redeem-loyalty-points-validation.json](../../tests/OctopusEnergy.Client.Tests/TestSupport/Fixtures/graphql-redeem-loyalty-points-validation.json) |
 | `savingSessions` / `joinSavingSessionsEvent` | Do not wrap | — | **Not present** on public `Query` / `Mutation` (introspection 8 November 2026). Community integrations use `api.backend.octopus.energy`, which is out of SDK scope. | — |
+| `trackerTariffDailyPricing` | Do not wrap | — | **Not listed** on [developer.octopus.energy](https://developer.octopus.energy/) GraphQL reference (November 2026). Tracker day-ahead unit rates are available via public REST tracker URLs and standard tariff rate lists — see [coding notes §9](coding-notes.md#9-agile-go-tracker). Do not add an SDK wrapper until a dashboard key probe succeeds and this row is updated. | — |
 
 ## Do not wrap (partner / operations)
 

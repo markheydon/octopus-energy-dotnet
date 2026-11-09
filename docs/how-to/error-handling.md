@@ -74,6 +74,18 @@ using HttpClient httpClient = httpClientFactory.CreateClient("OctopusEnergy");
 using OctopusEnergyClient client = new(httpClient, OctopusEnergyRetryOptions.Disabled);
 ```
 
+With `AddOctopusEnergyClient`:
+
+```csharp
+using OctopusEnergy.Client.DependencyInjection;
+
+services.AddOctopusEnergyClient(options =>
+{
+    options.ApiKey = apiKey;
+    options.RetryOptions = OctopusEnergyRetryOptions.Disabled;
+});
+```
+
 Custom limits:
 
 ```csharp
