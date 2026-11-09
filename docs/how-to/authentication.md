@@ -55,7 +55,12 @@ services.AddOctopusEnergyClient(options =>
 });
 ```
 
-`AddOctopusEnergyClient` registers a named `HttpClient`, attaches `OctopusEnergyClientHandler` when `ApiKey` is set (handler carries auth), and exposes `IOctopusEnergyClient` as a singleton.
+`AddOctopusEnergyClient` registers a named `HttpClient`, attaches `OctopusEnergyClientHandler` when `ApiKey` is set (handler carries auth), and exposes `IOctopusEnergyClient` as a singleton. The same `ApiKey` also initialises GraphQL-backed services on the client — do not register a different key on another handler for that named client.
+
+Optional `OctopusEnergyClientOptions` members:
+
+- `HttpClientName` — defaults to `OctopusEnergy`; must match if other code resolves the same named client from the factory.
+- `RetryOptions` — HTTP 429/503 retry for REST calls (defaults to SDK retry policy). Set `OctopusEnergyRetryOptions.Disabled` when your host already retries — see [error handling](error-handling.md#rate-limiting-and-retries).
 
 ### Manual registration
 

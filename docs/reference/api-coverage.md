@@ -51,6 +51,8 @@ Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md
 | Kraken `errorCode` mapping (`KT-CT-1188`, `1189`, `1199`, token errors) | Implemented (public exception types) |
 | `GraphQlRelayLimits` and `ValidateFirst` | Implemented (public) |
 | `OctopusEnergyClient.GraphQl` accessor | Implemented (`internal`) |
+| REST and GraphQL response deserialisation via `OctopusEnergyJsonContext` | Implemented (`internal`; no reflection fallback in the client assembly) |
+| `AddOctopusEnergyClient` / `OctopusEnergyClientOptions` | Implemented (public; ships with milestone **v1.2** groundwork) |
 
 ### Customer operations (implemented on `main`; NuGet **1.2.x** when tagged)
 
@@ -79,6 +81,7 @@ Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planni
 | `initiateProductSwitch` | Allowed (mutation) | Implemented (#28 — `ProductSwitch.InitiateAsync`) |
 | `rateLimitInfo` | Allowed | Implemented (`client.RateLimits`) |
 | `readingConsentGranularity` | Allowed | Implemented (`MeterReadings.GetReadingConsentGranularityAsync`, #100) |
+| `trackerTariffDailyPricing` | Not on public developer reference | **No public SDK** — use REST tracker URLs or tariff rate lists ([coding notes](../planning/coding-notes.md#9-agile-go-tracker)) |
 
 Keep this table aligned with [SCOPE.md](../../SCOPE.md), [plan/RELEASE.md](../../plan/RELEASE.md), and the [GraphQL customer allow-list](../planning/graphql-customer-allow-list.md) (probe matrix is authoritative for **Allow-list status**). Update both documents in the same change when re-probing or shipping public GraphQL methods.
 
