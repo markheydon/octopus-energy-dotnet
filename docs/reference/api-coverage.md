@@ -29,19 +29,19 @@
 | Account | REST `/v1/accounts/{number}/` | Implemented |
 | Consumption | REST electricity/gas consumption | Implemented (`ConsumptionService`) |
 
-**Typed wire enums (NuGet 1.2.0, on `main` before tag):** `Product.Direction` (`WireField<ProductEnergyDirection>?`), `MeterRegister.Rate` (`WireField<MeterRegisterRate>`), and `TariffCharge.PaymentMethod` (`WireField<ProductPaymentMethod>?`) replace raw `string` properties from **1.1.0**. Unknown wire tokens deserialize without throwing; read `UnparsedValue` when `Value` is `Unknown`. See [products](../how-to/products.md), [accounts](../how-to/accounts.md), [tariff rates](../how-to/tariff-rates.md), and [plan/RELEASE.md](../../plan/RELEASE.md).
+**Typed wire enums (NuGet 1.2.0+):** `Product.Direction` (`WireField<ProductEnergyDirection>?`), `MeterRegister.Rate` (`WireField<MeterRegisterRate>`), and `TariffCharge.PaymentMethod` (`WireField<ProductPaymentMethod>?`) replace raw `string` properties from **1.1.0**. Unknown wire tokens deserialize without throwing; read `UnparsedValue` when `Value` is `Unknown`. See [products](../how-to/products.md), [accounts](../how-to/accounts.md), [tariff rates](../how-to/tariff-rates.md), and [plan/RELEASE.md](../../plan/RELEASE.md).
 
 How-to guides: [consumption](../how-to/consumption.md), [tariff rates](../how-to/tariff-rates.md), [industry lookups](../how-to/industry.md), [meter readings](../how-to/meter-readings.md), [account billing](../how-to/account-billing.md), [SmartFlex devices](../how-to/devices.md), [smart-meter telemetry](../how-to/smart-meter-telemetry.md), [Octoplus](../how-to/octoplus.md). See also [getting started](../tutorial/getting-started.md), [REST and GraphQL](../explanation/rest-and-graphql.md), and [units, VAT, and time](../explanation/units-vat-and-time.md).
 
-## v1.2 GraphQL (in progress)
+## v1.2 GraphQL (shipped in NuGet 1.2.0)
 
-Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). NuGet **1.2.x** when the public surface ships — see [release labels](../../VERSIONING.md#release-labels-quick-reference). Unreleased groundwork is documented in [plan/RELEASE.md](../../plan/RELEASE.md) (section *Unreleased (v1.2 groundwork)*).
+Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md](../../SCOPE.md). They ship on NuGet **1.2.0** and later — see [release labels](../../VERSIONING.md#release-labels-quick-reference) and [plan/RELEASE.md](../../plan/RELEASE.md#120--graphql-customer-extras-9-november-2026).
 
-**NuGet vs source:** The latest published package on NuGet.org is **1.1.0** (REST developer experience). The v1.2 GraphQL-backed accessors below are implemented on `main` and ship in the next **1.2.x** release after the [1.2.0 tag checklist](../../plan/RELEASE.md#120-tag-checklist). Build from source or wait for that tag to consume them from NuGet.
+**NuGet vs REST-only:** Package **1.1.0** is REST-only. **1.2.0** and later add the GraphQL-backed accessors below on the same client. Pin **1.1.0** when you do not need GraphQL.
 
-**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), meter readings (`MeterReadings.CreateElectricityAsync`, `MeterReadings.CreateGasAsync`, `MeterReadings.GetReadingConsentGranularityAsync`), account billing lists (`AccountBilling.ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`), SmartFlex devices (`Devices.ListDevicesAsync`, `Devices.ListFlexPlannedDispatchesAsync`), Home Mini telemetry (`SmartMeterTelemetry.ListSmartDevicesAsync`, `SmartMeterTelemetry.GetTelemetryAsync`), Octoplus helpers (`Octoplus.GetAccountInfoAsync`, `ListLoyaltyPointLedgersAsync`, `GetLoyaltyPointsBalanceAsync`, `GetWheelOfFortuneSpinsAsync`, `JoinCampaignAsync`, `RedeemPointsForAccountCreditAsync`), and product switch (`ProductSwitch.InitiateAsync`). The curated v1.2 customer surface above is implemented on `main`; optional follow-ups are a dedicated GraphQL account projection ([#23](https://github.com/markheydon/octopus-energy-dotnet/issues/23)) and a live allow-list re-probe for gas meter readings when a gas-capable dashboard key is available.
+**Public SDK surface:** REST for catalogue, account, and consumption; GraphQL-backed viewer discovery (`Viewer.GetViewerAsync`), operational limits (`RateLimits.GetRateLimitInfoAsync`), meter readings (`MeterReadings.CreateElectricityAsync`, `MeterReadings.CreateGasAsync`, `MeterReadings.GetReadingConsentGranularityAsync`), account billing lists (`AccountBilling.ListBillsPageAsync`, `ListTransactionsPageAsync`, `ListPaymentsPageAsync`), SmartFlex devices (`Devices.ListDevicesAsync`, `Devices.ListFlexPlannedDispatchesAsync`), Home Mini telemetry (`SmartMeterTelemetry.ListSmartDevicesAsync`, `SmartMeterTelemetry.GetTelemetryAsync`), Octoplus helpers (`Octoplus.GetAccountInfoAsync`, `ListLoyaltyPointLedgersAsync`, `GetLoyaltyPointsBalanceAsync`, `GetWheelOfFortuneSpinsAsync`, `JoinCampaignAsync`, `RedeemPointsForAccountCreditAsync`), and product switch (`ProductSwitch.InitiateAsync`). Optional follow-ups are a dedicated GraphQL account projection ([#23](https://github.com/markheydon/octopus-energy-dotnet/issues/23)) and a live allow-list re-probe for gas meter readings when a gas-capable dashboard key is available.
 
-### Infrastructure (unreleased, internal)
+### Infrastructure (internal)
 
 | Capability | Status |
 |---|---|
@@ -52,9 +52,9 @@ Curated GraphQL customer operations (milestone **v1.2**) are listed in [SCOPE.md
 | `GraphQlRelayLimits` and `ValidateFirst` | Implemented (public) |
 | `OctopusEnergyClient.GraphQl` accessor | Implemented (`internal`) |
 | REST and GraphQL response deserialisation via `OctopusEnergyJsonContext` | Implemented (`internal`; no reflection fallback in the client assembly) |
-| `AddOctopusEnergyClient` / `OctopusEnergyClientOptions` | Implemented (public; ships with milestone **v1.2** groundwork) |
+| `AddOctopusEnergyClient` / `OctopusEnergyClientOptions` | Implemented (public; NuGet **1.2.0+**) |
 
-### Customer operations (implemented on `main`; NuGet **1.2.x** when tagged)
+### Customer operations (NuGet **1.2.0+**)
 
 Runtime allow-list (8 November 2026): [graphql-customer-allow-list.md](../planning/graphql-customer-allow-list.md).
 

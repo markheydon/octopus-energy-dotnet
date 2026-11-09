@@ -15,15 +15,15 @@ Typed, discoverable SDK so callers do not reconstruct REST URLs or GraphQL docum
 
 ## Status
 
-Stable on NuGet **1.1.0** (REST customer core and developer experience). `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, the products catalogue, tariff rates, grid supply points, account detail, electricity/gas consumption, and tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`).
+Stable on NuGet **1.2.0** (REST customer core, developer experience, and curated GraphQL extras). `OctopusEnergyClient` provides REST HTTP transport, pagination, typed errors, dashboard API-key authentication, the products catalogue, tariff rates, grid supply points, account detail, electricity/gas consumption, tariff/GSP helpers (`TariffCode`, `GridSupplyPoint`), and GraphQL-backed resources (viewer, rate limits, meter readings, billing, devices, telemetry, Octoplus, product switch) without caller-supplied JWTs. See [API coverage](docs/reference/api-coverage.md).
 
-**On `main` (pre-1.2.0 tag):** authenticated clients also expose curated GraphQL-backed resources (viewer, rate limits, meter readings, billing, devices, telemetry, Octoplus, product switch) without caller-supplied JWTs. Those accessors are not on NuGet until **[1.2.x](docs/reference/api-coverage.md)** ships — build from source or wait for the release tag. See [API coverage](docs/reference/api-coverage.md) for the split.
+Pin **1.1.0** when you need REST only (no GraphQL accessors).
 
 Roadmap (GitHub milestone → NuGet version; all stay on package **1.x** — see [release labels](VERSIONING.md#release-labels-quick-reference)):
 
 - **v1.0** REST core — shipped **`1.0.0`**: products, tariffs, unit rates, standing charges, GSP, account, smart-meter consumption
 - **v1.1** REST developer experience — shipped **`1.1.0`**: HttpClientFactory, interfaces, workflow helpers, safer consumption listing, 429 retry, trim-safe REST JSON, consumer how-tos
-- **v1.2** GraphQL extras — in progress on **`main`** (**`1.2.x`** NuGet when tagged, not `2.0.0`): **viewer**, **rate limits**, **electricity and gas meter readings** (gas allow-list live probe deferred — no gas-capable dashboard key), **reading consent**, **account billing**, **SmartFlex devices**, **Home Mini telemetry**, **Octoplus** (public-host enrolment/points/wheel; not saving sessions on `api.backend.octopus.energy`), and **product switch**; **`AddOctopusEnergyClient`**, GraphQL JSON source generation, and opt-in meter reading mutations in the Products console sample
+- **v1.2** GraphQL extras — shipped **`1.2.0`** (not `2.0.0`): **viewer**, **rate limits**, **electricity and gas meter readings** (gas allow-list live probe deferred — no gas-capable dashboard key), **reading consent**, **account billing**, **SmartFlex devices**, **Home Mini telemetry**, **Octoplus** (public-host enrolment/points/wheel; not saving sessions on `api.backend.octopus.energy`), and **product switch**; **`AddOctopusEnergyClient`**, typed REST `WireField<T>` enums, GraphQL JSON source generation, and opt-in meter reading mutations in the Products console sample
 
 ## Installation
 
@@ -31,7 +31,7 @@ Roadmap (GitHub milestone → NuGet version; all stay on package **1.x** — see
 dotnet add package OctopusEnergy.Client
 ```
 
-Latest on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) is **1.1.0** (REST). Pin that version when you do not need v1.2 GraphQL accessors yet (`dotnet add package OctopusEnergy.Client --version 1.1.0`). GraphQL-backed resources ship in **1.2.x** after the [1.2.0 release checklist](plan/RELEASE.md#120-tag-checklist).
+Latest on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) is **1.2.0**. Pin **1.1.0** when you do not need GraphQL accessors (`dotnet add package OctopusEnergy.Client --version 1.1.0`). Upgrading from **1.1.0**? See [VERSIONING.md](VERSIONING.md) and [plan/RELEASE.md](plan/RELEASE.md#120--graphql-customer-extras-9-november-2026).
 
 ## Quick start
 

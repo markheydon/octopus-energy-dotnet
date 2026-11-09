@@ -37,45 +37,18 @@ Milestone v1.1. Hosting, testability, workflow helpers, consumption safety, API 
 - `OctopusEnergyTime.AssumeEuropeLondon` now throws for spring-forward gap times and resolves ambiguous autumn-back hours to standard time (GMT). Previously, gap times were accepted with an incorrect offset.
 - `ConsumptionPricePeriodMatching` now matches by rate period containing the interval start (`[ValidFrom, ValidTo)`), not exact `ValidFrom == IntervalStart`. This avoids silently dropping overlapping consumption intervals; the matched rate may use a different offset representation from `IntervalStart`. Matching uses interval start only (not full interval overlap). When multiple rates contain the start, the latest `ValidFrom` wins; equal `ValidFrom` ties prefer the first rate in the supplied list (previously duplicate keys in the internal dictionary kept the last rate).
 
-### Unreleased (v1.2 groundwork)
+## 1.2.0 — GraphQL customer extras (9 November 2026)
 
-Until NuGet **1.2.x** ships, `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` stays on the latest **1.1.x** release while GraphQL customer APIs land on `main`. Consumers installing from NuGet see **1.1.0** only; GraphQL-backed public accessors require **`main`** or a future **1.2.x** tag (documented in [API coverage](../docs/reference/api-coverage.md)).
+Milestone **v1.2**: curated GraphQL-backed customer APIs on the same `OctopusEnergyClient`, typed REST wire fields, dependency injection registration, and trim-safe GraphQL JSON.
 
-#### Source-breaking changes
+### Source-breaking changes
 
 - `Product.Direction`, `MeterRegister.Rate`, and `TariffCharge.PaymentMethod` are now `WireField<T>` (or nullable) instead of `string`. Use `.Value` for the enum (`ProductEnergyDirection`, `MeterRegisterRate`, `ProductPaymentMethod`) and `.UnparsedValue` when the API returns an unknown token.
 - `ProductPaymentMethod` adds `Unknown` (additive enum member; existing numeric values unchanged).
 
-#### 1.2.0 tag checklist
+### Features
 
-Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL release):
-
-**Documentation prep (can land before the tag):**
-
-- [x] README *Status* and *Roadmap* state NuGet **1.1.0** vs GraphQL on `main`.
-- [x] [API coverage](../docs/reference/api-coverage.md) explains NuGet vs source and clarifies REST account vs optional GraphQL account projection (#23).
-- [x] Gas mutation: public SDK with allow-list **Not probed** documented ([allow-list](../docs/planning/graphql-customer-allow-list.md) *Deferred live verification*).
-- [x] Consumer docs for `WireField<T>` and NuGet **1.1.0** vs **1.2.x** ([VERSIONING.md](../VERSIONING.md), [API coverage](../docs/reference/api-coverage.md), [NuGet package README](../src/OctopusEnergy.Client/README.md)).
-
-**Release gate (do at tag time):**
-
-1. [ ] From the repository root, pass Release checks:
-
-   ```bash
-   dotnet format OctopusEnergy.slnx --verify-no-changes
-   dotnet build OctopusEnergy.slnx -c Release -warnaserror
-   dotnet test OctopusEnergy.slnx -c Release --no-build
-   ```
-
-2. [ ] Bump `<Version>` in `src/OctopusEnergy.Client/OctopusEnergy.Client.csproj` to **1.2.0** (or the intended **1.2.x** patch). Update `<Description>` to state REST plus curated GraphQL (remove the *in 1.2.x* qualifier).
-3. [ ] Add a **1.2.0 — GraphQL customer extras** section below; move every bullet out of *Unreleased* into that section with the release date.
-4. [ ] Retitle [API coverage](../docs/reference/api-coverage.md): change *v1.2 GraphQL (in progress)* to shipped wording; update [README.md](../README.md) *Status* and *Roadmap* so NuGet **1.2.x** matches the package.
-5. [ ] Confirm [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) and the [API coverage](../docs/reference/api-coverage.md) customer-operations table agree on every **Public SDK** row (method names, probe status, planned vs implemented).
-6. [ ] Optionally re-run live allow-list probes (`OCTOPUS_ENERGY_ENABLE_LIVE_TESTS=1` and `OCTOPUS_ENERGY_API_KEY`) and refresh fixtures when probe results change.
-7. [ ] **Gas mutation (optional before tag):** re-probe `createGasMeterReading` on a gas-capable dashboard key and flip the allow-list row to **Allowed (mutation)**. **Deferred** when no such key is available (8 November 2026); shipping **1.2.0** without this step is acceptable if docs stay aligned.
-8. [ ] Tag and push (`git tag v1.2.0 && git push origin v1.2.0`); complete [Publish steps](#publish-steps).
-
-- **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. `OctopusEnergyClient.GraphQl` remains `internal`. Status tables: [API coverage](../docs/reference/api-coverage.md#v12-graphql-in-progress).
+- **Internal GraphQL authentication (issue #20).** Authenticated clients obtain and cache a Kraken JWT via `obtainKrakenToken` (API key only), refresh using `refreshToken`, and retry GraphQL requests once on `KT-CT-1112`. `OctopusEnergyClient.GraphQl` remains `internal`. Status tables: [API coverage](../docs/reference/api-coverage.md#v12-graphql-shipped).
 - **GraphQL operational limits (issue #29).** `GraphQlRelayLimits`, Kraken exception types, `GraphQlRelayPageInfo`, and `client.RateLimits.GetRateLimitInfoAsync` (hourly points allowance). No automatic retry on `KT-CT-1199`.
 - **Public GraphQL surface (v1.2).** `IOctopusEnergyClient.RateLimits` (`IRateLimitService`, `RateLimitInfo`, `PointsAllowanceRateLimit`) and `IOctopusEnergyClient.Viewer` (`IViewerService`, `ViewerDetail` with deduplicated `AccountNumbers` from `viewer` and portfolios). GraphQL failures with Kraken `extensions.errorCode` throw `OctopusEnergyKrakenException` (a subtype of `OctopusEnergyApiException`). `OctopusEnergyApiException` is no longer `sealed` so Kraken subtypes can be introduced; existing `catch (OctopusEnergyApiException)` handlers still catch GraphQL errors.
 - **Meter readings (#24 electricity, #99 gas, #100 consent).** `IOctopusEnergyClient.MeterReadings` (`IMeterReadingService`) wraps `createElectricityMeterReading` (`ElectricityMeterReadingCreate`, `ElectricityMeterReadingResult`), `createGasMeterReading` (`GasMeterReadingCreate`, `GasMeterReadingResult`), and `readingConsentGranularity` (`GetReadingConsentGranularityAsync`, `ReadingConsentGranularity`) for dashboard API keys. Gas allow-list status remains **Not probed** on the maintainer account (no gas meter); see [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md).
@@ -88,18 +61,24 @@ Complete this before tagging **1.2.0** (or the first **1.2.x** public GraphQL re
 - **GraphQL JSON source generation.** GraphQL request envelopes and service response DTOs deserialize via `OctopusEnergyJsonContext` (no reflection fallback in the client assembly). `GraphQlClient.ExecuteAsync<TData>` / `ExecuteAsync<TData,TVariables>` replace untyped variable bags; `RestClient` uses the same context-only deserializer for API error bodies.
 - **Dependency injection.** `AddOctopusEnergyClient(IServiceCollection, Action<OctopusEnergyClientOptions>)` registers a singleton `IOctopusEnergyClient` with `OctopusEnergyClientHandler` (API key on outbound requests). Documented in [authentication](../docs/how-to/authentication.md).
 - **Tracker tariff daily pricing.** No public GraphQL SDK wrapper until allow-list live probe; use REST tracker URLs or tariff rate lists ([coding notes](../docs/planning/coding-notes.md)).
+- **Trim-safe GraphQL JSON** — GraphQL envelopes and service DTOs share `OctopusEnergyJsonContext` with REST; the client assembly does not fall back to reflection. Does not claim full Native AOT compatibility for the entire package (see issue #68).
 
-### Additive changes
+### 1.2.0 tag checklist (completed 9 November 2026)
 
-- **HTTP 429/503 retry (enabled by default).** REST calls retry transient `429 Too Many Requests` and `503 Service Unavailable` responses up to three times after the first failure, honouring `Retry-After` when present (capped at 60 seconds) or using exponential backoff otherwise. Pass `OctopusEnergyRetryOptions.Disabled` to any `OctopusEnergyClient` constructor for fail-fast behaviour. Disable retries when timing or custom Polly policies matter.
-- `OctopusEnergyRetryOptions` — configure retry attempts, base delay, and maximum delay for REST transport.
-- `IOctopusEnergyClient` and resource service interfaces for testability.
-- `OctopusEnergyClientHandler` for `IHttpClientFactory` registration.
-- Workflow helpers: `ParsedTariffCode`, meter-point consumption overloads, `ProductDetail.TryGetTariff`.
-- `PaginatedResult<T>` — public type for a single REST list page (`Count`, `Next`, `Previous`, `Results`).
-- `ListElectricityPageAsync` / `ListGasPageAsync` on `IConsumptionService` — fetch one consumption page and read total `count` without auto-pagination.
-- `RestPageSizeLimits.Validate` — rejects `page_size` less than 1 for consumption and tariff rate requests (previously sent to the API).
-- Consumer how-tos: [consumption](../docs/how-to/consumption.md), [tariff rates](../docs/how-to/tariff-rates.md), [industry lookups](../docs/how-to/industry.md).
-- **EV device tariff rates (issue #101).** `ITariffRatesService.ListEvDeviceOffPeakUnitRatesAsync` and `ListEvDevicePeakUnitRatesAsync` wrap the official `ev-device-off-peak-unit-rates` and `ev-device-peak-unit-rates` REST paths for electricity tariffs.
-- **Trim-safe REST JSON** (1.1) — `System.Text.Json` source generation for REST wire models used by `RestClient`, so file-based apps and hosts with `JsonSerializerIsReflectionEnabledByDefault=false` work without consumer MSBuild workarounds.
-- **Trim-safe GraphQL JSON** (1.2) — GraphQL envelopes and service DTOs share `OctopusEnergyJsonContext` with REST; the client assembly does not fall back to reflection. Does not claim full Native AOT compatibility for the entire package (see issue #68).
+**Documentation prep:**
+
+- [x] README *Status* and *Roadmap* state NuGet **1.2.x** after release.
+- [x] [API coverage](../docs/reference/api-coverage.md) explains NuGet vs source and clarifies REST account vs optional GraphQL account projection (#23).
+- [x] Gas mutation: public SDK with allow-list **Not probed** documented ([allow-list](../docs/planning/graphql-customer-allow-list.md) *Deferred live verification*).
+- [x] Consumer docs for `WireField<T>` and version guidance ([VERSIONING.md](../VERSIONING.md), [API coverage](../docs/reference/api-coverage.md), [NuGet package README](../src/OctopusEnergy.Client/README.md)).
+
+**Release gate:**
+
+1. [x] Release checks passed (`dotnet format`, `build -c Release -warnaserror`, `test -c Release --no-build`).
+2. [x] `<Version>` **1.2.0** and package description updated in `OctopusEnergy.Client.csproj`.
+3. [x] **1.2.0 — GraphQL customer extras** section in this file.
+4. [x] [API coverage](../docs/reference/api-coverage.md) and [README.md](../README.md) updated for NuGet **1.2.0**.
+5. [x] [graphql-customer-allow-list.md](../docs/planning/graphql-customer-allow-list.md) aligned with API coverage **Public SDK** rows.
+6. [ ] Optional live allow-list re-probe (not run for this tag).
+7. [x] Gas mutation live re-probe **deferred** (no gas-capable dashboard key; docs aligned).
+8. [ ] Tag `v1.2.0` and [Publish steps](#publish-steps).

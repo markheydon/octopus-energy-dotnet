@@ -1,7 +1,7 @@
 # Versioning Policy
 
 **Project:** OctopusEnergy.Client
-**Last updated:** 8 November 2026
+**Last updated:** 9 November 2026
 
 ---
 
@@ -39,12 +39,12 @@ Tag format: `1.x.y` (for example `1.0.0`).
 
 | Package version | Git tag | Milestone | What you get |
 |---|---|---|---|
-| **1.1.0** (published) | `v1.1.0` | v1.1 | REST customer core plus developer experience (hosting, interfaces, retries, trim-safe REST JSON) |
-| **1.2.0** (upcoming) | `v1.2.0` | v1.2 | Adds curated GraphQL-backed services, typed wire enums (`WireField<T>` on selected REST models), `AddOctopusEnergyClient`, and trim-safe GraphQL JSON (`OctopusEnergyJsonContext`) |
+| **1.2.0** (published) | `v1.2.0` | v1.2 | REST customer core plus developer experience and curated GraphQL-backed services, typed wire enums (`WireField<T>` on selected REST models), `AddOctopusEnergyClient`, and trim-safe GraphQL JSON (`OctopusEnergyJsonContext`) |
+| **1.1.0** (published) | `v1.1.0` | v1.1 | REST customer core plus developer experience (hosting, interfaces, retries, trim-safe REST JSON) — no GraphQL accessors |
 
-The newest stable package on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) is **1.1.0**. Milestone **v1.2** code is on repository `main` until maintainers complete the [1.2.0 tag checklist](plan/RELEASE.md#120-tag-checklist). Pin `1.1.0` when you only need REST; use a project reference or wait for **1.2.x** for GraphQL accessors.
+The newest stable package on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) is **1.2.0**. Pin `1.1.0` when you only need REST.
 
-**Upgrading 1.1.0 → 1.2.0:** expect source-breaking changes on a few REST model properties (`Product.Direction`, `MeterRegister.Rate`, `TariffCharge.PaymentMethod` become `WireField<T>`). See [plan/RELEASE.md](plan/RELEASE.md) (*Unreleased (v1.2 groundwork)* → *Source-breaking changes*) and [products](docs/how-to/products.md), [accounts](docs/how-to/accounts.md), and [tariff rates](docs/how-to/tariff-rates.md).
+**Upgrading 1.1.0 → 1.2.0:** expect source-breaking changes on a few REST model properties (`Product.Direction`, `MeterRegister.Rate`, `TariffCharge.PaymentMethod` become `WireField<T>`). See [plan/RELEASE.md](plan/RELEASE.md#120--graphql-customer-extras-9-november-2026) (*Source-breaking changes*) and [products](docs/how-to/products.md), [accounts](docs/how-to/accounts.md), and [tariff rates](docs/how-to/tariff-rates.md).
 
 ---
 

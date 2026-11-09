@@ -2,7 +2,7 @@
 
 Unofficial .NET client for the **Octopus Energy customer APIs** (REST catalogue, account, and consumption; curated GraphQL where REST does not cover discovery and operational limits). Not affiliated with Octopus Energy Limited.
 
-Stable `1.x` with SemVer guarantees. **1.1.0** on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) ships the REST customer core and developer experience (hosting, interfaces, workflow helpers, trim-safe REST JSON). Milestone **v1.2** (NuGet **1.2.x**, not **2.0.0**) adds GraphQL-backed `Viewer`, `RateLimits`, `MeterReadings`, `AccountBilling`, `Devices`, `SmartMeterTelemetry`, `Octoplus`, and `ProductSwitch` on the same client (transport is internal). That GraphQL surface is on repository `main` until **1.2.0** is tagged — pin **1.1.0** when you only need REST. See [release labels](https://github.com/markheydon/octopus-energy-dotnet/blob/main/VERSIONING.md#release-labels-quick-reference) and [API coverage](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/reference/api-coverage.md).
+Stable `1.x` with SemVer guarantees. **1.2.0** on [nuget.org](https://www.nuget.org/packages/OctopusEnergy.Client/) ships the REST customer core, developer experience (hosting, interfaces, workflow helpers, trim-safe JSON), and milestone **v1.2** GraphQL-backed `Viewer`, `RateLimits`, `MeterReadings`, `AccountBilling`, `Devices`, `SmartMeterTelemetry`, `Octoplus`, and `ProductSwitch` on the same client (transport is internal; not package **2.0.0**). Pin **1.1.0** when you only need REST. See [release labels](https://github.com/markheydon/octopus-energy-dotnet/blob/main/VERSIONING.md#release-labels-quick-reference) and [API coverage](https://github.com/markheydon/octopus-energy-dotnet/blob/main/docs/reference/api-coverage.md).
 
 Dashboard API keys expose account structure and consumption. Treat keys as secrets and do not share them with untrusted third parties. This library is not a developer licence from Octopus Energy.
 
@@ -14,10 +14,10 @@ Dashboard API keys expose account structure and consumption. Treat keys as secre
 dotnet add package OctopusEnergy.Client
 ```
 
-Pin an exact version when you need reproducible builds (for example REST-only on **1.1.0**):
+Pin an exact version when you need reproducible builds (for example REST-only on **1.1.0**, or **1.2.0** for GraphQL):
 
 ```bash
-dotnet add package OctopusEnergy.Client --version 1.1.0
+dotnet add package OctopusEnergy.Client --version 1.2.0
 ```
 
 ## Quick example
@@ -42,7 +42,7 @@ In ASP.NET Core or worker hosts, use `AddOctopusEnergyClient` from `OctopusEnerg
 ### File-based apps (.NET 10+)
 
 ```csharp
-#:package OctopusEnergy.Client@1.1.0
+#:package OctopusEnergy.Client@1.2.0
 #:property PublishAot=false
 
 using OctopusEnergy.Client;
@@ -55,7 +55,7 @@ await foreach (var product in client.Products.ListAsync())
 }
 ```
 
-Use `@1.2.x` after **1.2.0** publishes when you need GraphQL-backed resources. `PublishAot=false` avoids native publish constraints unrelated to JSON source generation. SDK-style projects and file-based apps work without `JsonSerializerIsReflectionEnabledByDefault` (REST and GraphQL wire models use `OctopusEnergyJsonContext`).
+`PublishAot=false` avoids native publish constraints unrelated to JSON source generation. SDK-style projects and file-based apps work without `JsonSerializerIsReflectionEnabledByDefault` (REST and GraphQL wire models use `OctopusEnergyJsonContext`).
 
 ## Upgrading to 1.2.x
 

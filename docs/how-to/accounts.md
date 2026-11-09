@@ -71,7 +71,7 @@ foreach (AccountProperty property in account.Properties)
 
 Each `AccountProperty` includes address fields, `ElectricityMeterPoints`, and `GasMeterPoints`. Meter points carry MPAN/MPRN, GSP, agreements (tariff codes and date ranges), and nested meters with registers.
 
-From NuGet **1.2.0** (and `main` before the tag), each `MeterRegister` exposes `Rate` as `WireField<MeterRegisterRate>` (`STANDARD`, `DAY`, `NIGHT` on the wire). Use `register.Rate.Value` for the enum and `register.Rate.UnparsedValue` when the API returns an unknown token. Package **1.1.0** still surfaces `Rate` as a string — see [plan/RELEASE.md](../../plan/RELEASE.md) (*Unreleased* source-breaking changes).
+From NuGet **1.2.0**, each `MeterRegister` exposes `Rate` as `WireField<MeterRegisterRate>` (`STANDARD`, `DAY`, `NIGHT` on the wire). Use `register.Rate.Value` for the enum and `register.Rate.UnparsedValue` when the API returns an unknown token. Package **1.1.0** still surfaces `Rate` as a string — see [plan/RELEASE.md](../../plan/RELEASE.md#120--graphql-customer-extras-9-november-2026) (*Source-breaking changes*).
 
 Use tariff codes from agreements with [tariff codes and GSP](tariff-codes.md) and [tariff rates](tariff-rates.md) for standing charges and unit-rate history. Consumption intervals are on `client.Consumption` — see [consumption](consumption.md).
 
