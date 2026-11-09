@@ -37,6 +37,8 @@ await foreach (var product in client.Products.ListAsync())
 
 For account and consumption calls, pass your API key from the [Octopus dashboard](https://octopus.energy/dashboard/new/accounts/personal-details/api-access).
 
+In ASP.NET Core or worker hosts, use `AddOctopusEnergyClient` from `OctopusEnergy.Client.DependencyInjection` to register `IOctopusEnergyClient` with `IHttpClientFactory`. See [authentication](https://markheydon.me.uk/octopus-energy-dotnet/how-to/authentication/#hosted-applications-ihttpclientfactory).
+
 ### File-based apps (.NET 10+)
 
 ```csharp
@@ -53,7 +55,7 @@ await foreach (var product in client.Products.ListAsync())
 }
 ```
 
-Use `@1.2.x` after **1.2.0** publishes when you need GraphQL-backed resources. `PublishAot=false` avoids native publish constraints unrelated to REST JSON. SDK-style projects and file-based apps work without `JsonSerializerIsReflectionEnabledByDefault`.
+Use `@1.2.x` after **1.2.0** publishes when you need GraphQL-backed resources. `PublishAot=false` avoids native publish constraints unrelated to JSON source generation. SDK-style projects and file-based apps work without `JsonSerializerIsReflectionEnabledByDefault` (REST and GraphQL wire models use `OctopusEnergyJsonContext`).
 
 ## Upgrading to 1.2.x
 

@@ -39,7 +39,7 @@ A trailing slash is applied when missing so relative REST paths resolve correctl
 
 In ASP.NET Core or worker hosts, register a named `HttpClient` and resolve `IOctopusEnergyClient` from dependency injection.
 
-The client package references `Microsoft.Extensions.Http`. Your host project must call `services.AddHttpClient()` (via the extension below or manually).
+The client package references `Microsoft.Extensions.Http` transitively. Your host project does not need a separate package reference when it already references `OctopusEnergy.Client`. Register the client via `AddOctopusEnergyClient` below (or call `services.AddHttpClient()` manually).
 
 ### Recommended registration
 

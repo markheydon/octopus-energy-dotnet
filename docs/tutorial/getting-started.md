@@ -35,6 +35,10 @@ using var client = new OctopusEnergyClient();
 
 See [authentication](../how-to/authentication.md) for custom base URLs and supplying your own `HttpClient`.
 
+### ASP.NET Core dependency injection
+
+In web or worker hosts, register a singleton `IOctopusEnergyClient` with `AddOctopusEnergyClient` (`OctopusEnergy.Client.DependencyInjection`). See [authentication — hosted applications](../how-to/authentication.md#hosted-applications-ihttpclientfactory).
+
 ### Testability with interfaces
 
 Depend on `IOctopusEnergyClient` and the resource service interfaces (`IAccountService`, `IConsumptionService`, `IViewerService`, `IRateLimitService`, `IMeterReadingService`, `IAccountBillingService`, and so on) in application code so unit tests can substitute behaviour. Construct `OctopusEnergyClient` at the composition root; the concrete client implements `IOctopusEnergyClient` and exposes interface-typed resource properties.
@@ -111,7 +115,7 @@ await foreach (var product in client.Products.ListAsync())
 dotnet run ListProducts.cs
 ```
 
-See [samples/FileBasedProducts](https://github.com/markheydon/octopus-energy-dotnet/tree/main/samples/FileBasedProducts) for a repo smoke script. Native AOT publish of consumer apps is not fully validated for every SDK code path; REST response deserialisation is covered by CI with reflection-based JSON disabled.
+See [samples/FileBasedProducts](https://github.com/markheydon/octopus-energy-dotnet/tree/main/samples/FileBasedProducts) for a repo smoke script. Native AOT publish of consumer apps is not fully validated for every SDK code path; REST and GraphQL response deserialisation is covered by CI with reflection-based JSON disabled.
 
 ## Next steps
 

@@ -92,7 +92,7 @@ Place every **public** type in the `OctopusEnergy.Client` namespace at the proje
 
 - **Client + Services** - one `OctopusEnergyClient` with discoverable resources.
 - **Strongly typed contracts** - explicit models; `JsonPropertyName` on every serialised property.
-- **REST JSON source generation** - when adding types deserialised by `RestClient`, register them on `Infrastructure/Serialization/OctopusEnergyJsonContext`.
+- **JSON source generation** - when adding types deserialised by `RestClient` or GraphQL services (`GraphQlClient`), register them on `Infrastructure/Serialization/OctopusEnergyJsonContext`. The client assembly deserialises via that context only (no reflection fallback).
 - **Exception hierarchy** - SDK-specific types, not raw `HttpRequestException` as the public contract.
 - **Async-first** - cancellation-aware.
 - **Customer allow-list** - do not add a method because it exists on the GraphQL schema. Add it because a customer API key can call it (documented + runtime-verified).
