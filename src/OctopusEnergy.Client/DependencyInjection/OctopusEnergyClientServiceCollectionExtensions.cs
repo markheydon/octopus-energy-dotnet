@@ -15,9 +15,10 @@ public static class OctopusEnergyClientServiceCollectionExtensions
     /// <param name="configure">Optional configuration for the API key, base URL, and retry policy.</param>
     /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
     /// <remarks>
-    /// Requires the host to reference <c>Microsoft.Extensions.Http</c>. When <see cref="OctopusEnergyClientOptions.ApiKey"/>
-    /// is set, authentication is applied through <see cref="OctopusEnergyClientHandler"/> on the named client.
-    /// Do not configure a different API key on both the handler and <see cref="OctopusEnergyClient"/> constructor.
+    /// <c>Microsoft.Extensions.Http</c> is referenced transitively by <c>OctopusEnergy.Client</c>.
+    /// When <see cref="OctopusEnergyClientOptions.ApiKey"/> is set, the same key wires REST authentication on the
+    /// named <see cref="HttpClient"/> and initialises GraphQL-backed services on <see cref="OctopusEnergyClient"/>.
+    /// Do not supply a different API key on another handler or <see cref="OctopusEnergyClient"/> constructor for the same client.
     /// </remarks>
     public static IServiceCollection AddOctopusEnergyClient(
         this IServiceCollection services,
@@ -37,21 +38,26 @@ public static class OctopusEnergyClientServiceCollectionExtensions
             client.BaseAddress = options.BaseAddress;
         });
 
-        if (!string.IsNullOrWhiteSpace(options.ApiKey))
+        string? apiKeyForClient = string.IsNullOrWhiteSpace(options.ApiKey)
+            ? null
+            : options.ApiKey.Trim();
+
+        if (apiKeyForClient is null)
         {
-            string apiKey = options.ApiKey.Trim();
-            builder.AddHttpMessageHandler(() => new OctopusEnergyClientHandler(apiKey));
+            builder.AddHttpMessageHandler(() => new OctopusEnergyClientHandler());
         }
         else
         {
-            builder.AddHttpMessageHandler(() => new OctopusEnergyClientHandler());
+            builder.AddHttpMessageHandler(() => new OctopusEnergyClientHandler(apiKeyForClient));
         }
 
         services.AddSingleton<IOctopusEnergyClient>(sp =>
         {
             IHttpClientFactory factory = sp.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient(httpClientName);
-            return new OctopusEnergyClient(httpClient, options.RetryOptions);
+            return apiKeyForClient is null
+                ? new OctopusEnergyClient(httpClient, options.RetryOptions)
+                : new OctopusEnergyClient(apiKeyForClient, httpClient, options.RetryOptions);
         });
 
         return services;

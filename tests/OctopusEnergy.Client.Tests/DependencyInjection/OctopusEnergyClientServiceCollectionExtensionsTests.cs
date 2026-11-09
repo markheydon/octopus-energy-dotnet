@@ -20,5 +20,8 @@ public sealed class OctopusEnergyClientServiceCollectionExtensionsTests
 
         Assert.NotNull(client);
         Assert.NotNull(client.Products);
+
+        OctopusEnergyClient concrete = Assert.IsType<OctopusEnergyClient>(client);
+        Assert.NotNull(concrete.GraphQl);
     }
 }
