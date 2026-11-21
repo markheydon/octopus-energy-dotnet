@@ -1,24 +1,23 @@
 version: 2
-
 updates:
   - package-ecosystem: nuget
-    directory: "/"
+    directory: /
     schedule:
       interval: weekly
       day: monday
       time: "04:00"
       timezone: Europe/London
     open-pull-requests-limit: 5
-    assignees:
-      - markheydon
     labels:
       - type/chore
+    assignees:
+      - markheydon
     ignore:
       - dependency-name: "Microsoft.Extensions.*"
         update-types:
           - version-update:semver-major
     groups:
-      tests:
+      test-packages:
         patterns:
           - xunit*
           - Microsoft.NET.Test.Sdk
@@ -27,39 +26,52 @@ updates:
         update-types:
           - minor
           - patch
-
-  - package-ecosystem: github-actions
-    directory: "/"
-    schedule:
-      interval: weekly
-      day: monday
-      time: "04:00"
-      timezone: Europe/London
-    open-pull-requests-limit: 5
-    assignees:
-      - markheydon
-    labels:
-      - type/chore
-    groups:
-      github-actions:
+      microsoft-extensions:
+        patterns:
+          - Microsoft.Extensions.*
+        update-types:
+          - minor
+          - patch
+      other:
         patterns:
           - "*"
         update-types:
           - minor
           - patch
 
-  - package-ecosystem: devcontainers
-    directory: "/"
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
       interval: weekly
       day: monday
       time: "04:00"
       timezone: Europe/London
     open-pull-requests-limit: 5
-    assignees:
-      - markheydon
     labels:
       - type/chore
+    assignees:
+      - markheydon
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - major
+          - minor
+          - patch
+
+  - package-ecosystem: devcontainers
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+      timezone: Europe/London
+    open-pull-requests-limit: 5
+    labels:
+      - type/chore
+    assignees:
+      - markheydon
     groups:
       devcontainers:
         patterns:
